@@ -7,9 +7,12 @@ import Errors from './errors';
 import Logs from './logs';
 import Traits from './traits';
 
-const Panes = {
-  Changes, Traits, Errors, Logs
-}
+const Panes = [
+  { key: 'Changes', Pane: Changes, title: 'User' },
+  { key: 'Traits', Pane: Traits, title: 'Output' },
+  { key: 'Errors', Pane: Errors, title: 'Errors' },
+  { key: 'Logs', Pane: Logs, title: 'Logs' },
+];
 
 export default class Results extends Component {
 
@@ -19,14 +22,14 @@ export default class Results extends Component {
   }
 
   getActiveTabs() {
-    return Object.keys(Panes).reduce( (res, key) => {
+    return Panes.reduce( (res, pane) => {
+      const { Pane, key, title } = pane;
       const data = this.props[key.toLowerCase()];
-      const Pane = Panes[key];
       if (Pane && !_.isEmpty(data)) {
         res.defaultKey = res.defaultKey || key;
         res.activeKeys[key] = true;
         const badge = data.length > 0 ? ` (${data.length})` : '';
-        res.tabs.push(<Tab eventKey={key} key={key} title={key}>
+        res.tabs.push(<Tab eventKey={key} key={key} title={title}>
           <Pane {...this.props} />
         </Tab>);
       }
