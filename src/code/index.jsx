@@ -22,7 +22,6 @@ export default class Code extends Component {
     const options = {
       mode: 'javascript',
       lineNumbers: true,
-      readOnly: !!this.props.loading,
       gutters: ["CodeMirror-lint-markers"],
       lint: true
     };

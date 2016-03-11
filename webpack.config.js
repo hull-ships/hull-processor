@@ -2,7 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-  devtool  : '#cheap-eval-source-map',
+  devtool  : '#source-map',
   entry: {
     admin: path.join(__dirname, 'src/index.jsx'),
   },

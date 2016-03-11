@@ -34,7 +34,6 @@ module.exports = function compute({ user, segments }, ship, sourceCode) {
 
   sandbox.console = { log, warn: log, error: logError };
 
-
   const code = sourceCode || ship.private_settings.code || '';
 
   try {

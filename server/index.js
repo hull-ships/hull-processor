@@ -33,7 +33,7 @@ const notifHandler = NotifHandler({
 function fetchUser(req, res, next) {
   req.hull = req.hull || {};
   const { client, ship } = req.hull;
-  let { userId, userEmail, user } = req.body || {};
+  let { userId, userSearch, user } = req.body || {};
 
   console.warn("Starting fetchUser with ", req.body);
 
@@ -43,21 +43,25 @@ function fetchUser(req, res, next) {
     if (userId) {
       console.warn("Getting user with ID", userId)
       userPromise = client.get(userId + '/user_report')
-    } else if (userEmail) {
+    } else {
 
       const params = {
         query: {
-          multi_match: {
-            query: userEmail,
-            fields: ["name", "name.exact", "email", "email.exact", "contact_email", "contact_email.exact"]
-          }
+          match_all: {}
         },
         raw: true,
         page: 1,
         per_page: 1
       };
 
-      console.warn("Searching user with email", {userEmail, params: JSON.stringify(params)})
+      if (userSearch) {
+        params.query = { multi_match: {
+          query: userSearch,
+          fields: ["name", "name.exact", "email", "email.exact", "contact_email", "contact_email.exact"]
+        } };
+      }
+
+      console.warn("Searching user with email", {userSearch, params: JSON.stringify(params)})
 
       userPromise = client.post('search/user_reports', params).then(res => {
         return res.data[0];

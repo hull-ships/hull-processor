@@ -18,13 +18,13 @@ export default class App extends Component {
 
   buildState(props) {
 
-    const userEmail = props.user && props.user.user && props.user.user.email;
+    const userSearch = props.user && props.user.user && props.user.user.email;
     const state = {
       input: { value: JSON.stringify(props.user || {}, ' ', 2), dirty: false },
       code: { value: this.getCode(props), dirty: false },
       result: props.result,
       loading: false,
-      userEmail
+      userSearch
     };
     return state;
   }
@@ -61,7 +61,7 @@ export default class App extends Component {
     const { result, input, code, loading } = this.state;
 
     return <Grid fluid={true}>
-      <Controls loading={this.state.loading} onRun={this.handleCompute.bind(this)} />
+      <Controls loading={this.state.loading} userSearch={this.state.userSearch} onRun={this.handleCompute.bind(this)} />
       <Row>
         <Col md={4}>
           <UserPane loading={this.state.loading} onChange={this.handleChange.bind(this, 'input')} {...input} />

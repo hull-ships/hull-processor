@@ -29,7 +29,8 @@ import Promise from 'bluebird';
 
   Hull.ready((hull, user, app, org) => {
     const root = document.getElementById('app');
-    compute({ userId: user.id }).then((props) => {
+    const userId = user && user.id;
+    compute({ userId }).then((props) => {
       ReactDOM.render(<App {...props} onCompute={compute} />, root);
     }, (err) => {
       console.warn("Oops terrible error", err);
