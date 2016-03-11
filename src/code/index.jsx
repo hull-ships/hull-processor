@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import Codemirror from 'react-codemirror';
 import { Tabs, Tab, Well } from 'react-bootstrap';
 require('codemirror/mode/javascript/javascript');
-require('codemirror/addon/lint/javascript-lint');
-
 
 const HelpText = `Mardown here ?`;
 
