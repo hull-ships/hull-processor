@@ -23,7 +23,9 @@
   "scripts": {
     "start": "./bin/start",
     "lint": "eslint src",
-    "test": "./node_modules/.bin/jest"
+    "test": "./node_modules/.bin/jest",
+    "build": "rimraf dist && NODE_ENV=production webpack --config ./webpack.config.js --progress --profile --colors",
+    "postinstall": "npm run build"
   },
   "keywords": [
     "hull",
