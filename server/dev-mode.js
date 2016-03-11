@@ -1,10 +1,9 @@
-import webpackMiddleware from 'webpack-dev-middleware';
 import webpack from 'webpack';
 import webpackConfig from '../webpack.config';
 
 export default function devMode() {
   const compiler = webpack(webpackConfig);
-  return webpackMiddleware(compiler, {
+  return require('webpack-dev-middleware')(compiler, {
     publicPath: webpackConfig.output.publicPath,
     contentBase: 'src',
     stats: {
