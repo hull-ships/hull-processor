@@ -1,0 +1,14 @@
+{
+  "name": "Hull Computed Traits",
+  "description": "Hull Compute custom traits.",
+  "repository": "https://github.com/hull-ships/hull-computed-traits",
+  "website": "http://www.hull.io",
+  "success_url": "/readme",
+  "env": {
+    "SECRET" : {
+      "description" : "A Secret key used to authenticate on Hull API",
+      "generator" : "secret"
+    }
+  },
+  "scripts": {}
+}

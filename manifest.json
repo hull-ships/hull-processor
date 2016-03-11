@@ -1,0 +1,20 @@
+{
+  "name": "Computed Traits",
+  "description": "Compute custom traits",
+  "picture": "picture.png",
+  "ui": false,
+  "admin": "admin.html",
+  "readme" : "readme.md",
+  "version": "0.0.1",
+  "private_settings": [
+    {
+      "name":"code",
+      "title": "Code",
+      "description":"Custom javascript code",
+      "type": "string",
+      "format": "code"
+    }
+  ],
+  "resources": [],
+  "subscriptions" : [ { "url" : "/notify" } ]
+}
