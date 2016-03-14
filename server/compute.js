@@ -5,16 +5,28 @@ import urijs from 'urijs';
 import { inspect } from 'util';
 import raven from 'raven';
 
+function getUtils() {
+  const lodash = _.functions(_).reduce(function(l, key) {
+    l[key] = function() {
+      return _[key].apply(undefined, arguments);
+    }
+    return l;
+  }, {});
+
+  return {
+    moment: function () { return moment.apply(undefined, arguments); },
+    urijs: function () { return urijs.apply(undefined, arguments); },
+    _: Object.freeze(lodash)
+  }
+};
+
 function isInSegment(segments, segmentName) {
   return segments.reduce((r, s) => { return r || s.name == segmentName }, false)
 }
 
 module.exports = function compute({ user, segments }, ship, sourceCode) {
 
-  const sandbox = {
-    _,
-    moment,
-    urijs,
+  const sandbox = Object.assign({
     user,
     segments,
     ship,
@@ -22,7 +34,7 @@ module.exports = function compute({ user, segments }, ship, sourceCode) {
     traits: {},
     errors: [],
     logs: []
-  };
+  }, getUtils());
 
   sandbox.isInSegment = isInSegment.bind(null, segments);
 
@@ -59,7 +71,10 @@ module.exports = function compute({ user, segments }, ship, sourceCode) {
   try {
     const script = new vm.Script(`
       try {
-        traits = Object.assign(traits, (function() { ${code} })() || {});
+        traits = Object.assign(traits, (function() {
+          'use strict';
+          ${code} }
+        )() || {});
       } catch (err) {
         errors.push(err.toString());
         captureException(err);
