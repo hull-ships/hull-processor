@@ -35,8 +35,6 @@ function fetchUser(req, res, next) {
   const { client, ship } = req.hull;
   let { userId, userSearch, user } = req.body || {};
 
-  console.warn("Starting fetchUser with ", req.body);
-
   if (!user && client) {
     let userPromise;
 
@@ -98,9 +96,10 @@ function fetchShip(req, res, next) {
   if (req.body.ship && req.body.ship.private_settings) {
     req.hull.ship = req.body.ship;
   }
+
   return hullClientMiddleware({
     useCache: false,
-    fetchShip: !!req.hull.ship
+    fetchShip: !req.hull.ship
   })(req, res, next);
 }
 
@@ -124,7 +123,7 @@ module.exports = function(port) {
     res.redirect(`https://dashboard.hullapp.io/readme?url=https://${req.headers.host}`);
   });
 
-  app.post('/compute', bodyParser.json(), hullClientMiddleware({ useCache: false, fetchShip: true }), fetchUser, (req, res) => {
+  app.post('/compute', bodyParser.json(), fetchShip, fetchUser, (req, res) => {
     const { client, ship, user } = req.hull;
     res.type('application/json');
     if (client && ship && user) {

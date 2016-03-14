@@ -48,7 +48,8 @@ export default class App extends Component {
     if (this.state.loading) return false;
     this.setState({ loading: true });
     const code = this.state.code.value;
-    this.props.onCompute(Object.assign({}, params, { code })).then((props) => {
+    const computeParams = Object.assign({}, params, { code, ship: this.props.ship });
+    this.props.onCompute(computeParams).then((props) => {
       const state = this.buildState(props);
       this.setState(state);
     }, (err) => {
