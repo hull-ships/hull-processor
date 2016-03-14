@@ -1,1 +1,1 @@
-This ship allows you to define custom traits that are computed on your users.
+This ship lets you to define custom traits that are re-computed on your users everytime they are updated.

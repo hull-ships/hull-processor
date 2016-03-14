@@ -25,13 +25,15 @@ module.exports = {
   resolve: { extensions: ['', '.js', '.jsx'] },
   module: {
     loaders: [
+      {test: /\.(css|scss)$/, loaders: ['style?singleton=true', 'css?modules&importLoaders=1'] },
+      { test: /\.svg$/, loader: 'svg-inline' },
       { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader"},
       {
         test: /.jsx?$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
         query: {
-          presets: ['es2015', 'react']
+          presets: ['es2015', 'react', 'stage-0']
         }
       }
     ]

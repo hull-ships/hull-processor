@@ -2,11 +2,10 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { Grid, Col, Row, Button } from 'react-bootstrap';
 
+import Header from './ui/header';
 import ResultsPane from './results';
 import CodePane from './code';
 import UserPane from './user';
-import Controls from './controls';
-
 
 export default class App extends Component {
 
@@ -40,8 +39,19 @@ export default class App extends Component {
     this.autoCompute();
   }
 
+  handleSearch(userEmail) {
+    if (userEmail && !this.props.loading) {
+      this.handleCompute({ userEmail });
+    }
+  }
+
   handleCompute(params) {
     this.compute(params || { user: JSON.parse(this.state.input.value) });
+  }
+
+  handleRun(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    this.handleCompute();
   }
 
   compute(params) {
@@ -59,20 +69,26 @@ export default class App extends Component {
   }
 
   render() {
-    const { result, input, code, loading } = this.state;
+    const { result, input, code, loading, userEmail } = this.state;
 
-    return <Grid fluid={true}>
-      <Controls loading={this.state.loading} userSearch={this.state.userSearch} onRun={this.handleCompute.bind(this)} />
-      <Row>
-        <Col md={4}>
-          <UserPane loading={this.state.loading} onChange={this.handleChange.bind(this, 'input')} {...input} />
-        </Col>
-        <Col md={4}>
-          <CodePane loading={this.state.loading} onChange={this.handleChange.bind(this, 'code')} {...code}  />
-        </Col>
-        <Col md={4}>
-          <ResultsPane loading={this.state.loading} {...result} />
-        </Col>
+    return <Grid fluid={true} className='pt-1'>
+      <Row className='flexRow'>
+        <UserPane
+          className='flexColumn'
+          sm={4}
+          loading={loading}
+          onSearch={this.handleSearch.bind(this)}
+          onChange={this.handleChange.bind(this, 'input')}
+          {...input} />
+        <CodePane
+          sm={4}
+          className='flexColumn ps-0'
+          loading={loading}
+          onChange={this.handleChange.bind(this, 'code')}
+          onRun={this.handleRun.bind(this)}
+          {...code}
+        />
+        <ResultsPane className='flexColumn' sm={4} loading={loading} {...result} />
       </Row>
     </Grid>
   }

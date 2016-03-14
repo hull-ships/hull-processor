@@ -17,6 +17,7 @@ module.exports = function compute({ user, segments }, ship, sourceCode) {
     user,
     segments,
     ship,
+    output: {},
     traits: {},
     errors: [],
     logs: []
@@ -42,20 +43,28 @@ module.exports = function compute({ user, segments }, ship, sourceCode) {
         traits = Object.assign(traits, (function() { ${code} })() || {});
       } catch (err) {
         errors.push(err.toString());
-      }`);
+      }`
+    );
     script.runInNewContext(sandbox);
   } catch (err) {
     sandbox.errors.push(err.toString());
   }
 
+
   sandbox.changes = _.reduce(sandbox.traits, (t,v,k) => {
     const key = k.toLowerCase();
     if (v !== user[`traits_${key}`]) {
-      t[key] = v;
+      t[`traits_${key}`] = v;
     }
     return t;
   }, {});
 
+  let newUser = Object.assign({}, sandbox.user, _.reduce(sandbox.traits, (t,v,k)=>{
+    t[`traits_${k.toLowerCase()}`] = v
+    return t;
+  }, {}));
+
+  sandbox.output = { user: newUser, segments: sandbox.segments }
 
   return Object.assign({}, sandbox, { code });
 }

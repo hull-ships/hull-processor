@@ -1,13 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
+import Area from '../ui/area';
 
-
-export default class ErrorsPane extends Component {
-  render() {
-    return <div className="well">
-      <pre className='text-danger'>
-        {JSON.stringify(this.props.errors, ' ', 2)}
-      </pre>
-    </div>
-  }
-}
-
+export default ({errors}) => (<Area value={errors} type='danger'/>)

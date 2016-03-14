@@ -1,18 +1,11 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import { Tabs, Tab } from 'react-bootstrap';
+import { Col, Button, Tabs, Tab } from 'react-bootstrap';
 
-import Changes from './changes';
+import Icon from '../ui/icon';
+import Header from '../ui/header';
 import Errors from './errors';
-import Logs from './logs';
-import Traits from './traits';
-
-const Panes = [
-  { key: 'User', Pane: Changes, title: 'User' },
-  { key: 'Traits', Pane: Traits, title: 'Output' },
-  { key: 'Errors', Pane: Errors, title: 'Errors' },
-  { key: 'Logs', Pane: Logs, title: 'Logs' },
-];
+import Output from './output';
 
 export default class Results extends Component {
 
@@ -21,31 +14,20 @@ export default class Results extends Component {
     this.state = {};
   }
 
-  getActiveTabs() {
-    return Panes.reduce( (res, pane) => {
-      const { Pane, key, title } = pane;
-      const data = this.props[key.toLowerCase()];
-      if (Pane && !_.isEmpty(data)) {
-        res.defaultKey = res.defaultKey || key;
-        res.activeKeys[key] = true;
-        res.tabs.push(<Tab eventKey={key} key={key} title={title}>
-          <Pane {...this.props} />
-        </Tab>);
-      }
-      return res;
-    }, { tabs: [], activeKeys: {}, defaultKey: null });
-  }
-
-  handleSwitchTab(activeKey) {
-    this.setState({ activeKey });
-  }
-
   render() {
-    const { tabs, activeKeys, defaultKey } = this.getActiveTabs();
-    const activeKey = activeKeys[this.state.activeKey] ? this.state.activeKey : defaultKey;
-    return <Tabs justified activeKey={activeKey} onSelect={this.handleSwitchTab.bind(this)}>
-      {tabs}
-    </Tabs>;
+    const { onRun, errors, className, sm } = this.props;
+    const ActivePane = (errors && errors.length) ? Errors : Output;
+    const highlight = ( (errors && errors.length) ? [] : _.keys(this.props.changes) || [])
+    return <Col className={className} sm={sm}>
+      <Header title='Output'>
+        <a href='#' onClick={onRun}>
+          <Icon name='valid'/>
+          Save
+        </a>
+      </Header>
+      <hr/>
+      <ActivePane {...this.props} highlight={highlight}/>
+    </Col>
   }
 
 }

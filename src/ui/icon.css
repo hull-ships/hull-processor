@@ -1,0 +1,21 @@
+.icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  vertical-align: -20%;
+}
+
+.icon+span{
+  margin-left: 3px;
+}
+
+.icon svg {
+  display: block;
+}
+
+.icon.colorized,
+.icon.colorized svg path,
+.icon.colorized svg.rect{
+  fill:currentColor;
+}

@@ -1,10 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
+import Area from '../ui/area';
 
-export default class TraitsPane extends Component {
-  render() {
-    return <div className="well">
-      <pre>{JSON.stringify(this.props.traits, ' ', 2)}</pre>
-    </div>
-  }
-}
-
+export default ({traits}) => (<Area value={traits} type='info'/>)

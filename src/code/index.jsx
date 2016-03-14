@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import Codemirror from 'react-codemirror';
-import { Tabs, Tab, Well } from 'react-bootstrap';
+import { Col, Button, Tabs, Tab, Well } from 'react-bootstrap';
+import Header from '../ui/header';
+import Icon from '../ui/icon';
+
 require('codemirror/mode/javascript/javascript');
 
 const HelpText = `Mardown here ?`;
@@ -26,12 +29,17 @@ export default class Code extends Component {
       lint: true
     };
 
-    const { onChange, value } = this.props;
-
-    return <Tabs justified activeKey={this.state.activeKey} onSelect={this.handleSwitchTab.bind(this)}>
-      <Tab eventKey="code" title="Code"><Codemirror value={value} onChange={onChange} options={options} /></Tab>
-      <Tab eventKey="help" title="Help"><Well>{HelpText}</Well></Tab>
-    </Tabs>;
+    const { className, sm, onChange, value, onRun, loading } = this.props;
+    return <Col className={className} sm={sm}>
+      <Header title='Code'>
+        <a onClick={onRun} href='#'>
+          <Icon name={loading ? 'spinner' : 'play'}/>
+          Preview
+        </a>
+      </Header>
+      <hr/>
+      <Codemirror value={value} onChange={onChange} options={options} />
+    </Col>
   }
 }
 

@@ -1,0 +1,26 @@
+<svg width="48" height="48" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="uil-default">
+    <rect x="43.5" y="43.5" width="13" height="13" rx="100" ry="100" fill="#ddd" transform="translate(0 -20)">
+        <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0s" repeatCount="indefinite" />
+    </rect>
+    <rect x="43.5" y="43.5" width="13" height="13" rx="100" ry="100" fill="#ddd" transform="rotate(45 74.142 60)">
+        <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.125s" repeatCount="indefinite" />
+    </rect>
+    <rect x="43.5" y="43.5" width="13" height="13" rx="100" ry="100" fill="#ddd" transform="rotate(90 60 60)">
+        <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.25s" repeatCount="indefinite" />
+    </rect>
+    <rect x="43.5" y="43.5" width="13" height="13" rx="100" ry="100" fill="#ddd" transform="rotate(135 54.142 60)">
+        <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.375s" repeatCount="indefinite" />
+    </rect>
+    <rect x="43.5" y="43.5" width="13" height="13" rx="100" ry="100" fill="#ddd" transform="rotate(180 50 60)">
+        <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.5s" repeatCount="indefinite" />
+    </rect>
+    <rect x="43.5" y="43.5" width="13" height="13" rx="100" ry="100" fill="#ddd" transform="rotate(-135 45.858 60)">
+        <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.625s" repeatCount="indefinite" />
+    </rect>
+    <rect x="43.5" y="43.5" width="13" height="13" rx="100" ry="100" fill="#ddd" transform="rotate(-90 40 60)">
+        <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.75s" repeatCount="indefinite" />
+    </rect>
+    <rect x="43.5" y="43.5" width="13" height="13" rx="100" ry="100" fill="#ddd" transform="rotate(-45 25.858 60)">
+        <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.875s" repeatCount="indefinite" />
+    </rect>
+</svg>
