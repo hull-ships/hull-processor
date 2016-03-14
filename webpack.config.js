@@ -1,5 +1,20 @@
 var path = require('path');
 var webpack = require('webpack');
+var plugins = [];
+
+if (process.env.NODE_ENV === 'production') {
+  plugins = [
+    new webpack.optimize.UglifyJsPlugin({
+      compressor: {
+        warnings: false,
+        screw_ie8: false
+      }
+    }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    })
+  ];
+}
 
 module.exports = {
   devtool  : '#source-map',
@@ -11,17 +26,7 @@ module.exports = {
     filename: '[name].js',
     publicPath: '/'
   },
-  plugins: [
-    // new webpack.optimize.UglifyJsPlugin({
-    //   compressor: {
-    //     warnings: false,
-    //     screw_ie8: false
-    //   }
-    // }),
-    // new webpack.DefinePlugin({
-    //   'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-    // })
-  ],
+  plugins: plugins,
   resolve: { extensions: ['', '.js', '.jsx'] },
   module: {
     loaders: [
