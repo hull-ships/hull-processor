@@ -8,7 +8,7 @@ import Logs from './logs';
 import Traits from './traits';
 
 const Panes = [
-  { key: 'Changes', Pane: Changes, title: 'User' },
+  { key: 'User', Pane: Changes, title: 'User' },
   { key: 'Traits', Pane: Traits, title: 'Output' },
   { key: 'Errors', Pane: Errors, title: 'Errors' },
   { key: 'Logs', Pane: Logs, title: 'Logs' },
@@ -28,7 +28,6 @@ export default class Results extends Component {
       if (Pane && !_.isEmpty(data)) {
         res.defaultKey = res.defaultKey || key;
         res.activeKeys[key] = true;
-        const badge = data.length > 0 ? ` (${data.length})` : '';
         res.tabs.push(<Tab eventKey={key} key={key} title={title}>
           <Pane {...this.props} />
         </Tab>);
