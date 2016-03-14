@@ -15,13 +15,15 @@ export default class Results extends Component {
   }
 
   render() {
-    const { onRun, errors, className, sm } = this.props;
+    const { onRun, onSave, errors, saving, className, sm } = this.props;
+
     const ActivePane = (errors && errors.length) ? Errors : Output;
-    const highlight = ( (errors && errors.length) ? [] : _.keys(this.props.changes) || [])
+    const highlight = ( (errors && errors.length) ? [] : _.keys(this.props.changes) || []);
+
     return <Col className={className} sm={sm}>
       <Header title='Output'>
-        <a href='#' onClick={onRun} className='m-0 text-success'>
-          <Icon name='valid'/>  <strong>Save</strong>
+        <a href='#' onClick={onSave} className='m-0 text-success'>
+          <Icon name={saving ? 'spinner' : 'valid'}/> <strong>Save</strong>
         </a>
       </Header>
       <hr/>

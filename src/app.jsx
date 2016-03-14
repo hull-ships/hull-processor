@@ -74,7 +74,7 @@ export default class App extends Component {
   }
 
   render() {
-    const { result, input, code, loading, userEmail } = this.state;
+    const { result, input, code, loading, saving, userEmail } = this.state;
 
     return <Grid fluid={true} className='pt-1'>
       <Row className='flexRow'>
@@ -91,9 +91,14 @@ export default class App extends Component {
           loading={loading}
           onChange={this.handleChange.bind(this, 'code')}
           onRun={this.handleRun.bind(this)}
-          {...code}
-        />
-        <ResultsPane className='flexColumn' sm={4} loading={loading} {...result} />
+          {...code} />
+        <ResultsPane className='flexColumn'
+          sm={4}
+          loading={loading}
+          saving={saving}
+          onSave={this.handleSave.bind(this, null)}
+          loading={loading}
+          {...result} />
       </Row>
     </Grid>
   }
