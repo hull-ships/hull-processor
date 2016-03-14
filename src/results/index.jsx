@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import { Col, Button, Tabs, Tab } from 'react-bootstrap';
+import Help from '../ui/help';
 
 import Icon from '../ui/icon';
 import Header from '../ui/header';
@@ -22,9 +23,7 @@ export default class Results extends Component {
 
     return <Col className={className} sm={sm}>
       <Header title='Output'>
-        <a href='#' onClick={onSave} className='m-0 text-success'>
-          <Icon name={saving ? 'spinner' : 'valid'}/> <strong>Save</strong>
-        </a>
+        <Help open={false}/>
       </Header>
       <hr/>
       <ActivePane {...this.props} highlight={highlight}/>

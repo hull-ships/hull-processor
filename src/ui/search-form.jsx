@@ -29,7 +29,7 @@ export default class SearchForm extends Component {
   render() {
     const { loading } = this.props;
 
-    return <form className="form form-light mb-05" onSubmit={this.handleSubmit.bind(this)}>
+    return <form className="form form-light mt-05 mb-05" onSubmit={this.handleSubmit.bind(this)}>
       <div className="input-group">
         <div className="input-group-addon" style={{textTransform:'none', background: 'none'}}>
           <h4 className="m-0 text-muted">Input</h4>

@@ -2,7 +2,6 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { Grid, Col, Row, Button } from 'react-bootstrap';
 
-import Header from './ui/header';
 import ResultsPane from './results';
 import CodePane from './code';
 import UserPane from './user';
@@ -78,19 +77,12 @@ export default class App extends Component {
       <Row className='flexRow'>
         <UserPane
           className='flexColumn'
-          sm={4}
+          sm={6}
           loading={loading}
           onSearch={this.handleSearch.bind(this)}
           {...input} />
-        <CodePane
-          sm={4}
-          className='flexColumn ps-0'
-          loading={loading}
-          onChange={this.handleChange.bind(this, 'code')}
-          onRun={this.handleRun.bind(this)}
-          {...code} />
         <ResultsPane className='flexColumn'
-          sm={4}
+          sm={6}
           loading={loading}
           saving={saving}
           onSave={this.handleSave.bind(this, null)}

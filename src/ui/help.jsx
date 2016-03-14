@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import {Modal, Tooltip, Button, Popover, OverlayTrigger} from 'react-bootstrap';
+import { Modal, Tooltip, Button, Popover, OverlayTrigger, Row, Col, Table} from 'react-bootstrap';
+import Icon from './icon';
 
 export default class Help extends Component {
 
@@ -19,43 +20,79 @@ export default class Help extends Component {
   }
 
   render(){
-    let tooltip = <Tooltip id='tip'>Ship Help and Docs, Read me!</Tooltip>;
-    const st = {
-      position: 'absolute',
-      top: -5,
-      left: 0,
-      zIndex: 1000
-    }
+    let tooltip = <Tooltip className="in" placement="left" id='tip'>Ship Help and Docs, Read me!</Tooltip>;
 
     return (
-      <div style={st}>
+      <div>
         <OverlayTrigger overlay={tooltip}>
-          <Button bsStyle="default" bsSize="sm" onClick={this.open.bind(this)} > Help </Button>
+          <Button bsStyle="default" bsSize="sm" clasName='btn-pill btn-rounded' onClick={this.open.bind(this)} > Help </Button>
         </OverlayTrigger>
 
         <Modal show={this.state.showModal} bsSize='large' onHide={this.close.bind(this)}>
           <Modal.Header closeButton>
-            <Modal.Title>Computed Traits Help</Modal.Title>
+            <Modal.Title>Computed Traits Ship</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p>This ship lets you apply transformations to users and add / edit their Traits every time they change</p>
-            <p>It is very useful to compute properties on the fly, and store them natively. This way, every product you have connected to Hull will benefit from those.</p>
 
-            <hr />
+            <Row>
+              <Col xs={3} sm={2}>
+                <Icon name='calculator' responsive/> 
+              </Col>
+              <Col xs={9} sm={10}>
+                <p>This ship lets you apply transformations to users and add / edit their Traits every time they change</p>
+                <p>Use it to compute and store properties from other customer properties. Every Ship you add to Hull will receive this computed data.</p>
+              </Col>
+            </Row>
 
-            <p>
-              In the <strong>left panel</strong>, you can see a sample user, and optionally search for a specific one to view all their properties
-            </p>
+            <hr/>
 
-            <hr />
+            <Row>
+              <Col md={6}>
+                <Row>
+                  <Col sm={4}>
+                    <Icon name='rocker' responsive/> 
+                  </Col>
+                  <Col sm={8}>
+                    <p>
+                      In the <strong>left panel</strong>, you can see a sample user with all his/her properties. You can search for a specific user
+                    </p>
+                    <p>As you write code, you see a preview of the resulting user on the right panel. Updated fields are highlighted so you can easily see what changed. </p>
+                  </Col>
+                </Row>
+              </Col>
+              <Col md={6}>
+                <Row>
+                  <Col sm={4}>
+                    <Icon name='punker' responsive/> 
+                  </Col>
+                  <Col sm={8}>
+                    <p>In the <strong>right panel</strong>, you see a realtime preview of the updated user.</p>
+                    <p>Everything you return from your code is prefixed with <code>traits_</code> and then merged</p>
+                    <p>
+                      When you're satisfied, click <strong>Save</strong>
+                      Changes will be applied automatically whenever users are udpated. We don't back-process users who don't change.
+                    </p>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
 
-            <p>
-              In the <strong>center panel</strong>, you can write Javascript code to manipulate data, and return a new object with the computed properties.
-              You can't use asynchronous code, and must return an object at the end of your code.
-              Here are a the variables and libraries you can access:
-            </p>
+            <hr/>
 
-            <table>
+            <Row>
+              <Col xs={3} sm={2}>
+                <Icon name='compute' responsive/> 
+              </Col>
+              <Col xs={9} sm={10}>
+                <p>
+                  On the <strong>Sidebar</strong>, you can write Javascript code to manipulate data, and return a new object with the computed properties.
+                  You can't use asynchronous code, and must return an object at the end of your code.
+                  Here are a the variables and libraries you can access:
+                </p>
+              </Col>
+            </Row>
+
+            <Table striped bordered condensed hover className='mt-1'>
               <tbody>
                 <tr>
                   <td><code>user</code></td>
@@ -93,22 +130,7 @@ export default class Help extends Component {
                     <p>The <a href="https://lodash.com/" target='_blank'>lodash</a> library.</p></td>
                 </tr>
               </tbody>
-            </table>
-
-            <p>Everything you return from your code is prefixed with the <code>traits_</code> keyword and then merged with the user</p>
-
-            <hr />
-
-            <p>
-              As you write code, you see a preview of the resulting user on the right panel.
-            </p>
-            <p>
-              Updated fields are highlighted so you can easily see what changed.
-            </p>
-            <p>
-              When you're satisfied, click the "Save" button.
-              Changes will be applied to users automatically whenever they are udpated. We don't back-process users who don't change
-            </p>
+            </Table>
 
           </Modal.Body>
           <Modal.Footer>

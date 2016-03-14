@@ -19,3 +19,17 @@
 .icon.colorized svg.rect{
   fill:currentColor;
 }
+
+.icon.medium{
+  width: 64px;
+  height: 64px;
+}
+.icon.large{
+  width: 64px;
+  height: 64px;
+}
+
+.icon.responsive{
+  width: 100%;
+  height: auto;
+}

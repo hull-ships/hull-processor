@@ -15,15 +15,14 @@ export default (props)=>{
     return <i/>;
   }
   pp.size = pp.size || 16
-  let customStyle = {};
-  if (color) {
-    customStyle = {...style, color};
-  }
 
   const cls = classnames({
-    [className]: true,
+    [styles.responsive]: !!pp.responsive,
+    [styles.large]: !!pp.large,
+    [styles.medium]: !!pp.medium,
+    [className]: !!className,
     [styles.icon]: true,
     [styles.colorized]: !!colorize
-  })
-  return <SVGIcon src={src} className={cls} {...pp} style={customStyle} />;
+  });
+  return <SVGIcon src={src} className={cls} {...pp} />;
 }
