@@ -20,9 +20,8 @@ export default class Results extends Component {
     const highlight = ( (errors && errors.length) ? [] : _.keys(this.props.changes) || [])
     return <Col className={className} sm={sm}>
       <Header title='Output'>
-        <a href='#' onClick={onRun}>
-          <Icon name='valid'/>
-          Save
+        <a href='#' onClick={onRun} className='m-0 text-success'>
+          <Icon name='valid'/>  <strong>Save</strong>
         </a>
       </Header>
       <hr/>

@@ -32,9 +32,8 @@ export default class Code extends Component {
     const { className, sm, onChange, value, onRun, loading } = this.props;
     return <Col className={className} sm={sm}>
       <Header title='Code'>
-        <a onClick={onRun} href='#'>
-          <Icon name={loading ? 'spinner' : 'play'}/>
-          Preview
+        <a onClick={onRun} href='#' className='m-0'>
+          <Icon name={loading ? 'spinner' : 'play'}/> <strong>Preview</strong>
         </a>
       </Header>
       <hr/>

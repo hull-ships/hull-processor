@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+ import Icon from './icon';
 
 export default class SearchForm extends Component {
 
@@ -26,12 +27,15 @@ export default class SearchForm extends Component {
   }
 
   render() {
-    return <form className="form" onSubmit={this.handleSubmit.bind(this)}>
+    return <form className="form form-light mb-05" onSubmit={this.handleSubmit.bind(this)}>
       <div className="input-group">
-        <input type="text" placeholder="Name or Email" value={this.state.userSearch} onChange={this.handleEmailChange.bind(this)} className="form-control form-control" />
+        <div className="input-group-addon" style={{textTransform:'none', background: 'none'}}>
+          <h4 className="m-0 text-muted">Input</h4>
+        </div>
+        <input type="text" placeholder="Name or Email" value={this.state.userSearch} onChange={this.handleEmailChange.bind(this)} className="form-control form-control-sm" />
         <div className="input-group-btn">
-          <a className="btn btn-primary" onClick={this.handleSubmit.bind(this)}>
-            Search user
+          <a className="" href='#' className='text-muted mt-05 mb-05' onClick={this.handleSubmit.bind(this)}>
+            <Icon name='search'/> <strong>Search</strong>
           </a>
         </div>
       </div>
