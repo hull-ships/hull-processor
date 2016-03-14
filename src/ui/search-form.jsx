@@ -27,6 +27,8 @@ export default class SearchForm extends Component {
   }
 
   render() {
+    const { loading } = this.props;
+
     return <form className="form form-light mb-05" onSubmit={this.handleSubmit.bind(this)}>
       <div className="input-group">
         <div className="input-group-addon" style={{textTransform:'none', background: 'none'}}>
@@ -35,7 +37,7 @@ export default class SearchForm extends Component {
         <input type="text" placeholder="Name or Email" value={this.state.userSearch} onChange={this.handleEmailChange.bind(this)} className="form-control form-control-sm" />
         <div className="input-group-btn">
           <a className="" href='#' className='text-muted mt-05 mb-05' onClick={this.handleSubmit.bind(this)}>
-            <Icon name='search'/> <strong>Search</strong>
+          <Icon name={loading ? 'spinner' : 'search'}/> <strong>Search</strong>
           </a>
         </div>
       </div>

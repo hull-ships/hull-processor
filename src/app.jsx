@@ -40,9 +40,9 @@ export default class App extends Component {
     this.autoCompute();
   }
 
-  handleSearch(userEmail) {
-    if (userEmail && !this.props.loading) {
-      this.handleCompute({ userEmail });
+  handleSearch(userSearch) {
+    if (userSearch && !this.props.loading) {
+      this.handleCompute({ userSearch });
     }
   }
 
@@ -74,7 +74,7 @@ export default class App extends Component {
   }
 
   render() {
-    const { result, input, code, loading, saving, userEmail } = this.state;
+    const { result, input, code, loading, saving, userSearch } = this.state;
 
     return <Grid fluid={true} className='pt-1'>
       <Row className='flexRow'>
