@@ -3,6 +3,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import urijs from 'urijs';
 import { inspect } from 'util';
+import raven from 'raven';
 
 function isInSegment(segments, segmentName) {
   return segments.reduce((r, s) => { return r || s.name == segmentName }, false)
@@ -35,7 +36,25 @@ module.exports = function compute({ user, segments }, ship, sourceCode) {
 
   sandbox.console = { log, warn: log, error: logError };
 
-  const code = sourceCode || ship.private_settings.code || '';
+  const private_settings = ship.private_settings || {};
+
+
+  const code = sourceCode || private_settings.code || '';
+  const sentryDsn = private_settings.sentry_dsn;
+
+  sandbox.captureException = function(e) {
+    if (sentryDsn) {
+      const client = new raven.Client(sentryDsn);
+      client.captureException(e);
+    }
+  }
+
+  sandbox.captureMessage = function(msg) {
+    if (sentryDsn) {
+      const client = new raven.Client(sentryDsn);
+      client.captureMessage(msg);
+    }
+  }
 
   try {
     const script = new vm.Script(`
@@ -43,11 +62,12 @@ module.exports = function compute({ user, segments }, ship, sourceCode) {
         traits = Object.assign(traits, (function() { ${code} })() || {});
       } catch (err) {
         errors.push(err.toString());
-      }`
-    );
+        captureException(err);
+      }`);
     script.runInNewContext(sandbox);
   } catch (err) {
     sandbox.errors.push(err.toString());
+    sandbox.captureException(err);
   }
 
 

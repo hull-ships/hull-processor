@@ -8,6 +8,13 @@
   "version": "0.0.1",
   "private_settings": [
     {
+      "name" : "sentry_dsn",
+      "title" : "Sentry DSN",
+      "description" : "URL of a sentry instance to collect logs and exception notifications",
+      "type" : "string",
+      "format" : "hidden"
+    },
+    {
       "name":"code",
       "title": "Code",
       "description":"Custom javascript code",

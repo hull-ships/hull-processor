@@ -47,6 +47,7 @@
     "hull": "^0.6.1",
     "lodash": "^4.6.1",
     "moment": "^2.12.0",
+    "raven": "^0.10.0",
     "react": "^0.14.7",
     "react-bootstrap": "^0.28.3",
     "react-codemirror": "^0.2.5",
