@@ -23,6 +23,7 @@ export default class App extends Component {
       code: { value: this.getCode(props), dirty: false },
       result: props.result,
       loading: false,
+      saving: false,
       userSearch
     };
     return state;
@@ -54,6 +55,11 @@ export default class App extends Component {
     this.handleCompute();
   }
 
+  handleSave(params) {
+    this.setState({ saving: true });
+    this.compute(params || { user: JSON.parse(this.state.input.value), save: true });
+  }
+
   compute(params) {
     if (this.state.loading) return false;
     this.setState({ loading: true });
@@ -63,8 +69,7 @@ export default class App extends Component {
       const state = this.buildState(props);
       this.setState(state);
     }, (err) => {
-      console.warn("Oops... error", err);
-      this.setState({ loading: false })
+      this.setState({ loading: false, saving: false });
     });
   }
 

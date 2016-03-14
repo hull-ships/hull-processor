@@ -41,12 +41,33 @@ module.exports = function(port) {
     const { client, ship, user } = req.hull;
     res.type('application/json');
     if (client && ship && user) {
-      const result = compute(user, ship, req.body.code);
-      res.send({ body: req.body, ship, user, result });
-      res.end();
+      const { code, save } = req.body;
+      if (code) {
+        ship.private_settings.code = code;
+      }
+
+      const startTime = new Date();
+      const result = compute(user, ship, code);
+
+      function done() {
+        const took = new Date() - startTime;
+        res.send({ ship, user, result, took });
+        res.end();
+      }
+
+      if (code && save && _.isEmpty(result.errors)) {
+        req.hull.client.put(ship.id, {
+          private_settings: ship.private_settings
+        }).then(done, (err) => {
+          result.errors = [ err.message ];
+          done()
+        })
+      } else {
+        done()
+      }
     } else {
       res.status(400);
-      res.end('');
+      res.end('missing params');
     }
   });
 
