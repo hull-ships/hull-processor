@@ -1,22 +1,9 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import Codemirror from 'react-codemirror';
+import stringify from 'json-stable-stringify';
 
 const nop = function(){}
-
-
-// token: function(stream) {
-//   query.lastIndex = stream.pos;
-//   var match = query.exec(stream.string);
-//   if (match && match.index == stream.pos) {
-//     stream.pos += match[0].length || 1;
-//     return "searching";
-//   } else if (match) {
-//     stream.pos = match.index;
-//   } else {
-//     stream.skipToEnd();
-//   }
-// }
 
 export default class Area extends Component {
 
@@ -27,13 +14,14 @@ export default class Area extends Component {
     highlight: React.PropTypes.array
   }
 
-  componentDidMount() {
+  componentDidUpdate() {
     this.props.highlight.length && this.cm && this.cm.addOverlay({token:this.buildHighlighter()})
   }
   buildHighlighter(){
     const tokens = _.map(this.props.highlight, (t) => `("${t}":)` );
     const rgs = `(${tokens.join('|')})`;
     const rgx = new RegExp(rgs, 'gi');
+    console.log(this.props.highlight)
 
     return function(stream){
       // https://codemirror.net/doc/manual.html#token
@@ -48,7 +36,7 @@ export default class Area extends Component {
   render(){
     let {onChange=nop, type='muted', value} = this.props;
     if(typeof value !== 'string') {
-      value = JSON.stringify(value, null, 2);
+      value = stringify(value, {space: 2});
     }
     return <Codemirror
       ref = {(c)=> this.cm = c && c.getCodeMirror() }

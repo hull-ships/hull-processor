@@ -21,7 +21,7 @@ function getUtils() {
 };
 
 function isInSegment(segments, segmentName) {
-  return segments.reduce((r, s) => { return r || s.name == segmentName }, false)
+  return segments && segments.reduce((r, s) => { return r || s.name == segmentName }, false)
 }
 
 module.exports = function compute({ user, segments }, ship, sourceCode) {

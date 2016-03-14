@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Codemirror from 'react-codemirror';
 import { Col, Button, Tabs, Tab, Well } from 'react-bootstrap';
+import Help from '../ui/help';
 import Header from '../ui/header';
 import Icon from '../ui/icon';
 
@@ -35,6 +36,7 @@ export default class Code extends Component {
         <a onClick={onRun} href='#' className='m-0'>
           <Icon name={loading ? 'spinner' : 'play'}/> <strong>Preview</strong>
         </a>
+        <Help open={false}/>
       </Header>
       <hr/>
       <Codemirror value={value} onChange={onChange} options={options} />

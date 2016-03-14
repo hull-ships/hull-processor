@@ -16,10 +16,9 @@ export default class App extends Component {
   }
 
   buildState(props) {
-
     const userSearch = props.user && props.user.user && props.user.user.email;
     const state = {
-      input: { value: JSON.stringify(props.user || {}, ' ', 2), dirty: false },
+      input: { value: props.user || {}, dirty: false },
       code: { value: this.getCode(props), dirty: false },
       result: props.result,
       loading: false,
@@ -47,7 +46,7 @@ export default class App extends Component {
   }
 
   handleCompute(params) {
-    this.compute(params || { user: JSON.parse(this.state.input.value) });
+    this.compute(params || { user: this.state.input.value });
   }
 
   handleRun(e) {
@@ -75,15 +74,13 @@ export default class App extends Component {
 
   render() {
     const { result, input, code, loading, saving, userSearch } = this.state;
-
-    return <Grid fluid={true} className='pt-1'>
+    return <Grid fluid={true} className='pt-1 flexColumn'>
       <Row className='flexRow'>
         <UserPane
           className='flexColumn'
           sm={4}
           loading={loading}
           onSearch={this.handleSearch.bind(this)}
-          onChange={this.handleChange.bind(this, 'input')}
           {...input} />
         <CodePane
           sm={4}

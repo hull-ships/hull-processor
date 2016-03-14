@@ -45,6 +45,7 @@
     "codemirror": "^5.12.0",
     "express": "^4.13.4",
     "hull": "^0.6.1",
+    "json-stable-stringify": "^1.0.1",
     "lodash": "^4.6.1",
     "moment": "^2.12.0",
     "raven": "^0.10.0",

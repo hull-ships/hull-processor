@@ -9,7 +9,7 @@ export default class UserPane extends Component {
     loading: PropTypes.bool.isRequired,
     onSearch: PropTypes.func,
     onChange: PropTypes.func,
-    value: PropTypes.string,
+    value: PropTypes.object,
     userSearch: PropTypes.string
   }
 
