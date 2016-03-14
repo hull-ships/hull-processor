@@ -10,15 +10,14 @@ import Promise from 'bluebird';
 
 
   function compute(params, callback) {
-    console.warn("Compute with params: ", params);
     return new Promise( (resolve, reject) => {
       superagent.post('/compute')
-              .query({ ship, organization, secret })
-              .send(params)
-              .accept('json')
-              .end((err, result) => {
-                err ? reject(err) : resolve(result.body)
-              })
+        .query({ ship, organization, secret })
+        .send(params)
+        .accept('json')
+        .end((err, result) => {
+          err ? reject(err) : resolve(result.body)
+        })
     });
   }
 
