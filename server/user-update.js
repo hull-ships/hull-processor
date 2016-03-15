@@ -1,6 +1,7 @@
 import compute from './compute';
+import _ from 'lodash';
 
-export default function handle({ message }, { ship, hull }) {
+module.exports = function handle({ message }, { ship, hull }) {
   const { user, segments } = message;
   const { changes } = compute(message, ship);
 
