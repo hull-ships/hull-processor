@@ -9,5 +9,6 @@ export default {
   reset: require('../../assets/svg/reset.svg'),
   source: require('../../assets/svg/source.svg'),
   spinner: require('../../assets/svg/spinner.svg'),
-  valid: require('../../assets/svg/valid.svg')
+  valid: require('../../assets/svg/valid.svg'),
+  cross: require('../../assets/svg/cross.svg')
 }

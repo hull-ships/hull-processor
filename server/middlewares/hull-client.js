@@ -56,13 +56,16 @@ export default function (options) {
           done();
         }, (err) => {
           res.status(404);
+          res.status({ reason: 'ship_not_found', message: 'Ship not found' });
           res.end('Error:' + err.toString());
         });
       } else {
         done();
       }
     } else {
-      done();
+      res.status(401);
+      res.send({ reason: 'hull_auth', message: 'Missing Hull credentials' });
+      res.end();
     }
   };
 }

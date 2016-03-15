@@ -14,9 +14,12 @@ export default class UserPane extends Component {
   }
 
   render() {
-    const { className, sm, loading, onSearch, onChange, value, userSearch } = this.props;
+    const { className, sm, loading, onSearch, onChange, value, userSearch, error } = this.props;
+
+    const search = value && value.user && value.user.email;
+
     return <Col className={className} sm={sm}>
-      <SearchForm loading={loading} userSearch={userSearch} onSubmit={onSearch} />
+      <SearchForm loading={loading} error={error} userSearch={search} onSubmit={onSearch} />
       <Area value={value} type='info' onChange={onChange}/>
     </Col>;
   }

@@ -34,7 +34,7 @@ export default class App extends Component {
   }
 
   render() {
-    const { result, user, loading, userSearch, initialized } = this.state;
+    const { result, user, loading, userSearch, initialized, error } = this.state;
     if (initialized) {
       return <Grid fluid={true} className='pt-1 flexColumn'>
         <Row className='flexRow'>
@@ -43,11 +43,13 @@ export default class App extends Component {
             sm={6}
             loading={loading}
             onSearch={this.handleSearch.bind(this)}
-            value={this.state.user}
+            value={user}
+            error={error}
             userSearch={userSearch} />
           <ResultsPane className='flexColumn'
             sm={6}
             loading={loading}
+            error={error}
             {...this.state.result} />
         </Row>
       </Grid>

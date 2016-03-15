@@ -22,6 +22,7 @@ export default class Engine extends EventEmitter {
   }
 
   getState() {
+    console.warn('engine getState', this.state);
     return this.state;
   }
 
@@ -55,17 +56,25 @@ export default class Engine extends EventEmitter {
       .query(this.config)
       .send(params)
       .accept('json')
-      .end((error, response) => {
-        this.computing = false;
-        if (error) {
-          this.setState({ error });
-        } else {
-          const { ship, user, result, took } = response.body;
-          this.setState({
-            loading: false,
-            initialized: true,
-            ship, user, result, took, error
-          });
+      .end((error, response={}) => {
+        try {
+          this.computing = false;
+          if (error) {
+            this.setState({
+              error: _.extend({}, response.body || {}, { status: response.status }),
+              loading: false,
+              initialized: true
+            });
+          } else {
+            const { ship, user, result, took } = response.body || {};
+            this.setState({
+              loading: false,
+              initialized: true,
+              ship, user, result, took, error: null
+            });
+          }
+        } catch(err) {
+          this.setState({ loading: false, error: err });
         }
       });
   }

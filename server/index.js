@@ -65,14 +65,15 @@ module.exports = function(port) {
           private_settings: ship.private_settings
         }).then(done, (err) => {
           result.errors = [ err.message ];
-          done()
-        })
+          done();
+        });
       } else {
-        done()
+        done();
       }
     } else {
       res.status(400);
-      res.end('missing params');
+      res.send({ reason: 'missing_params', message: 'Missing Params' });
+      res.end();
     }
   });
 
