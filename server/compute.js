@@ -89,12 +89,12 @@ module.exports = function compute({ user, segments }, ship, sourceCode) {
   sandbox.changes = _.reduce(sandbox.traits, (t,v,k) => {
     const key = k.toLowerCase();
     if (v !== user[`traits_${key}`]) {
-      t[`traits_${key}`] = v;
+      t[key] = v;
     }
     return t;
   }, {});
 
-  let newUser = Object.assign({}, sandbox.user, _.reduce(sandbox.traits, (t,v,k)=>{
+  const newUser = Object.assign({}, sandbox.user, _.reduce(sandbox.traits, (t,v,k) => {
     t[`traits_${k.toLowerCase()}`] = v
     return t;
   }, {}));

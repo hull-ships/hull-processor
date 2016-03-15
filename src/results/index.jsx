@@ -16,10 +16,9 @@ export default class Results extends Component {
   }
 
   render() {
-    const { onRun, onSave, errors, saving, className, sm } = this.props;
-
+    const { onRun, onSave, errors, saving, className, sm, changes } = this.props;
     const ActivePane = (errors && errors.length) ? Errors : Output;
-    const highlight = ( (errors && errors.length) ? [] : _.keys(this.props.changes) || []);
+    const highlight = ( (errors && errors.length) ? [] : _.map(_.keys(changes), k => `traits_${k}`) || []);
 
     return <Col className={className} sm={sm}>
       <Header title='Output'>
