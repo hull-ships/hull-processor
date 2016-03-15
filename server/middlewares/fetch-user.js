@@ -1,60 +1,73 @@
+import Promise from 'bluebird';
+
+
+function getUserById(client, userId) {
+  return Promise.all([
+    client.get(userId + '/user_report'),
+    client.get(userId + '/segments')
+  ]).then(results => {
+    return { user: results[0], segments: results[1] };
+  });
+}
+
+
+function searchUser(client, query) {
+  const params = {
+    query: {
+      match_all: {}
+    },
+    raw: true,
+    page: 1,
+    per_page: 1
+  };
+
+  if (query) {
+    params.query = { multi_match: {
+      query,
+      fields: [
+        'name',
+        'name.exact',
+        'email',
+        'email.exact',
+        'contact_email',
+        'contact_email.exact'
+      ]
+    } };
+  }
+  return new Promise((resolve, reject) => {
+    client.post('search/user_reports', params).then(res => {
+      return res.data[0];
+    }, reject).then(user => {
+      if (!user) return reject(new Error('User not found'));
+      client.get(user.id + '/segments').then(segments => {
+        resolve({ user, segments });
+      }, reject);
+    })
+  });
+}
+
+
 export default function fetchUser(req, res, next) {
-  req.hull = req.hull || {};
-  const { client, ship } = req.hull;
-  let { userId, userSearch, user } = req.body || {};
+  const startAt = new Date();
+  req.hull = req.hull || { timings: {} };
+  req.hull.timings = req.hull.timings || {};
+  const { client } = req.hull;
+  const { userId, userSearch, user } = req.body || {};
+  let userPromise = Promise.resolve(user);
 
-  if (!user && client) {
-    let userPromise;
+  if (client && !user) {
+    userPromise = userId ? getUserById(client, userId) : searchUser(client, userSearch);
+  }
 
-    if (userId) {
-      console.warn("Getting user with ID", userId)
-      userPromise = client.get(userId + '/user_report')
-    } else {
-
-      const params = {
-        query: {
-          match_all: {}
-        },
-        raw: true,
-        page: 1,
-        per_page: 1
-      };
-
-      if (userSearch) {
-        params.query = { multi_match: {
-          query: userSearch,
-          fields: ["name", "name.exact", "email", "email.exact", "contact_email", "contact_email.exact"]
-        } };
-      }
-
-      console.warn("Searching user with email", {userSearch, params: JSON.stringify(params)})
-
-      userPromise = client.post('search/user_reports', params).then(res => {
-        return res.data[0];
-      }, (err) => {
-        console.warn("Oooula", err);
-        throw err;
-      })
-    }
-
-    userPromise.then((user) => {
-      return client.get(user.id + '/segments').then((segments) => {
-        console.warn("And his segments: ", segments)
-        req.hull.user = { user, segments };
-        next();
-      }, err => {
-        console.warn("Oupla. pas de segments ?", err)
-        next();
-      })
-    }).catch((err) => {
-      console.warn('oopss', err);
-      next()
-    });
-
- } else {
-    if (user) {
-      req.hull.user = user
-    }
+  function done() {
+    req.hull.timings.fetchUser = new Date() - startAt;
     next();
   }
+
+  return userPromise.then((user) => {
+    req.hull.user = user;
+  }).then(done, (err) => {
+    res.status(400);
+    res.end('Error fetching user' + err.message);
+  });
 }

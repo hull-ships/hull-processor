@@ -8,6 +8,8 @@ import fetchUser from './middlewares/fetch-user';
 import fetchShip from './middlewares/fetch-ship';
 import bodyParser from 'body-parser';
 import Promise from 'bluebird'
+import responseTime from 'response-time';
+
 
 const notifHandler = NotifHandler({
   onSubscribe: function() {
@@ -21,6 +23,8 @@ const notifHandler = NotifHandler({
 module.exports = function(port) {
 
   const app = express();
+
+  app.use(responseTime());
 
   if (process.env.NODE_ENV !== 'production') {
     app.use(devMode());
@@ -38,7 +42,7 @@ module.exports = function(port) {
   });
 
   app.post('/compute', bodyParser.json(), fetchShip, fetchUser, (req, res) => {
-    const { client, ship, user } = req.hull;
+    const { client, ship, user, timings } = req.hull;
     res.type('application/json');
     if (client && ship && user) {
       const { code, save } = req.body;
@@ -51,7 +55,8 @@ module.exports = function(port) {
 
       function done() {
         const took = new Date() - startTime;
-        res.send({ ship, user, result, took });
+        timings.compute = took;
+        res.send({ ship, user, result, took, timings });
         res.end();
       }
 

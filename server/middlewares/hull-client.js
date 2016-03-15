@@ -31,11 +31,18 @@ export default function (options) {
   }
 
   return function(req, res, next) {
-    req.hull = req.hull || {};
+    const startAt = new Date();
+    req.hull = req.hull || { timings: {} };
+    req.hull.timings = req.hull.timings || {};
 
     const config = parseConfig(req.query);
 
     let forceShipUpdate = false;
+
+    function done() {
+      req.hull.timings.fetchShip = new Date() - startAt;
+      next();
+    }
 
     if (config.organization && config.ship && config.secret) {
       const client = req.hull.client = new Hull({
@@ -46,16 +53,16 @@ export default function (options) {
       if (options.fetchShip) {
         getCurrentShip(config.ship, client, forceShipUpdate).then((ship) => {
           req.hull.ship = ship;
-          next();
+          done();
         }, (err) => {
           res.status(404);
           res.end('Error:' + err.toString());
         });
       } else {
-        next();
+        done();
       }
     } else {
-      next();
+      done();
     }
   };
 }

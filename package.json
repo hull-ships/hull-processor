@@ -53,6 +53,7 @@
     "react-bootstrap": "^0.28.3",
     "react-codemirror": "^0.2.5",
     "react-dom": "^0.14.7",
+    "response-time": "^2.3.1",
     "rimraf": "^2.4.3",
     "style-loader": "^0.13.0",
     "superagent": "^1.8.0",

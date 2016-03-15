@@ -10,85 +10,49 @@ export default class App extends Component {
 
   constructor(props) {
     super(props);
-    this.state = this.buildState(props);
-    this.autoCompute = _.debounce(this.handleCompute.bind(this, null), 1000);
+    this.state = {};
+    this._onChange = this._onChange.bind(this);
   }
 
-  buildState(props) {
-    const userSearch = props.user && props.user.user && props.user.user.email;
-    const state = {
-      input: { value: props.user || {}, dirty: false },
-      code: { value: this.getCode(props), dirty: false },
-      result: props.result,
-      loading: false,
-      saving: false,
-      userSearch
-    };
-    return state;
+  componentWillMount() {
+    this.props.engine.addChangeListener(this._onChange);
   }
 
-  getCode(props) {
-    const code = props.result.code || (props.ship.private_settings || {}).code;
-    return code;
+  componentWillUnmount() {
+    this.props.engine.removeChangeListener(this._onChange);
   }
 
-  handleChange(section, value) {
-    if (this.state.loading) return false;
-    this.setState({ [section]: { value, dirty: true } });
-    this.autoCompute();
+  _onChange() {
+    const state = this.props.engine.getState();
+    this.setState(state);
   }
 
   handleSearch(userSearch) {
-    if (userSearch && !this.props.loading) {
-      this.handleCompute({ userSearch });
+    if (userSearch && !this.state.loading) {
+      this.props.engine.searchUser(userSearch);
     }
   }
 
-  handleCompute(params) {
-    this.compute(params || { user: this.state.input.value });
-  }
-
-  handleRun(e) {
-    if (e && e.preventDefault) e.preventDefault();
-    this.handleCompute();
-  }
-
-  handleSave(params) {
-    this.setState({ saving: true });
-    this.compute(params || { user: JSON.parse(this.state.input.value), save: true });
-  }
-
-  compute(params) {
-    if (this.state.loading) return false;
-    this.setState({ loading: true });
-    const code = this.state.code.value;
-    const computeParams = Object.assign({}, params, { code, ship: this.props.ship });
-    this.props.onCompute(computeParams).then((props) => {
-      const state = this.buildState(props);
-      this.setState(state);
-    }, (err) => {
-      this.setState({ loading: false, saving: false });
-    });
-  }
-
   render() {
-    const { result, input, code, loading, saving, userSearch } = this.state;
-    return <Grid fluid={true} className='pt-1 flexColumn'>
-      <Row className='flexRow'>
-        <UserPane
-          className='flexColumn'
-          sm={6}
-          loading={loading}
-          onSearch={this.handleSearch.bind(this)}
-          {...input} />
-        <ResultsPane className='flexColumn'
-          sm={6}
-          loading={loading}
-          saving={saving}
-          onSave={this.handleSave.bind(this, null)}
-          loading={loading}
-          {...result} />
-      </Row>
-    </Grid>
+    const { result, user, loading, userSearch, initialized } = this.state;
+    if (initialized) {
+      return <Grid fluid={true} className='pt-1 flexColumn'>
+        <Row className='flexRow'>
+          <UserPane
+            className='flexColumn'
+            sm={6}
+            loading={loading}
+            onSearch={this.handleSearch.bind(this)}
+            value={this.state.user}
+            userSearch={userSearch} />
+          <ResultsPane className='flexColumn'
+            sm={6}
+            loading={loading}
+            {...this.state.result} />
+        </Row>
+      </Grid>
+    } else {
+      return <div>Loading...</div>;
+    };
   }
 }
