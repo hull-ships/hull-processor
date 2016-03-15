@@ -22,7 +22,6 @@ export default class Engine extends EventEmitter {
   }
 
   getState() {
-    console.warn('engine getState', this.state);
     return this.state;
   }
 
