@@ -33,6 +33,7 @@
     "hull-ship"
   ],
   "dependencies": {
+    "JSONStream": "^1.1.1",
     "babel-core": "^6.7.0",
     "babel-jest": "^9.0.2",
     "babel-loader": "^6.2.4",
@@ -43,6 +44,8 @@
     "bluebird": "^3.3.4",
     "body-parser": "^1.15.0",
     "codemirror": "^5.12.0",
+    "css-loader": "^0.19.0",
+    "event-stream": "^3.3.2",
     "express": "^4.13.4",
     "hull": "^0.6.1",
     "json-stable-stringify": "^1.0.1",
@@ -53,13 +56,13 @@
     "react-bootstrap": "^0.28.3",
     "react-codemirror": "^0.2.5",
     "react-dom": "^0.14.7",
+    "request": "^2.69.0",
     "response-time": "^2.3.1",
     "rimraf": "^2.4.3",
     "style-loader": "^0.13.0",
     "superagent": "^1.8.0",
     "svg-inline-loader": "^0.4.0",
     "svg-inline-react": "^1.0.0",
-    "css-loader": "^0.19.0",
     "urijs": "^1.17.1",
     "webpack": "^1.12.14"
   },

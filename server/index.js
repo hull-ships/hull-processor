@@ -6,9 +6,12 @@ import _ from 'lodash';
 import compute from './compute';
 import fetchUser from './middlewares/fetch-user';
 import fetchShip from './middlewares/fetch-ship';
+import streamExtract from './middlewares/stream-extract';
 import bodyParser from 'body-parser';
 import Promise from 'bluebird'
 import responseTime from 'response-time';
+
+import userUpdate from './user-update';
 
 
 const notifHandler = NotifHandler({
@@ -16,7 +19,7 @@ const notifHandler = NotifHandler({
     console.warn("Hello new subscriber !");
   },
   events: {
-    'user_report:update': require('./user-update')
+    'user_report:update': userUpdate
   }
 });
 
@@ -75,6 +78,11 @@ module.exports = function(port) {
       res.send({ reason: 'missing_params', message: 'Missing Params' });
       res.end();
     }
+  });
+
+
+  app.post('/batch', bodyParser.json(), fetchShip, streamExtract(userUpdate), (req, res) => {
+    res.end('ok')
   });
 
   app.post('/notify', notifHandler);

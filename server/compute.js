@@ -24,7 +24,7 @@ function isInSegment(segments, segmentName) {
   return segments && segments.reduce((r, s) => { return r || s.name == segmentName }, false)
 }
 
-module.exports = function compute({ user, segments }, ship, sourceCode) {
+module.exports = function compute({ user, segments }, ship = {}, sourceCode) {
 
   const sandbox = Object.assign({
     user,
@@ -51,7 +51,7 @@ module.exports = function compute({ user, segments }, ship, sourceCode) {
   const private_settings = ship.private_settings || {};
 
 
-  const code = sourceCode || private_settings.code || '';
+  const code = sourceCode || private_settings.code || 'return {};';
   const sentryDsn = private_settings.sentry_dsn;
 
   sandbox.captureException = function(e) {
