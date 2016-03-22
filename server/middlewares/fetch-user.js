@@ -4,7 +4,7 @@ import Promise from 'bluebird';
 function getUserById(client, userId) {
   return Promise.all([
     client.get(userId + '/user_report'),
-    client.get(userId + '/segments')
+    client.as(userId).get(userId + '/segments')
   ]).then(results => {
     return { user: results[0], segments: results[1] };
   });
