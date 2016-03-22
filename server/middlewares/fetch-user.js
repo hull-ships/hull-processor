@@ -39,7 +39,7 @@ function searchUser(client, query) {
       return res.data[0];
     }, reject).then(user => {
       if (!user) return reject(new Error('User not found'));
-      client.get(user.id + '/segments').then(segments => {
+      client.as(user.id, false).get(user.id + '/segments').then(segments => {
         resolve({ user, segments });
       }, reject);
     })
