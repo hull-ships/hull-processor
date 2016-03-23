@@ -23,7 +23,7 @@ export default class Results extends Component {
 
     return <Col className={className} sm={sm}>
       <Header title='Output'>
-        <Help showModal={!codeIsEmpty}/>
+        <Help showModal={codeIsEmpty}/>
       </Header>
       <hr/>
       <ActivePane {...this.props} highlight={highlight}/>
