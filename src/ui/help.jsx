@@ -6,9 +6,7 @@ export default class Help extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      showModal: false
-    }
+    this.state = Object.assign({ showModal: false }, props);
   }
 
   close() {
@@ -36,7 +34,7 @@ export default class Help extends Component {
 
             <Row>
               <Col xs={3} sm={2}>
-                <Icon name='calculator' responsive/> 
+                <Icon name='calculator' responsive/>
               </Col>
               <Col xs={9} sm={10}>
                 <p>This ship lets you apply transformations to users and add / edit their Traits every time they change</p>
@@ -50,7 +48,7 @@ export default class Help extends Component {
               <Col md={6}>
                 <Row>
                   <Col sm={4}>
-                    <Icon name='rocker' responsive/> 
+                    <Icon name='rocker' responsive/>
                   </Col>
                   <Col sm={8}>
                     <p>
@@ -63,7 +61,7 @@ export default class Help extends Component {
               <Col md={6}>
                 <Row>
                   <Col sm={4}>
-                    <Icon name='punker' responsive/> 
+                    <Icon name='punker' responsive/>
                   </Col>
                   <Col sm={8}>
                     <p>In the <strong>right panel</strong>, you see a realtime preview of the updated user.</p>
@@ -81,7 +79,7 @@ export default class Help extends Component {
 
             <Row>
               <Col xs={3} sm={2}>
-                <Icon name='compute' responsive/> 
+                <Icon name='compute' responsive/>
               </Col>
               <Col xs={9} sm={10}>
                 <p>
