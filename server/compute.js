@@ -39,11 +39,11 @@ module.exports = function compute({ user, segments }, ship = {}, sourceCode) {
   sandbox.isInSegment = isInSegment.bind(null, segments);
 
   function log(...args) {
-    sandbox.logs.push(args.join(' '));
+    sandbox.logs.push(args);
   }
 
   function logError(...args) {
-    sandbox.errors.push(args.join(' '));
+    sandbox.errors.push(args);
   }
 
   sandbox.console = { log, warn: log, error: logError };
