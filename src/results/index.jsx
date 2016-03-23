@@ -16,13 +16,14 @@ export default class Results extends Component {
   }
 
   render() {
-    const { onRun, onSave, errors, saving, className, sm, changes } = this.props;
+    const { onRun, onSave, errors, saving, className, sm, changes, code } = this.props;
     const ActivePane = (errors && errors.length) ? Errors : Output;
     const highlight = ( (errors && errors.length) ? [] : _.map(_.keys(changes), k => `traits_${k}`) || []);
+    const codeIsEmpty = code === "return {};" || code === "";
 
     return <Col className={className} sm={sm}>
       <Header title='Output'>
-        <Help open={false}/>
+        <Help showModal={!codeIsEmpty}/>
       </Header>
       <hr/>
       <ActivePane {...this.props} highlight={highlight}/>
