@@ -68,6 +68,8 @@ export default class Help extends Component {
                     <p>Everything you return from your code is prefixed with <code>traits_</code> and then merged</p>
                     <p>
                       When you're satisfied, click <strong>Save</strong>
+                    </p>
+                    <p>
                       Changes will be applied automatically whenever users are udpated. We don't back-process users who don't change.
                     </p>
                   </Col>
