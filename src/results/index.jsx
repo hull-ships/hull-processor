@@ -15,18 +15,33 @@ export default class Results extends Component {
     this.state = {};
   }
 
+  outputToConsole() {
+    try {
+      const { logs, errors } = this.props;
+      logs.map(line => console.log.apply(console, line))
+      if (errors && errors.length > 0) {
+        errors.map(error => console.error(error))
+      }
+      console.groupEnd();
+    } catch(err) {
+
+    }
+  }
+
   render() {
     const { onRun, onSave, errors, saving, className, sm, changes, code } = this.props;
     const ActivePane = (errors && errors.length) ? Errors : Output;
     const highlight = ( (errors && errors.length) ? [] : _.map(_.keys(changes), k => `traits_${k}`) || []);
     const codeIsEmpty = code === "return {};" || code === "";
 
+    this.outputToConsole();
+
     return <Col className={className} sm={sm}>
       <Header title='Output'>
         <Help showModal={codeIsEmpty}/>
       </Header>
       <hr/>
-      <ActivePane {...this.props} highlight={highlight}/>
+      <ActivePane {...this.props} highlight={highlight} />
     </Col>
   }
 

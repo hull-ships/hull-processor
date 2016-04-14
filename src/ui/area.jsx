@@ -21,7 +21,6 @@ export default class Area extends Component {
     const tokens = _.map(this.props.highlight, (t) => `("${t}":)` );
     const rgs = `(${tokens.join('|')})`;
     const rgx = new RegExp(rgs, 'gi');
-    console.log(this.props.highlight)
 
     return function(stream){
       // https://codemirror.net/doc/manual.html#token
