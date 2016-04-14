@@ -1,6 +1,7 @@
 {
   "name": "Computed Traits",
-  "description": "Compute custom traits",
+  "description": "Recompute custom properties with Javascript logic whenever a user is updated",
+  "tags": ["incoming", "outgoing"],
   "picture": "picture.png",
   "ui": false,
   "admin": "admin.html",
