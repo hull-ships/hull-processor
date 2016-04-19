@@ -13,7 +13,7 @@ export default function(handler) {
 
     if (url && client && ship) {
       client.get('segments', { limit: 500 }).then((segments_list) => {
-        const segments = segments_list.map((ss,s) => {
+        const segments = segments_list.reduce((ss,s) => {
           ss[s.id] = s;
           return ss;
         }, {});
@@ -29,7 +29,6 @@ export default function(handler) {
             const user = _.omit(data, 'segment_ids');
             return handler && handler({ message: { user, segments } }, { hull: client, ship });
           }));
-
       });
       next();
     } else {
