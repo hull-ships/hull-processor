@@ -27,6 +27,11 @@ export default function(handler) {
           .pipe(es.mapSync(function (data) {
             const segments = getSegments(data.segment_ids || []);
             const user = _.omit(data, 'segment_ids');
+
+            if (process.env.DEBUG) {
+              console.warn('[batch] ', { id: user.id, email: user.email });
+            }
+
             return handler && handler({ message: { user, segments } }, { hull: client, ship });
           }));
       });
