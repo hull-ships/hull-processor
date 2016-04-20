@@ -47,7 +47,7 @@
     "css-loader": "^0.19.0",
     "event-stream": "^3.3.2",
     "express": "^4.13.4",
-    "hull": "^0.6.1",
+    "hull": "0.6.6",
     "json-stable-stringify": "^1.0.1",
     "lodash": "^4.6.1",
     "moment": "^2.12.0",
