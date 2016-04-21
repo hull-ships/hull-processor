@@ -15,6 +15,7 @@ import userUpdate from './user-update';
 
 
 const notifHandler = NotifHandler({
+  groupTraits: false,
   onSubscribe: function() {
     console.warn("Hello new subscriber !");
   },
