@@ -65,7 +65,7 @@ module.exports = function(port) {
       }
 
       if (code && save && _.isEmpty(result.errors)) {
-        req.hull.client.put(ship.id, {
+        client.put(ship.id, {
           private_settings: ship.private_settings
         }).then(done, (err) => {
           result.errors = [ err.message ];

@@ -1,6 +1,5 @@
 import Promise from 'bluebird';
 
-
 function getUserById(client, userId) {
   return Promise.all([
     client.get(userId + '/user_report'),
@@ -64,8 +63,9 @@ export default function fetchUser(req, res, next) {
     next();
   }
 
-  return userPromise.then((user) => {
-    req.hull.user = user;
+  return userPromise.then((user={}) => {
+    const u = client.utils.groupTraits(user.user)
+    req.hull.user = {...user, user: u};
   }).then(done, (err) => {
     res.status(404);
     res.send({ reason: 'user_not_found', message: err.message });
