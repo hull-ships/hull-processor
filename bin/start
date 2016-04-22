@@ -2,6 +2,6 @@
 require("babel-register");
 
 var app = require('../server');
-var PORT = process.env.PORT || 8087;
+var PORT = process.env.PORT || 8082;
 console.log('Listening on port ' + PORT);
 app(PORT);
