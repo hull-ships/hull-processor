@@ -36,7 +36,7 @@ export default class App extends Component {
   render() {
     const { result, user, loading, userSearch, initialized, error } = this.state;
     if (initialized) {
-      return <Grid fluid={true} className='pt-1 flexColumn'>
+      return <Grid fluid={true} className='pt-1'>
         <Row className='flexRow'>
           <UserPane
             className='flexColumn'
@@ -46,7 +46,7 @@ export default class App extends Component {
             value={user}
             error={error}
             userSearch={userSearch} />
-          <ResultsPane className='flexColumn'
+          <ResultsPane className='flexColumn pl-1'
             sm={6}
             loading={loading}
             error={error}
@@ -54,7 +54,7 @@ export default class App extends Component {
         </Row>
       </Grid>
     } else {
-      return <div>Loading...</div>;
+      return <div className='text-center pt-2'><h4>Loading...</h4></div>;
     };
   }
 }
