@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
-import Codemirror from 'react-codemirror';
+import Codemirror from './react-codemirror';
 import stringify from 'json-stable-stringify';
 
 const nop = function(){}
