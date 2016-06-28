@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
- import Icon from './icon';
+import Icon from './icon';
+import { Button } from 'react-bootstrap';
 
 export default class SearchForm extends Component {
 
@@ -43,13 +44,11 @@ export default class SearchForm extends Component {
     return <form className="form form-light mt-05 mb-05" onSubmit={this.handleSubmit.bind(this)}>
       <div className="input-group">
         <div className="input-group-addon" style={{textTransform:'none', background: 'none'}}>
-          <h4 className="m-0 text-muted">Input</h4>
+          <h4 className="m-0 text-muted">Search</h4>
         </div>
         <input type="text" placeholder="Name or Email" value={this.state.userSearch} onChange={this.handleEmailChange.bind(this)} className="form-control form-control-sm" />
-        <div className="input-group-btn">
-          <a className="" href='#' className='text-muted mt-05 mb-05' onClick={this.handleSubmit.bind(this)}>
-          <Icon name={this.getIcon()} /> <strong>Search</strong>
-          </a>
+        <div style={{ position: 'absolute', right: 0, top: -10, zIndex: 2 }}>
+          <Button bsStyle="default" bsSize="sm" clasName='btn-pill btn-rounded' onClick={this.handleSubmit.bind(this)} > <Icon name={this.getIcon()} /> Search </Button>
         </div>
       </div>
     </form>;

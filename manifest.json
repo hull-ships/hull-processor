@@ -18,8 +18,9 @@
     {
       "name":"code",
       "title": "Code",
-      "description":"Custom javascript code",
+      "description":"Enter Javascript code here, It will receive the data in the middle column and must return an object with the properties you want to update. Preview results on the right. Save when finished",
       "type": "string",
+      "default":"console.log(`Hello ${user.name}`);\n//console.log(segments, user, events);\n\n//return {\n  //group: {  content: 'test' },\n  //traits: { content : 12 }\n//}",
       "format": "code"
     }
   ],

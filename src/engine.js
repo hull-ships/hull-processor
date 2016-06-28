@@ -1,8 +1,8 @@
-import _ from 'lodash';
-import { EventEmitter } from 'events';
-import superagent from 'superagent';
+import _ from "lodash";
+import { EventEmitter } from "events";
+import superagent from "superagent";
 
-const EVENT = 'CHANGE';
+const EVENT = "CHANGE";
 
 export default class Engine extends EventEmitter {
 
@@ -10,19 +10,19 @@ export default class Engine extends EventEmitter {
     super();
     this.config = config;
     const userId = currentUser && currentUser.id;
-    this.state = { ship: ship, loading: false };
-    this.compute = _.debounce(this.compute, 500);
+    this.state = { ship, loading: false };
     this.compute({ ship, userId });
+    this.compute = _.debounce(this.compute, 1000);
   }
 
   setState(changes) {
-    this.state = Object.assign({}, this.state, changes);
+    this.state = { ...this.state, ...changes };
     this.emitChange();
     return this.state;
   }
 
   getState() {
-    return this.state;
+    return this.state || {};
   }
 
   addChangeListener(listener) {
@@ -48,34 +48,38 @@ export default class Engine extends EventEmitter {
   compute(params) {
     if (this.state.loading) return false;
     this.setState({ loading: true });
+
     if (this.computing) {
       this.computing.abort();
     }
-    this.computing = superagent.post('/compute')
+    this.computing = superagent.post("/compute")
       .query(this.config)
       .send(params)
-      .accept('json')
-      .end((error, response={}) => {
+      .accept("json")
+      .end((error, { body = {}, status } = {}) => {
         try {
           this.computing = false;
           if (error) {
             this.setState({
-              error: _.extend({}, response.body || {}, { status: response.status }),
+              error: { ...body, status },
               loading: false,
               initialized: true
             });
           } else {
-            const { ship, user, result, took } = response.body || {};
+            const { ship, user, took, result } = body || {};
             this.setState({
               loading: false,
               initialized: true,
-              ship, user, result, took, error: null
+              error: null,
+              ship, user, result, took
             });
           }
-        } catch(err) {
+        } catch (err) {
+          this.computing = false;
           this.setState({ loading: false, error: err });
         }
       });
+    return this.computing;
   }
 
 }

@@ -1,0 +1,30 @@
+[
+  {
+    "created_at": "2016-05-31T16:10:24Z",
+    "id": "574db7706aeea88c9900019b",
+    "name": "Viewed Hario Mill and visited recently",
+    "type": "users_segment",
+    "updated_at": "2016-05-31T16:10:24Z"
+  },
+  {
+    "created_at": "2016-02-02T11:44:40Z",
+    "id": "56b096a83ccf8901be00000d",
+    "name": "Viewed Black Cat Espresso",
+    "type": "users_segment",
+    "updated_at": "2016-02-23T17:56:15Z"
+  },
+  {
+    "created_at": "2016-02-03T10:47:07Z",
+    "id": "56b1daab5580c06798000051",
+    "name": "Recent users",
+    "type": "users_segment",
+    "updated_at": "2016-05-11T10:46:11Z"
+  },
+  {
+    "created_at": "2016-04-27T10:17:35Z",
+    "id": "572091bf13440a016c00002b",
+    "name": "Views Products Frequently",
+    "type": "users_segment",
+    "updated_at": "2016-04-27T10:17:43Z"
+  }
+]
