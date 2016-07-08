@@ -32,7 +32,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
     }
 
     if (events.length > 0) {
-      events.map(({ eventName, properties, context }) => asUser.track(eventName, properties, context));
+      events.map(({ eventName, properties, context }) => asUser.track(eventName, properties, { source: "processor", ...context }));
     }
   } catch (err) {
     console.warn("error in compute: ", { err, user, segments });
