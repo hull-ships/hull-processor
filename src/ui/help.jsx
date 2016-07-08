@@ -85,7 +85,7 @@ if(false) { track("Viewed Monthy Python", { coconuts: 12 });}
                     </p>
                     <p>
                       <small>
-                        You can up to 10 events with <a target="_blank" href="http://www.hull.io/docs/references/hull_js#track">track()</a>.
+                        You can emit up to 10 events with <a target="_blank" href="http://www.hull.io/docs/references/hull_js#track">track()</a>.
                         <Alert bsStyle="danger">Be careful to not generate events unconditionally otherwise you'll end up with an infinite loop of events and recomputations.</Alert>
                       </small>
                     </p>

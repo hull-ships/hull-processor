@@ -33,7 +33,7 @@ if(false) { track("Viewed Monthy Python", { coconuts: 12 });}
 ##### You can apply [Traits operations](http://www.hull.io/docs/references/hull_js#traits)
 Be careful to not apply trait operations unconditionally otherwise you'll end up with an infinite increment loop.
 
-##### You can up to 10 events with [track()](http://www.hull.io/docs/references/hull_js#track)
+##### You can emit up to 10 events with [track()](http://www.hull.io/docs/references/hull_js#track)
 Be careful to not generate events unconditionally otherwise you'll end up with an infinite loop of events and recomputations.
 
 ### Left Panel
