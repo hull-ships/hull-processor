@@ -37,4 +37,4 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
   } catch (err) {
     console.warn("error in compute: ", { err, user, segments });
   }
-}
+};
