@@ -21,9 +21,8 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
     const computed = compute(message, ship);
     const { changes, events } = computed.result;
     const asUser = hull.as(user.id);
-
+    hull.utils.log("user.computed", changes);
     if (_.size(changes)) {
-      hull.utils.log("User Updated", changes);
       hull.utils.debug("Apply traits: ", { id: user.id, email: user.email, changes: JSON.stringify(changes) });
       const flat = {
         ...flatten({}, "", _.omit(changes, "traits")),

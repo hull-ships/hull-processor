@@ -35,7 +35,7 @@ function getSandbox(ship) {
 
 module.exports = function compute({ user, segments, events = [] }, ship = {}) {
   const { private_settings = {} } = ship;
-  const { code = "return {};", sentry_dsn: sentryDsn } = private_settings;
+  const { code = "", sentry_dsn: sentryDsn } = private_settings;
 
   const sandbox = getSandbox(ship);
   sandbox.user = user;
@@ -47,7 +47,7 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
   applyUtils(sandbox);
 
   let tracks = [];
-  const traits = [];
+  const userTraits = [];
   const logs = [];
   const errors = [];
 
@@ -57,7 +57,7 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
     if (eventName) tracks.push({ eventName, properties, context });
   };
   sandbox.traits = (properties = {}, context = {}) => {
-    traits.push({ properties, context });
+    userTraits.push({ properties, context });
   };
 
   function log(...args) {
@@ -99,7 +99,6 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
     sandbox.captureException(err);
   }
 
-
   if (tracks.length > 10) {
     logs.unshift([tracks]);
     logs.unshift([`You're trying to send ${tracks.length} calls at a time. We will only process the first 10`]);
@@ -107,14 +106,16 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
     tracks = _.slice(tracks, 0, 10);
   }
 
-  const payload = _.reduce(traits, (pld, pl = {}) => {
+
+  const payload = _.reduce(userTraits, (pld, pl = {}) => {
     const { properties, context = {} } = pl;
-    if (!properties) return pld;
-    const { source } = context;
-    if (source) {
-      pld[source] = { ...pld[source], ...properties };
-    } else {
-      pld.traits = { ...pld.traits, ...properties };
+    if (properties) {
+      const { source } = context;
+      if (source) {
+        pld[source] = { ...pld[source], ...properties };
+      } else {
+        pld.traits = { ...pld.traits, ...properties };
+      }
     }
     return pld;
   }, {});
@@ -128,7 +129,6 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
     }
     return memo;
   }, {});
-
 
   return {
     code,
