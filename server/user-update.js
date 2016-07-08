@@ -15,7 +15,7 @@ function flatten(obj, key, group) {
   }, obj);
 }
 
-export default function handle({ message = {} }, { ship, hull }) {
+module.exports = function handle({ message = {} }, { ship, hull }) {
   const { user, segments } = message;
   try {
     const computed = compute(message, ship);
@@ -23,6 +23,7 @@ export default function handle({ message = {} }, { ship, hull }) {
     const asUser = hull.as(user.id);
 
     if (_.size(changes)) {
+      hull.utils.log("User Updated", changes);
       hull.utils.debug("Apply traits: ", { id: user.id, email: user.email, changes: JSON.stringify(changes) });
       const flat = {
         ...flatten({}, "", _.omit(changes, "traits")),
