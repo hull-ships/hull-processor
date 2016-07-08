@@ -2,7 +2,7 @@
   "name": "hull-processor",
   "description": "Run code to update User Properties and generate Events",
   "version": "0.0.1",
-  "homepage": "https://github.com/hull-ships/hull-processing",
+  "homepage": "https://github.com/hull-ships/hull-processor",
   "license": "MIT",
   "author": {
     "name": "Hull",
@@ -15,10 +15,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/hull-ships/hull-processing"
+    "url": "git://github.com/hull-ships/hull-processor"
   },
   "bugs": {
-    "url": "https://github.com/hull-ships/hull-processing/issues"
+    "url": "https://github.com/hull-ships/hull-processor/issues"
   },
   "scripts": {
     "build": "npm run clean && npm run build:server && npm run build:client",
