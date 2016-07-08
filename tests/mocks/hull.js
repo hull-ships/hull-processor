@@ -43,6 +43,9 @@ export default function HullSpy(ship, spy) {
       if (spy) spy("as", ...args);
       return new Hull();
     };
+    this.utils = {
+      debug: (...args) => console.log(...args)
+    };
   };
 
   Hull.Routes = Routes;

@@ -18,58 +18,35 @@ function shipWithCode(code = {}, s = ship) {
 }
 
 const TESTS = {
-  ignore: {
-    payload: { root: "value" },
-  },
-  ignores: {
-    payload: { root: "value", traits: { test: "trait" } },
-    result: { test: "trait" }
-  },
   simple: {
-    payload: { traits: { test: "trait" } },
+    payload: "traits({ test: 'trait' });",
     result: { test: "trait" }
   },
   complex: {
-    payload: { traits: { test: 10 }, group: { test: 1 } },
+    payload: "traits({ test:10 }); traits({ test:1 },{ source:'group' });",
     result: { test: 10, "group/test": 1 }
   },
   conflict: {
-    payload: { traits: { test: 4, "group/test": 1 }, group: { test: 2 } },
+    payload: "traits({ test: 4, 'group/test': 1}); traits({ test: 2 }, { source: 'group' });",
     result: { test: 4, "group/test": 1 }
   },
   nested: {
-    payload: { group: { value: "val0", group: { value: "val1", group: { value: "val2" } } } },
+    payload: "traits({ value: 'val0', group: { value: 'val1', group: { value: 'val2' } } } }, { source: 'group' });",
     result: { "traits_group/value": "val0", "traits_group/group/value": "val1", "traits_group/group/group/value": "val2" }
   },
 };
 
 function payload(p) {
-  return `return ${JSON.stringify(TESTS[p].payload)};`;
+  return TESTS[p].payload;
 }
 
 describe("Compute Ship", () => {
   describe("User Update Handler", () => {
     it("Should not call traits if no changes", () => {
       const spy = sinon.spy();
-      const s = shipWithCode("return { };");
+      const s = shipWithCode("traits({})");
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
       sinon.assert.neverCalledWithMatch(spy, "traits");
-      sinon.assert.neverCalledWithMatch(spy, "track");
-    });
-
-    it("Should not call traits if only root-level changes", () => {
-      const spy = sinon.spy();
-      const s = shipWithCode(payload("ignore"));
-      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.neverCalledWithMatch(spy, "traits");
-      sinon.assert.neverCalledWithMatch(spy, "track");
-    });
-
-    it("Should ignore the root-level traits that are not groups", () => {
-      const spy = sinon.spy();
-      const s = shipWithCode(payload("ignores"));
-      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.calledWith(spy, "traits", TESTS.ignores.result);
       sinon.assert.neverCalledWithMatch(spy, "track");
     });
 

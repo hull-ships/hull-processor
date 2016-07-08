@@ -23,6 +23,7 @@ export default function handle({ message = {} }, { ship, hull }) {
     const asUser = hull.as(user.id);
 
     if (_.size(changes)) {
+      hull.utils.debug("Apply traits: ", { id: user.id, email: user.email, changes: JSON.stringify(changes) });
       const flat = {
         ...flatten({}, "", _.omit(changes, "traits")),
         ...changes.traits
@@ -33,15 +34,6 @@ export default function handle({ message = {} }, { ship, hull }) {
     if (events.length > 0) {
       events.map(({ eventName, properties, context }) => asUser.track(eventName, properties, context));
     }
-
-    // hull.utils.debug("Apply traits: ", { id: user.id, email: user.email, changes: JSON.stringify(changes)})
-
-    // console.log(flatChanges);
-
-    // console.log(flatChanges);
-    // if (!_.isEmpty(changes)) {
-    //   // hull.as(user.id).traits(changes, {source: "computed"});
-    // }
   } catch (err) {
     console.warn("error in compute: ", { err, user, segments });
   }

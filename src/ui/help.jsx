@@ -20,23 +20,18 @@ export default class Help extends Component {
   render() {
     let tooltip = <Tooltip className="in" placement="left" id='tip'>Ship Help and Docs, Read me!</Tooltip>;
     const sample = `
-return {
-  // Ignored. only objects are supported at top level
-  name: 'Superman'
+console.log(\`Hello \$\{user.name}\`);
+traits({ coconuts: 12, swallows: 12 });
+traits({ coconuts: 13 });
+traits({ coconuts: 14 }, { source: 'clearbit' });
 
-  traits: {
-    // Recognized as global property, saved at top level
-    name: 'Superman',
+//BEWARE - if you apply a trait operation (such as 'inc')
+//without a if() condition, you trigger an infinite loop;
+traits({ swallows: { operation: 'inc', value: 2 } });
 
-    //Increments coconuts by 2
-    coconuts: { operation: 'inc', value: 2 }
-  },
-
-  // Groups are supported, 1 level only.
-  shopify: {
-    key: 'value'
-  }
-}
+//BEWARE - if you track() without a if() condition
+//you trigger an infinite loop.
+if(false) { track("Viewed Monthy Python", { coconuts: 12 });}
     `;
     return (
       <div>
@@ -46,7 +41,7 @@ return {
 
         <Modal show={this.state.showModal} bsSize='large' onHide={this.close.bind(this)}>
           <Modal.Header closeButton>
-            <Modal.Title><div className='text-center'>Computed Traits</div></Modal.Title>
+            <Modal.Title><div className='text-center'>Data Processor</div></Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Row>
@@ -75,17 +70,25 @@ return {
                 <Row>
                   <Col sm={8}>
                     <p><Icon name='compute' large/></p>
-                    <p>On the <strong>Sidebar</strong>, Write Javascript code to manipulate data and return a new object with the computed properties. You can't use asynchronous code, and must return an object at the end of your code.</p>
+                    <p>On the <strong>Sidebar</strong>, Write Javascript code to manipulate data, call <code>track()</code> and <code>traits()</code> to update User. ES6 is supported. You can't use asynchronous code and external libraries.</p>
                     <h6>Example: </h6>
                     <pre>
                       <small>
                         <code>{sample}</code>
                       </small>
                     </pre>
-                    <small>
-                      You can apply <a target="_blank" href="http://www.hull.io/docs/references/hull_js#traits">Traits operations</a> if needed.
-                      <Alert bsStyle="danger">Be careful to not apply trait operations unconditionally otherwise you'll end up with an infinite increment loop.</Alert>
-                    </small>
+                    <p>
+                      <small>
+                        You can apply <a target="_blank" href="http://www.hull.io/docs/references/hull_js#traits">Traits operations</a>.
+                        <Alert bsStyle="danger">Be careful to not apply trait operations unconditionally otherwise you'll end up with an infinite increment loop.</Alert>
+                      </small>
+                    </p>
+                    <p>
+                      <small>
+                        You can up to 10 events with <a target="_blank" href="http://www.hull.io/docs/references/hull_js#track">track()</a>.
+                        <Alert bsStyle="danger">Be careful to not generate events unconditionally otherwise you'll end up with an infinite loop of events and recomputations.</Alert>
+                      </small>
+                    </p>
                   </Col>
                   <Col sm={4}>
                     <Col sm={12}>
@@ -114,48 +117,50 @@ return {
                   <tbody>
                     <tr>
                       <td><code>ship</code></td>
-                      <td>
-                        <p><small>The Ship's data. Can be used to store additional data</small></p></td>
+                      <td><p><small>The Ship's data. Can be used to store additional data</small></p></td>
                     </tr>
                     <tr>
                       <td><code>user</code></td>
-                      <td>
-                        <p><small>The User data (as seen on the left side)</small></p></td>
+                      <td><p><small>The User data (as seen on the left side)</small></p></td>
                     </tr>
                     <tr>
                       <td><code>changes</code></td>
-                      <td>
-                        <p><small>An array of all the changed properties since last recompute</small></p></td>
+                      <td><p><small>An array of all the changed properties since last recompute</small></p></td>
                     </tr>
                     <tr>
                       <td><code>events</code></td>
-                      <td>
-                        <p><small>An array of all the events since last recompute</small></p></td>
+                      <td><p><small>An array of all the events since last recompute</small></p></td>
                     </tr>
                     <tr>
                       <td><code>segments</code></td>
-                      <td>
-                        <p><small>The segments the user belongs to. </small></p></td>
+                      <td><p><small>The segments the user belongs to. </small></p></td>
                     </tr>
+
+                    <tr>
+                      <td><code>traits(properties, context)</code></td>
+                      <td><p><small><a href="http://www.hull.io/docs/references/hull_js#traits" target="_blank">Update User Traits</a>. Optionally define a context with a <code>source</code> key to save in a custom group</small></p></td>
+                    </tr>
+
+                    <tr>
+                      <td><code>track('Event Name', properties)</code></td>
+                      <td><p><small>Lets you <a href="http://www.hull.io/docs/references/hull_js#track" target="_blank">generate new Events</a> for the user.</small></p></td>
+                    </tr>
+
                     <tr>
                       <td><code>isInSegment('Segment')</code></td>
-                      <td>
-                        <p><small>A convenience method allowing you to quickly define if the user is a member of a given segment.</small></p></td>
+                      <td><p><small>A convenience method allowing you to quickly define if the user is a member of a given segment.</small></p></td>
                     </tr>
                     <tr>
                       <td><code>moment()</code></td>
-                      <td>
-                        <p><small>The <a href="http://momentjs.com/" target='_blank'>Moment.js</a> library.</small></p></td>
+                      <td><p><small>The <a href="http://momentjs.com/" target='_blank'>Moment.js</a> library.</small></p></td>
                     </tr>
                     <tr>
                       <td><code>URI()</code></td>
-                      <td>
-                        <p><small>The <a href="https://medialize.github.io/URI.js/" target='_blank'>URI.js</a> library.</small></p></td>
+                      <td><p><small>The <a href="https://medialize.github.io/URI.js/" target='_blank'>URI.js</a> library.</small></p></td>
                     </tr>
                     <tr>
                       <td><code>_</code></td>
-                      <td>
-                        <p><small>The <a href="https://lodash.com/" target='_blank'>lodash</a> library.</small></p></td>
+                      <td><p><small>The <a href="https://lodash.com/" target='_blank'>lodash</a> library.</small></p></td>
                     </tr>
                   </tbody>
                 </Table>

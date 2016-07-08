@@ -7,30 +7,11 @@ should();
 const payload = { events, segments, user };
 
 const CODE = {
-  empty: ` `,
-  invalid: ` return false; `,
-  identity: `
-      return { }
-  `,
-  new_boolean: `
-    return {
-      traits: {
-        new_boolean: true
-      }
-    }
-  `,
-  root_level: `
-    return {
-      new_boolean: true
-    }
-  `,
-  group: `
-    return {
-      group:{
-        line: 'test'
-      }
-    }
-  `,
+  empty: " ",
+  invalid: " return false;",
+  identity: "traits({})",
+  new_boolean: "traits({ new_boolean: true });",
+  group: "traits({ line: 'test'}, { source: 'group' });",
 };
 
 function shipWithCode(s = {}, code = {}) {
@@ -73,11 +54,5 @@ describe("Compute Ship", () => {
       const computed = applyCompute(CODE.group);
       expect(computed).to.have.deep.property("result.user.group.line", "test");
     });
-
-    // it("Should ignore root-level traits when code adds a trait at root level", () => {
-    //   const computed = applyCompute(CODE.root_level);
-    //   expect(computed.result.user).to.be.eql(user);
-    // });
-
   });
 });

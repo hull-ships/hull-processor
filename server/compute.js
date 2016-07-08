@@ -6,7 +6,7 @@ import raven from "raven";
 import deepDiff from "deep-diff";
 import deepFreeze from "deep-freeze";
 import deepMerge from "deepmerge";
-import isGroup from "./is-group-trait";
+// import isGroup from "./is-group-trait";
 
 function applyUtils(sandbox = {}) {
   const lodash = _.functions(_).reduce(function (l, key) { // eslint-disable-line func-names
@@ -47,6 +47,7 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
   applyUtils(sandbox);
 
   let tracks = [];
+  const traits = [];
   const logs = [];
   const errors = [];
 
@@ -54,6 +55,9 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
   sandbox.logs = logs;
   sandbox.track = (eventName, properties = {}, context = {}) => {
     if (eventName) tracks.push({ eventName, properties, context });
+  };
+  sandbox.traits = (properties = {}, context = {}) => {
+    traits.push({ properties, context });
   };
 
   function log(...args) {
@@ -81,10 +85,10 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
   try {
     const script = new vm.Script(`
       try {
-        payload = Object.assign(payload, (function() {
+        (function() {
           "use strict";
           ${code}
-        })() || {});
+        }());
       } catch (err) {
         errors.push(err.toString());
         captureException(err);
@@ -103,14 +107,19 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
     tracks = _.slice(tracks, 0, 10);
   }
 
-  const rootLevelTraits = _.omitBy(sandbox.payload, isGroup);
-  if (_.size(rootLevelTraits) > 0) {
-    logs.unshift([rootLevelTraits]);
-    logs.unshift(["We found the ones below, they will be ignored:"]);
-    logs.unshift(["Root-level properties are not supported. Put them in the `traits` object."]);
-  }
+  const payload = _.reduce(traits, (pld, pl = {}) => {
+    const { properties, context = {} } = pl;
+    if (!properties) return pld;
+    const { source } = context;
+    if (source) {
+      pld[source] = { ...pld[source], ...properties };
+    } else {
+      pld.traits = { ...pld.traits, ...properties };
+    }
+    return pld;
+  }, {});
 
-  const updatedUser = deepMerge(user, _.omit(sandbox.payload, _.keys(rootLevelTraits)));
+  const updatedUser = deepMerge(user, payload);
 
   const diff = deepDiff(user, updatedUser) || [];
   const changes = _.reduce(diff, (memo, d) => {

@@ -1,8 +1,8 @@
 {
-  "name": "hull-computed-traits",
-  "description": "Compute traits for your users",
+  "name": "hull-processor",
+  "description": "Run code to update User Properties and generate Events",
   "version": "0.0.1",
-  "homepage": "https://github.com/hull-ships/hull-computed-traits",
+  "homepage": "https://github.com/hull-ships/hull-processing",
   "license": "MIT",
   "author": {
     "name": "Hull",
@@ -15,10 +15,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/hull-ships/hull-computed-traits"
+    "url": "git://github.com/hull-ships/hull-processing"
   },
   "bugs": {
-    "url": "https://github.com/hull-ships/hull-computed-traits/issues"
+    "url": "https://github.com/hull-ships/hull-processing/issues"
   },
   "scripts": {
     "build": "npm run clean && npm run build:server && npm run build:client",
