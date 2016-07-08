@@ -1,7 +1,7 @@
 {
   "name": "Processor",
   "description": "Recompute custom properties and emit events with Javascript logic whenever a user is updated",
-  "tags": ["incoming", "outgoing", "batch", "wideSettings"],
+  "tags": ["incoming", "outgoing", "batch"],
   "picture": "picture.png",
   "ui": false,
   "admin": "admin.html",
