@@ -3,10 +3,10 @@ import Server from "./server";
 
 
 Hull.onLog(function onLog(message, data, ctx = {}) {
-  console.log(`${ctx.id} ] processor.${message}`, JSON.stringify(data || ""));
+  console.log(`[${ctx.id}] processor.${message}`, JSON.stringify(data || ""));
 });
 Hull.onMetric(function onMetric(metric, value, ctx = {}) {
-  console.log(`${ctx.id} ] processor.${metric}`, value);
+  console.log(`[${ctx.id}] processor.${metric}`, value);
 });
 
 Server({
