@@ -72,7 +72,8 @@
     "superagent": "^2.0.0",
     "svg-inline-loader": "^0.6.0",
     "svg-inline-react": "^1.0.1",
-    "urijs": "^1.18.1"
+    "urijs": "^1.18.1",
+    "webpack": "^1.13.1"
   },
   "devDependencies": {
     "assert": "^1.4.1",
