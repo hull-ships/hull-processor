@@ -44,7 +44,8 @@ export default function HullSpy(ship, spy) {
       return new Hull();
     };
     this.utils = {
-      debug: (...args) => console.log(...args)
+      debug: (...args) => console.log(...args),
+      log: (...args) => console.log(...args)
     };
   };
 
