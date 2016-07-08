@@ -1,0 +1,141 @@
+{
+  "id": "56e2faf863fb1b66c0000029",
+  "updated_at": "2016-06-25T09:27:20Z",
+  "created_at": "2016-03-11T17:06:01Z",
+  "name": "Computed Traits",
+  "description": null,
+  "extra": {},
+  "stats": {
+    "inits_total": 557,
+    "inits_prod": 557,
+    "last_init_prod": "2016-06-25T09:24:28Z",
+    "last_init": "2016-06-25T09:24:28Z",
+    "users": 7
+  },
+  "tags": [],
+  "picture": "https://hull-processor.herokuapp.com/picture.png",
+  "schema": {
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "name": "Ships Schema",
+    "type": "object",
+    "properties": {
+      "name": {
+        "title": "Name",
+        "type": "string"
+      },
+      "description": {
+        "title": "Description",
+        "type": "string"
+      },
+      "settings": {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "type": "object",
+        "title": "Settings",
+        "properties": {
+          "__private__": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "type": "object",
+            "title": "Private Settings",
+            "properties": {
+              "sentry_dsn": {
+                "title": "Sentry DSN",
+                "description": "URL of a sentry instance to collect logs and exception notifications",
+                "type": "string",
+                "format": "hidden",
+                "propertyOrder": 0
+              },
+              "code": {
+                "title": "Code",
+                "description": "Enter Javascript code here, It will receive the data in the middle column, and must return an object with the properties you want to update. Preview results on the right. Save when finished",
+                "type": "string",
+                "default": "console.log(`Hello ${user.name}`);\n//console.log(segments, user, events);\n\nreturn {\n  group: {  content: 'test' },\n  traits: { content : 12 }\n}",
+                "format": "code",
+                "propertyOrder": 1
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "source_url": {
+        "title": "Ship URL",
+        "description": "Public URL for the Ship. All assets will be resolved from there.",
+        "type": "string",
+        "options": {
+          "advanced": true
+        }
+      },
+      "manifest_url": {
+        "title": "manifest URL",
+        "description": "Ship manifest URL.",
+        "type": "string",
+        "options": {
+          "advanced": true
+        }
+      }
+    },
+    "required": [
+      "name"
+    ],
+    "title": "Computed Traits"
+  },
+  "type": "ship",
+  "starts_at": null,
+  "ends_at": null,
+  "homepage_url": "https://a239c5b2.hullbeta.io/ships/56e2faf863fb1b66c0000029",
+  "manifest_url": "https://computed.eu.ngrok.io/manifest.json",
+  "privacy_policy_url": null,
+  "terms_of_service_url": null,
+  "manifest": {
+    "name": "Computed Traits",
+    "description": "Recompute custom properties with Javascript logic whenever a user is updated",
+    "picture": "picture.png",
+    "version": "0.0.1",
+    "tags": [
+      "incoming",
+      "outgoing",
+      "batch"
+    ],
+    "private_settings": [
+      {
+        "name": "sentry_dsn",
+        "title": "Sentry DSN",
+        "description": "URL of a sentry instance to collect logs and exception notifications",
+        "type": "string",
+        "format": "hidden"
+      },
+      {
+        "name": "code",
+        "title": "Code",
+        "description": "Enter Javascript code here, It will be receive the data in the middle column, and must return an object with the properties you want to update. Preview results on the right. Save when finished",
+        "type": "string",
+        "default": "console.log(`Hello ${user.name}`);\n//console.log(segments, user, events);\n\nreturn {\n  group: {  content: 'test' },\n  traits: { content : 12 }\n}",
+        "format": "code"
+      }
+    ],
+    "resources": [],
+    "readme": "readme.md",
+    "admin": "admin.html",
+    "ui": false,
+    "subscriptions": [
+      {
+        "url": "/notify"
+      }
+    ]
+  },
+  "account": {
+    "id": "53a31d9dc49e5ee19c000002",
+    "name": "Stephane Hull",
+    "picture": "https://graph.facebook.com/359750140852771/picture?type=large"
+  },
+  "settings": {},
+  "private_settings": {
+    "code": "console.log(ship)",
+    "sentry_dsn": null
+  },
+  "source_url": "https://computed.eu.ngrok.io/",
+  "translations": {},
+  "index": "https://computed.eu.ngrok.io/",
+  "resources": {}
+}

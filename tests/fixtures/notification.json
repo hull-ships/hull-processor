@@ -1,0 +1,12 @@
+{
+  "Type" : "Notification",
+  "MessageId" : "f04fe603-54f5-5a2c-9fc4-a9eb0465b8b2",
+  "TopicArn" : "arn:aws:sns:us-east-1:902208877407:notifications-561fb665450f34b1cf00000a",
+  "Subject" : "user_report:update",
+  "Message" : "",
+  "Timestamp" : "2016-06-25T09:26:40.268Z",
+  "SignatureVersion" : "1",
+  "Signature" : "Xpr2wW/Xrwzw+hVplyoRDeBSD2uEnlSmY9kfqz4/9VGTuS22LHVs0O1W9aF1v6Y5FVMGp8FfBVbSGOkVoF7g+8hjaBgQkM60ZnlFoWNKN+u0oYcxGb/qc3Mz7rRWPu4aI5VIc0ulv3TLGxfEybj8sc45uZPbKlinPGWS2VMO09hFc8VaqlI7Ihx1zGeO3A2R6TpKKDNegE6OaHPR/QhSU68g4evlWHDpfMRkWOx6Zp2h9k0F3PLzpARFzKu3hU8wBJkjB9DX9u91VOyvkmGSjNB1B8eCVfIFHk5PvwDk8JjCWBW3qNcL6/tcVgLTm0OnTSgEEt73t0p4ugMWGAJp9A==",
+  "SigningCertURL" : "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-bb750dd426d95ee9390147a5624348ee.pem",
+  "UnsubscribeURL" : "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:902208877407:notifications-561fb665450f34b1cf00000a:80bd228f-5e28-4544-95bc-0ab22b9fc55e"
+}

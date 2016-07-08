@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Codemirror from 'react-codemirror';
+import Codemirror from '../ui/react-codemirror';
 import { Col, Button, Tabs, Tab, Well } from 'react-bootstrap';
 import Header from '../ui/header';
 import Icon from '../ui/icon';

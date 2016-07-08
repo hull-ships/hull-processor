@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import _ from 'lodash';
-import { Col, Button, Tabs, Tab } from 'react-bootstrap';
-import Help from '../ui/help';
+import React, { Component } from "react";
+import _ from "lodash";
+import { Col, Button, Tabs, Tab } from "react-bootstrap";
+import Help from "../ui/help";
 
-import Icon from '../ui/icon';
-import Header from '../ui/header';
-import Errors from './errors';
-import Output from './output';
+import Icon from "../ui/icon";
+import Header from "../ui/header";
+import Errors from "./errors";
+import Output from "./output";
 
 export default class Results extends Component {
 
@@ -15,34 +15,38 @@ export default class Results extends Component {
     this.state = {};
   }
 
-  outputToConsole() {
-    try {
-      const { logs, errors } = this.props;
-      logs.map(line => console.log.apply(console, line))
-      if (errors && errors.length > 0) {
-        errors.map(error => console.error(error))
-      }
-      console.groupEnd();
-    } catch(err) {
-
-    }
-  }
-
   render() {
-    const { onRun, onSave, errors, saving, className, sm, changes, code } = this.props;
+    const {
+      changes = {},
+      errors = [],
+      logs = [],
+      payload,
+      code,
+      className,
+      sm
+     } = this.props;
     const ActivePane = (errors && errors.length) ? Errors : Output;
-    const highlight = ( (errors && errors.length) ? [] : _.map(_.keys(changes), k => `traits_${k}`) || []);
+    const highlight = ((errors && errors.length) ? [] : _.map(_.keys(changes), k => `traits_${k}`) || []);
     const codeIsEmpty = code === "return {};" || code === "";
 
-    this.outputToConsole();
+    const logOutput = logs.map(l => {
+      return l.map(e => {
+        return (typeof e === "string") ? e : JSON.stringify(e, null, 2);
+      }).join(", ");
+    }).join("\n");
 
-    return <Col className={className} sm={sm}>
-      <Header title='Output'>
+    return (<Col className={className} sm={sm}>
+      <Header title="Results">
         <Help showModal={codeIsEmpty}/>
       </Header>
       <hr/>
-      <ActivePane {...this.props} highlight={highlight} />
-    </Col>
+      <ActivePane
+        changes={changes}
+        logs={logOutput}
+        errors={errors}
+        payload={payload}
+        highlight={highlight} />
+    </Col>);
   }
 
 }

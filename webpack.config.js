@@ -30,12 +30,19 @@ module.exports = {
   resolve: { extensions: ['', '.js', '.jsx'] },
   module: {
     loaders: [
-      {test: /\.(css|scss)$/, loaders: ['style?singleton=true', 'css?modules&importLoaders=1'] },
+      { test: /\.(css|scss)$/, loaders: ['style?singleton=true', 'css?modules&importLoaders=1'] },
       { test: /\.svg$/, loader: 'svg-inline' },
-      { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader"},
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: "babel",
+        query: {
+          presets: ['es2015', 'stage-0']
+        }
+      },
       {
         test: /.jsx?$/,
-        loader: 'babel-loader',
+        loader: 'babel',
         exclude: /node_modules/,
         query: {
           presets: ['es2015', 'react', 'stage-0']

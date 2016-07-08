@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { Modal, Tooltip, Button, Popover, OverlayTrigger, Row, Col, Table} from 'react-bootstrap';
+import React, { Component } from "react";
+import { Alert, Modal, Tooltip, Button, Popover, OverlayTrigger, Row, Col, Table} from "react-bootstrap";
 import Icon from './icon';
 
 export default class Help extends Component {
 
   constructor(props) {
     super(props);
-    this.state = Object.assign({ showModal: false }, props);
+    this.state = { showModal: false, ...props };
   }
 
   close() {
@@ -17,9 +17,22 @@ export default class Help extends Component {
     this.setState({ showModal: true });
   }
 
-  render(){
+  render() {
     let tooltip = <Tooltip className="in" placement="left" id='tip'>Ship Help and Docs, Read me!</Tooltip>;
+    const sample = `
+console.log(\`Hello \$\{user.name}\`);
+traits({ coconuts: 12, swallows: 12 });
+traits({ coconuts: 13 });
+traits({ coconuts: 14 }, { source: 'clearbit' });
 
+//BEWARE - if you apply a trait operation (such as 'inc')
+//without a if() condition, you trigger an infinite loop;
+traits({ swallows: { operation: 'inc', value: 2 } });
+
+//BEWARE - if you track() without a if() condition
+//you trigger an infinite loop.
+if(false) { track("Viewed Monthy Python", { coconuts: 12 });}
+    `;
     return (
       <div>
         <OverlayTrigger overlay={tooltip}>
@@ -28,109 +41,131 @@ export default class Help extends Component {
 
         <Modal show={this.state.showModal} bsSize='large' onHide={this.close.bind(this)}>
           <Modal.Header closeButton>
-            <Modal.Title>Computed Traits Ship</Modal.Title>
+            <Modal.Title><div className='text-center'>Data Processor</div></Modal.Title>
           </Modal.Header>
           <Modal.Body>
-
             <Row>
-              <Col xs={3} sm={2}>
-                <Icon name='calculator' responsive/>
-              </Col>
-              <Col xs={9} sm={10}>
-                <p>This ship lets you apply transformations to users and add / edit their Traits every time they change</p>
-                <p>Use it to compute and store properties from other customer properties. Every Ship you add to Hull will receive this computed data.</p>
-              </Col>
-            </Row>
-
-            <hr/>
-
-            <Row>
-              <Col md={6}>
+              <Col md={10} mdOffset={1}>
                 <Row>
-                  <Col sm={4}>
-                    <Icon name='rocker' responsive/>
-                  </Col>
-                  <Col sm={8}>
+                  <Col xs={3} sm={2}>
                     <p>
-                      In the <strong>left panel</strong>, you can see a sample user with all his/her properties. You can search for a specific user
+                      <Icon name='calculator' responsive/>
                     </p>
-                    <p>As you write code, you see a preview of the resulting user on the right panel. Updated fields are highlighted so you can easily see what changed. </p>
+                  </Col>
+                  <Col xs={9} sm={10}>
+                    <p>
+                      <strong>This ship lets you process user data</strong>, add & edit properties and emit new events.
+                      Users will pass through this code everytime they are updated or generate events.
+                    </p><p>
+                      <strong>Actions are micro-batched:</strong> The code will <i>not</i> run every time an Event is recorded, but rather wait and receive <strong>several events at once</strong>. When a User is recomputed, the Ship will receive it along with all the events performed since the last batch. Events are sent exactly once.
+                    </p>
+                    <Alert bsStyle="danger">
+                      It is up to you to avoid infinite loops: Those calls count against your quotas and can burn through it pretty quickly.
+                    </Alert>
                   </Col>
                 </Row>
-              </Col>
-              <Col md={6}>
+
+                <hr/>
+
                 <Row>
-                  <Col sm={4}>
-                    <Icon name='punker' responsive/>
-                  </Col>
                   <Col sm={8}>
-                    <p>In the <strong>right panel</strong>, you see a realtime preview of the updated user.</p>
-                    <p>Everything you return from your code is prefixed with <code>traits_</code> and then merged</p>
+                    <p><Icon name='compute' large/></p>
+                    <p>On the <strong>Sidebar</strong>, Write Javascript code to manipulate data, call <code>track()</code> and <code>traits()</code> to update User. ES6 is supported. You can't use asynchronous code and external libraries.</p>
+                    <h6>Example: </h6>
+                    <pre>
+                      <small>
+                        <code>{sample}</code>
+                      </small>
+                    </pre>
                     <p>
-                      When you're satisfied, click <strong>Save</strong>
+                      <small>
+                        You can apply <a target="_blank" href="http://www.hull.io/docs/references/hull_js#traits">Traits operations</a>.
+                        <Alert bsStyle="danger">Be careful to not apply trait operations unconditionally otherwise you'll end up with an infinite increment loop.</Alert>
+                      </small>
                     </p>
                     <p>
-                      Changes will be applied automatically whenever users are udpated. We don't back-process users who don't change.
+                      <small>
+                        You can up to 10 events with <a target="_blank" href="http://www.hull.io/docs/references/hull_js#track">track()</a>.
+                        <Alert bsStyle="danger">Be careful to not generate events unconditionally otherwise you'll end up with an infinite loop of events and recomputations.</Alert>
+                      </small>
                     </p>
+                  </Col>
+                  <Col sm={4}>
+                    <Col sm={12}>
+                      <p><Icon name='rocker' large/></p>
+                      <p>On the <strong>left</strong>, is a sample user with all his/her properties, segments, latest events and changes since last recompute. You can search for a specific user. </p>
+                    </Col>
+                    <Col sm={12}>
+                      <p><Icon name='punker' large/></p>
+                      <p>On the <strong>right</strong>, a preview of the updated user, a summary of the changes that would be applied and eventual logs and errors from the console</p>
+
+                      <p>When you're satisfied, click <strong>Save</strong></p>
+                    </Col>
                   </Col>
                 </Row>
+
+                <hr/>
+
+                <Row>
+                  <Col sm={12}>
+                    <h4>Variables and libraries you can access</h4>
+                    <p>The code will run once saved. It will not back-process users who don't change. You can trigger a batch from the dashboard. Events won't be sent in Batches.</p>
+
+                  </Col>
+                </Row>
+                <Table striped bordered condensed hover className='mt-1'>
+                  <tbody>
+                    <tr>
+                      <td><code>ship</code></td>
+                      <td><p><small>The Ship's data. Can be used to store additional data</small></p></td>
+                    </tr>
+                    <tr>
+                      <td><code>user</code></td>
+                      <td><p><small>The User data (as seen on the left side)</small></p></td>
+                    </tr>
+                    <tr>
+                      <td><code>changes</code></td>
+                      <td><p><small>An array of all the changed properties since last recompute</small></p></td>
+                    </tr>
+                    <tr>
+                      <td><code>events</code></td>
+                      <td><p><small>An array of all the events since last recompute</small></p></td>
+                    </tr>
+                    <tr>
+                      <td><code>segments</code></td>
+                      <td><p><small>The segments the user belongs to. </small></p></td>
+                    </tr>
+
+                    <tr>
+                      <td><code>traits(properties, context)</code></td>
+                      <td><p><small><a href="http://www.hull.io/docs/references/hull_js#traits" target="_blank">Update User Traits</a>. Optionally define a context with a <code>source</code> key to save in a custom group</small></p></td>
+                    </tr>
+
+                    <tr>
+                      <td><code>track('Event Name', properties)</code></td>
+                      <td><p><small>Lets you <a href="http://www.hull.io/docs/references/hull_js#track" target="_blank">generate new Events</a> for the user.</small></p></td>
+                    </tr>
+
+                    <tr>
+                      <td><code>isInSegment('Segment')</code></td>
+                      <td><p><small>A convenience method allowing you to quickly define if the user is a member of a given segment.</small></p></td>
+                    </tr>
+                    <tr>
+                      <td><code>moment()</code></td>
+                      <td><p><small>The <a href="http://momentjs.com/" target='_blank'>Moment.js</a> library.</small></p></td>
+                    </tr>
+                    <tr>
+                      <td><code>URI()</code></td>
+                      <td><p><small>The <a href="https://medialize.github.io/URI.js/" target='_blank'>URI.js</a> library.</small></p></td>
+                    </tr>
+                    <tr>
+                      <td><code>_</code></td>
+                      <td><p><small>The <a href="https://lodash.com/" target='_blank'>lodash</a> library.</small></p></td>
+                    </tr>
+                  </tbody>
+                </Table>
               </Col>
             </Row>
-
-            <hr/>
-
-            <Row>
-              <Col xs={3} sm={2}>
-                <Icon name='compute' responsive/>
-              </Col>
-              <Col xs={9} sm={10}>
-                <p>
-                  On the <strong>Sidebar</strong>, you can write Javascript code to manipulate data, and return a new object with the computed properties.
-                  You can't use asynchronous code, and must return an object at the end of your code.
-                  Here are a the variables and libraries you can access:
-                </p>
-              </Col>
-            </Row>
-
-            <Table striped bordered condensed hover className='mt-1'>
-              <tbody>
-                <tr>
-                  <td><code>user</code></td>
-                  <td>
-                    <p>The User data (as seen on the left side)</p></td>
-                </tr>
-                <tr>
-                  <td><code>segments</code></td>
-                  <td>
-                    <p>The User's segments (seen on the left side)</p></td>
-                </tr>
-                <tr>
-                  <td><code>ship</code></td>
-                  <td>
-                    <p>The Ship's data. Can be used to store additional data</p></td>
-                </tr>
-                <tr>
-                  <td><code>isInSegment('Segment')</code></td>
-                  <td>
-                    <p>A convenience method allowing you to quickly define if the user is a member of a given segment.</p></td>
-                </tr>
-                <tr>
-                  <td><code>moment()</code></td>
-                  <td>
-                    <p>The <a href="http://momentjs.com/" target='_blank'>Moment.js</a> library.</p></td>
-                </tr>
-                <tr>
-                  <td><code>URI()</code></td>
-                  <td>
-                    <p>The <a href="https://medialize.github.io/URI.js/" target='_blank'>URI.js</a> library.</p></td>
-                </tr>
-                <tr>
-                  <td><code>_</code></td>
-                  <td>
-                    <p>The <a href="https://lodash.com/" target='_blank'>lodash</a> library.</p></td>
-                </tr>
-              </tbody>
-            </Table>
 
           </Modal.Body>
           <Modal.Footer>
