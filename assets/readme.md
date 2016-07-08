@@ -1,103 +1,63 @@
-# Process and Transform Customer data in realtime
+# Data Processor
 
-This ship lets you manipulate user data in realtime, to transform, enrich, compute new  properties.
+**This ship lets you process user data**. Add & edit properties and emit new events.  
+Users will pass through this code everytime they are updated or generate events.
 
-Computed Traits
+**Actions are micro-batched:** The code will **not** run every time an Event is recorded, but rather wait and receive several events at once.
 
-**This ship lets you process user data**, add & edit properties and emit new events. Users will pass through this code everytime they are updated or generate events.
+When a User is updated, the Processor will receive it along with all the events performed since the last batch. Events are sent exactly once.
 
-**Actions are micro-batched:** The code will *not* run every time an Event is recorded, but rather wait and receive **several events at once**. When a User is recomputed, the Ship will receive it along with all the events performed since the last batch. Events are sent exactly once.
+> It is up to you to avoid infinite loops: Those calls count against your quotas and can burn through it pretty quickly.
 
-**It is up to you to avoid infinite loops: Those calls count against your quotas and can burn through it pretty quickly.**
+### Sidebar
+Write Javascript code to manipulate data, call `track()` and `traits()` to update User. ES6 is supported. You can't use asynchronous code and external libraries.
 
----
+Example: 
+```js
+console.log(`Hello ${user.name}`);
+traits({ coconuts: 12, swallows: 12 });
+traits({ coconuts: 13 });
+traits({ coconuts: 14 }, { source: 'clearbit' });
 
-<p>On the **Sidebar**, Write Javascript code to manipulate data and return a new object with the computed properties. You can't use asynchronous code, and must return an object at the end of your code.</p>
-<h6>Example: </h6>
+//BEWARE - if you apply a trait operation (such as 'inc')
+//without a if() condition, you trigger an infinite loop;
+traits({ swallows: { operation: 'inc', value: 2 } });
 
-```
-return {
-  // Ignored. only objects are supported at top level
-  name: 'Superman'
-
-  traits: {
-    // Recognized as global property, saved at top level
-    name: 'Superman',
-
-    //Increments coconuts by 2
-    coconuts: { operation: 'inc', value: 2 }
-  },
-  // Groups are supported, 1 level only.
-  shopify: {
-    key: 'value'
-}
+//BEWARE - if you track() without a if() condition
+//you trigger an infinite loop.
+if(false) { track("Viewed Monthy Python", { coconuts: 12 });}
 ```
 
-You can apply <a target="_blank" href="http://www.hull.io/docs/references/hull_js#traits">Traits operations</a> if needed.
+##### You can apply <a target="_blank" href="http://www.hull.io/docs/references/hull_js#traits">Traits operations</a>
+Be careful to not apply trait operations unconditionally otherwise you'll end up with an infinite increment loop.
 
-**Be careful to not apply trait operations unconditionally otherwise you'll end up with an infinite increment loop.**
+##### You can up to 10 events with <a target="_blank" href="http://www.hull.io/docs/references/hull_js#track">track()</a>
+Be careful to not generate events unconditionally otherwise you'll end up with an infinite loop of events and recomputations.
 
-On the **left**, is a sample user with all his/her properties, segments, latest events and changes since last recompute. You can search for a specific user.
+### Left Panel
+A sample user with all his/her properties, segments, latest events and changes since last recompute. You can search for a specific user. 
 
-On the **right**, a preview of the updated user, a summary of the changes that would be applied and eventual logs and errors from the console</p>
+### Right Panel
+A preview of the updated user, a summary of the changes that would be applied and eventual logs and errors from the console
 
-<p>When you're satisfied, click **Save**</p>
-</Col>
-</Col>
-</Row>
+- When you're satisfied, click **Save**.
+- Code will start running for each newly modified user once saved.
+- Code will not back-process users who don't change.
+- You can trigger a batch from the dashboard to force a pass of processing
+- For Batches, Events won't be sent again
 
-<hr/>
+## Variables and libraries
 
-<Row>
-<Col sm={12}>
-<h4>Variables and libraries you can access</h4>
-<p>The code will run once saved. It will not back-process users who don't change. You can trigger a batch from the dashboard. Events won't be sent in Batches.</p>
-
-</Col>
-</Row>
-<Table striped bordered condensed hover className='mt-1'>
-<tbody>
-<tr>
-<td><code>ship</code></td>
-<td>
-<p><small>The Ship's data. Can be used to store additional data</small></p></td>
-</tr>
-<tr>
-<td><code>user</code></td>
-<td>
-<p><small>The User data (as seen on the left side)</small></p></td>
-</tr>
-<tr>
-<td><code>changes</code></td>
-<td>
-<p><small>An array of all the changed properties since last recompute</small></p></td>
-</tr>
-<tr>
-<td><code>events</code></td>
-<td>
-<p><small>An array of all the events since last recompute</small></p></td>
-</tr>
-<tr>
-<td><code>segments</code></td>
-<td>
-<p><small>The segments the user belongs to. </small></p></td>
-</tr>
-<tr>
-<td><code>isInSegment('Segment')</code></td>
-<td>
-<p><small>A convenience method allowing you to quickly define if the user is a member of a given segment.</small></p></td>
-</tr>
-<tr>
-<td><code>moment()</code></td>
-<td>
-<p><small>The <a href="http://momentjs.com/" target='_blank'>Moment.js</a> library.</small></p></td>
-</tr>
-<tr>
-<td><code>URI()</code></td>
-<td>
-<p><small>The <a href="https://medialize.github.io/URI.js/" target='_blank'>URI.js</a> library.</small></p></td>
-</tr>
-<tr>
-<td><code>_</code></td>
-<td>
-<p><small>The <a href="https://lodash.com/" target='_blank'>lodash</a> library.</small></
+| Function or Variable              | Description                                                                                                  |
+|-----------------------------------|--------------------------------------------------------------------------------------------------------------|
+| `ship`                            | The Ship's data. Can be used to store additional data                                                        |
+| `user`                            | The User data (as seen on the left column)                                                                   |
+| `changes`                         | An Array of all the changed properties since last recompute                                                  |
+| `events`                          | An Array of all the events since last recompute                                                              |
+| `segments`                        | An Array of the segments the user belongs to.                                                                |
+| `traits(properties, context)`     | A method to Update User Traits. Optionally define a `context` with a `source` key to save in a custom group  |
+| `track('Event Name', properties)` | A method to generate new Events for the user. Can be used at most 10 times in a single run of the processor. |
+| `isInSegment('Segment')`          | A convenience method to easily define if the user is a member of a given segment.                            |
+| `moment()`                        | The Moment.js library.                                                                                       |
+| `URI()`                           | The URI.js library.                                                                                          |
+| `_`                               | The lodash library.                                                                                          |
