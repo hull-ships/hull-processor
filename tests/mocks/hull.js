@@ -1,6 +1,6 @@
-const hullClient = require("hull/src/middleware/client");
-const NotifHandler = require("hull/src/notif-handler");
-const BatchHandler = require("hull/src/batch-handler");
+const hullClient = require("hull/lib/middleware/client");
+const NotifHandler = require("hull/lib/notif-handler");
+const BatchHandler = require("hull/lib/batch-handler");
 
 const hullSecret = "hullSecret";
 const config = {
@@ -43,7 +43,9 @@ export default function HullSpy(ship, spy) {
       if (spy) spy("as", ...args);
       return new Hull();
     };
-    this.utils = {
+    this.logger = {
+      info: (...args) => console.log(...args),
+      error: (...args) => console.log(...args),
       debug: (...args) => console.log(...args),
       log: (...args) => console.log(...args)
     };
