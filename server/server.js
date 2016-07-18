@@ -27,15 +27,19 @@ module.exports = function Server(options = {}) {
   app.post("/compute", ComputeHandler({ hostSecret, hullClient: Middleware, Hull }));
   app.post("/batch", BatchHandler({
     hostSecret,
+    batchSize: 100,
     groupTraits: false,
-    handler: (notifications = [], context) => {
-      notifications.map(n => updateUser(n, context));
+    handler: (notifications = [], { hull, ship }) => {
+      notifications.map(({ message }) => {
+        message.user = hull.utils.groupTraits(message.user);
+        return updateUser({ message }, { hull, ship });
+      });
     }
   }));
   app.post("/notify", NotifHandler({
     hostSecret,
     groupTraits: false,
-    onSubscribe: function onSubscribe() {
+    onSubscribe() {
       console.warn("Hello new subscriber !");
     },
     handlers: {
