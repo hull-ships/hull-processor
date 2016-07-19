@@ -9,10 +9,8 @@ import deepMerge from "deepmerge";
 // import isGroup from "./is-group-trait";
 
 function applyUtils(sandbox = {}) {
-  const lodash = _.functions(_).reduce(function (l, key) { // eslint-disable-line func-names
-    l[key] = function () { // eslint-disable-line func-names
-      return _[key].apply(undefined, arguments); // eslint-disable-line prefer-rest-params
-    };
+  const lodash = _.functions(_).reduce((l, key) => {
+    l[key] = (...args) => _[key](...args);
     return l;
   }, {});
 
