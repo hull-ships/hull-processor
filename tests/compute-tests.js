@@ -12,6 +12,7 @@ const CODE = {
   identity: "traits({})",
   new_boolean: "traits({ new_boolean: true });",
   group: "traits({ line: 'test'}, { source: 'group' });",
+  utils: "traits({ host: urijs('http://hull.io/hello').host(), hello_at: moment('2016-12-01').startOf('year').format('YYYYMMDD') })"
 };
 
 function shipWithCode(s = {}, code = {}) {
@@ -53,6 +54,12 @@ describe("Compute Ship", () => {
     it("Should return grouped objects when groups are passed", () => {
       const computed = applyCompute(CODE.group);
       expect(computed).to.have.deep.property("result.user.group.line", "test");
+    });
+
+    it("Should return grouped objects when groups are passed", () => {
+      const computed = applyCompute(CODE.utils);
+      expect(computed).to.have.deep.property("result.changes.traits.hello_at", "20160101");
+      expect(computed).to.have.deep.property("result.changes.traits.host", "hull.io");
     });
   });
 });

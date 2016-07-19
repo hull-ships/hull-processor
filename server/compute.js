@@ -16,14 +16,13 @@ function applyUtils(sandbox = {}) {
     return l;
   }, {});
 
-  sandbox.moment = deepFreeze(function () { return moment.apply(undefined, arguments); });  // eslint-disable-line prefer-rest-params, func-names
-  sandbox.urijs = deepFreeze(function () { return urijs.apply(undefined, arguments); });  // eslint-disable-line prefer-rest-params, func-names
+  sandbox.moment = deepFreeze((...args) => { return moment(...args); });
+  sandbox.urijs = deepFreeze((...args) => { return urijs(...args); });
   sandbox._ = deepFreeze(lodash);
 }
 
-function isInSegment(segments, segmentName) {
+function isInSegment(segments = [], segmentName) {
   return _.includes(_.map(segments, "name"), segmentName);
-  // return segments && segments.reduce((r, s) => { return r || s.name == segmentName }, false)
 }
 
 const sandboxes = {};
@@ -138,4 +137,5 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
       user: updatedUser
     }
   };
+
 };
