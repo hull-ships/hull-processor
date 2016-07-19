@@ -1,3 +1,5 @@
+/* eslint global-require: 0 */
+
 if (process.env.NEW_RELIC_LICENSE_KEY) {
   console.warn("Starting newrelic agent with key: ", process.env.NEW_RELIC_LICENSE_KEY);
   require("newrelic");
