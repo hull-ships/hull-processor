@@ -137,5 +137,4 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
       user: updatedUser
     }
   };
-
 };
