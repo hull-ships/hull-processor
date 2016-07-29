@@ -8,6 +8,12 @@ if (process.env.NEW_RELIC_LICENSE_KEY) {
 const Hull = require("hull");
 const Server = require("../lib");
 
+
+if (process.env.LOG_LEVEL) {
+  Hull.logger.transports.console.level = process.env.LOG_LEVEL;
+}
+
+
 Server({
   Hull,
   hostSecret: process.env.SECRET || "1234",
