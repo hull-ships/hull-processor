@@ -68,6 +68,7 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
   sandbox.captureException = function captureException(e) {
     if (sentryDsn) {
       const client = new raven.Client(sentryDsn);
+      client.setExtraContext({ user, segments, events });
       client.captureException(e);
     }
   };
