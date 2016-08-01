@@ -38,7 +38,7 @@ module.exports = function Server(options = {}) {
   }));
   app.post("/notify", NotifHandler({
     hostSecret,
-    groupTraits: false,
+    groupTraits: true,
     onSubscribe() {
       console.warn("Hello new subscriber !");
     },
