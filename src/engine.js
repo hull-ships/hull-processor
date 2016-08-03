@@ -46,7 +46,7 @@ export default class Engine extends EventEmitter {
     this.compute({ ship, user: this.state.user });
   }
 
-  updateParent(ship) {
+  updateParent(code) {
     if (window.parent) {
       window.parent.postMessage(JSON.stringify({
         from: "embedded-ship",
@@ -97,8 +97,9 @@ export default class Engine extends EventEmitter {
             const { ship, user, took, result } = body || {};
 
             // Don't kill user code
-            const code = this.state.ship.private_settings.code;
-            ship.private_settings.code = code;
+            if (this && this.state && this.state.ship && this.state.ship.private_settings) {
+              ship.private_settings.code = this.state.ship.private_settings.code;
+            }
 
             this.setState({
               loading: false,
