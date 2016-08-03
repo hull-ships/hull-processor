@@ -119,7 +119,7 @@ describe("Compute Ship", () => {
       const spy = sinon.spy();
       const s = shipWithCode(payload("nested"));
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.called(spy, TESTS.nested.result);
+      sinon.assert.calledWith(spy, TESTS.nested.result);
       sinon.assert.neverCalledWithMatch(spy, "track");
     });
   });
