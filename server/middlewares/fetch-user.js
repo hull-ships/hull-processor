@@ -70,7 +70,7 @@ export default function fetchUser(req, res, next) {
   }
 
   return userPromise.then((payload = {}) => {
-    const segments = _.map(payload.segments, s => _.map(s, "id", "name", "type", "updated_at", "created_at"));
+    const segments = _.map(payload.segments, s => _.pick(s, "id", "name", "type", "updated_at", "created_at"));
     req.hull.user = { changes: [], events: [], ...payload, segments, user: client.utils.groupTraits(payload.user) };
     return req.hull.user;
   }).then(done, (err) => {

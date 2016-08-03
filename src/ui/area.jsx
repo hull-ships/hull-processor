@@ -11,6 +11,7 @@ export default class Area extends Component {
     highlight: [],
     onChange: nop,
     wrap: false,
+    javascript: true,
     style: {}
   }
   static propTypes = {
@@ -20,6 +21,13 @@ export default class Area extends Component {
   componentDidUpdate() {
     this.props.highlight.length && this.cm && this.cm.addOverlay({token:this.buildHighlighter()})
   }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const { value } = this.props;
+    if (value === nextProps.value) return false;
+    return true;
+  }
+
   buildHighlighter(){
     const tokens = _.map(this.props.highlight, (t) => `("${t}":)` );
     const rgs = `(${tokens.join("|")})`;
@@ -40,12 +48,12 @@ export default class Area extends Component {
 
     return (<Codemirror
       style={style}
-      ref = {(c)=> this.cm = c && c.getCodeMirror() }
+      ref = { c => this.cm = c && c.getCodeMirror() }
       value={value}
       onChange={onChange}
       options={{
         mode: {
-          name: "javascript",
+          name: this.props.javascript ? "javascript" : "application/ld+json",
           json: true
         },
         lineWrapping: wrap,

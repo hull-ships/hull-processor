@@ -1,18 +1,24 @@
-# Data Processor
+# Processor
 
-**This ship lets you process user data**. Add & edit properties and emit new events.  
-Users will pass through this code everytime they are updated or generate events.
+### This ship lets you process user data
+
+Add & edit properties and emit new events. Users will pass through this code everytime they are updated or generate events.
 
 **Actions are micro-batched:** The code will **not** run every time an Event is recorded, but rather wait and receive several events at once.
 
-When a User is updated, the Processor will receive it along with all the events performed since the last batch. Events are sent exactly once.
+When a User is updated, Processor will receive it along with all the events performed since the last batch. Events are sent exactly once.
 
 > It is up to you to avoid infinite loops: Those calls count against your quotas and can burn through it pretty quickly.
 
 ![Screenshot](screen.png)
 
-### Sidebar
-Write Javascript code to manipulate data, call `track()` and `traits()` to update User. ES6 is supported. You can't use asynchronous code and external libraries.
+## Left Column
+A sample user with all his/her properties, segments, latest events and changes since last recompute. You can search for a specific user. 
+
+---
+
+## Center Column
+Write Javascript code to manipulate data, call `track()` and `traits()` to update User. ES6 is supported. You can't use asynchronous code and external libraries. We provide several utilities out of the box. see below.
 
 Example: 
 ```js
@@ -30,16 +36,15 @@ traits({ swallows: { operation: 'inc', value: 2 } });
 if(false) { track("Viewed Monthy Python", { coconuts: 12 });}
 ```
 
-##### You can apply [Traits operations](http://www.hull.io/docs/references/hull_js#traits)
-Be careful to not apply trait operations unconditionally otherwise you'll end up with an infinite increment loop.
+##### You can apply [Traits operations](https://github.com/hull/hull-node/blob/master/README.md#usertraitsproperties-context)
+Be careful to not apply trait operations (such as increments) unconditionally otherwise you'll end up with an infinite increment loop.
 
-##### You can up to 10 events with [track()](http://www.hull.io/docs/references/hull_js#track)
+##### You can emit up to 10 tracking events with [track()](https://github.com/hull/hull-node/blob/master/README.md#usertrackevent-props-context)
 Be careful to not generate events unconditionally otherwise you'll end up with an infinite loop of events and recomputations.
 
-### Left Panel
-A sample user with all his/her properties, segments, latest events and changes since last recompute. You can search for a specific user. 
+---
 
-### Right Panel
+## Right Column
 A preview of the updated user, a summary of the changes that would be applied and eventual logs and errors from the console
 
 - When you're satisfied, click **Save**.
@@ -47,6 +52,8 @@ A preview of the updated user, a summary of the changes that would be applied an
 - Code will not back-process users who don't change.
 - You can trigger a batch from the dashboard to force a pass of processing
 - For Batches, Events won't be sent again
+
+---
 
 ## Variables and libraries
 
@@ -62,5 +69,4 @@ A preview of the updated user, a summary of the changes that would be applied an
 | `isInSegment('Segment')`          | A convenience method to easily define if the user is a member of a given segment.                            |
 | `moment()`                        | The Moment.js library.                                                                                       |
 | `URI()`                           | The URI.js library.                                                                                          |
-| `_`                               | The lodash library.                                                                                          |Screenshot
-(screenshot.png): http://www.hull.io/docs/references/hull_js#track
+| `_`                               | The lodash library.                                                                                          |

@@ -5,20 +5,10 @@ if (process.env.NEW_RELIC_LICENSE_KEY) {
 
 const Hull = require("hull");
 const Server = require("./server");
-const Logstash = require("winston-logstash").Logstash;
 
 if (process.env.LOG_LEVEL) {
   Hull.logger.transports.console.level = process.env.LOG_LEVEL;
 }
-
-Hull.logger.add(Logstash, {
-  node_name: "processor",
-  port: process.env.LOGSTASH_PORT,
-  host: process.env.LOGSTASH_HOST
-});
-
-console.log(process.env.LOGSTASH_HOST, process.env.LOGSTASH_PORT);
-Hull.logger.info("Booting");
 
 Server({
   Hull,

@@ -1,7 +1,7 @@
 {
   "name": "Processor",
   "description": "Recompute custom properties and emit events with Javascript logic whenever a user is updated",
-  "tags": ["incoming", "outgoing", "batch"],
+  "tags": ["incoming", "outgoing", "batch", "oneColumn"],
   "picture": "picture.png",
   "ui": false,
   "admin": "admin.html",
@@ -21,7 +21,7 @@
       "description":"Enter Javascript code here, It will receive the data in the middle column, can emit `track()` and `traits()`. Preview results on the right. Save when finished",
       "type": "string",
       "default":"console.log(`Hello ${user.name}`);\n// traits({ coconuts: 12 });\n// traits({ coconuts: 13 });\n// traits({ coconuts: 14 }, { source: 'clearbit' });\n// //BEWARE - if you track() without a if() condition you trigger an infinite loop.\n// //if(false) { track('Viewed Monthy Python', { coconuts: 12 });}",
-      "format": "code"
+      "format": "hidden"
     }
   ],
   "resources": [],

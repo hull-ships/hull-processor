@@ -23,17 +23,18 @@ export default class Code extends Component {
   render() {
 
     const options = {
-      mode: 'javascript',
+      mode: "javascript",
       lineNumbers: true,
       gutters: ["CodeMirror-lint-markers"],
       lint: true
     };
 
-    const { className, sm, onChange, value, onRun, loading } = this.props;
-    return <Col className={className} sm={sm}>
-      <Header title='Code'/>
+    const { className, sm, md, onChange, value } = this.props;
+    const title = <span>Code <small> Write code below, see preview on right. Click save when done</small></span>
+    return <Col className={className} md={md} sm={sm}>
+      <Header title={title}/>
       <hr/>
-      <Codemirror value={value} onChange={onChange} options={options} />
+      <Codemirror style={{ height: "auto" }} value={value} onChange={onChange} options={options} />
     </Col>
   }
 }
