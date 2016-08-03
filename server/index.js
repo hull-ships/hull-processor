@@ -1,72 +1,28 @@
-import express from "express";
-import path from "path";
-import devMode from "./dev-mode";
-import ComputeHandler from "./compute-handler";
-import responseTime from "response-time";
-import updateUser from "./user-update";
+if (process.env.NEW_RELIC_LICENSE_KEY) {
+  console.warn("Starting newrelic agent with key: ", process.env.NEW_RELIC_LICENSE_KEY);
+  require("newrelic"); // eslint-disable-line global-require
+}
 
-module.exports = function Server(options = {}) {
-  const { port, Hull, devMode: dev, hostSecret } = options;
-  const { BatchHandler, NotifHandler, Routes, Middleware } = Hull;
-  const { Readme, Manifest } = Routes;
+const Hull = require("hull");
+const Server = require("./server");
+const Logstash = require("winston-logstash").Logstash;
 
-  const app = express();
+if (process.env.LOG_LEVEL) {
+  Hull.logger.transports.console.level = process.env.LOG_LEVEL;
+}
 
-  if (dev) app.use(devMode());
-  app.use(responseTime());
-  app.use(express.static(path.resolve(__dirname, "..", "dist")));
-  app.use(express.static(path.resolve(__dirname, "..", "assets")));
+Hull.logger.add(Logstash, {
+  node_name: "processor",
+  port: process.env.LOGSTASH_PORT,
+  host: process.env.LOGSTASH_HOST
+});
 
-  app.set("views", path.resolve(__dirname, "..", "views"));
+console.log(process.env.LOGSTASH_HOST, process.env.LOGSTASH_PORT);
+Hull.logger.info("Booting");
 
-  app.get("/manifest.json", Manifest(__dirname));
-  app.get("/", Readme);
-  app.get("/readme", Readme);
-
-
-  app.post("/compute", ComputeHandler({ hostSecret, hullClient: Middleware, Hull }));
-  app.post("/batch", BatchHandler({
-    hostSecret,
-    batchSize: 100,
-    groupTraits: false,
-    handler: (notifications = [], { hull, ship }) => {
-      notifications.map(({ message }) => {
-        message.user = hull.utils.groupTraits(message.user);
-        return updateUser({ message }, { hull, ship });
-      });
-    }
-  }));
-  app.post("/notify", NotifHandler({
-    hostSecret,
-    groupTraits: true,
-    onSubscribe() {
-      console.warn("Hello new subscriber !");
-    },
-    handlers: {
-      "user:update": updateUser
-    }
-  }));
-
-  // Error Handler
-  app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
-    if (err) {
-      const data = {
-        status: err.status,
-        segmentBody: req.segment,
-        method: req.method,
-        headers: req.headers,
-        url: req.url,
-        params: req.params
-      };
-      Hull.logger.error("Error ----------------", err.message, err.status, data);
-    }
-
-    return res.status(err.status || 500).send({ message: err.message });
-  });
-
-  Hull.logger.info("started", { port });
-
-  app.listen(port);
-
-  return app;
-};
+Server({
+  Hull,
+  hostSecret: process.env.SECRET || "1234",
+  devMode: process.env.NODE_ENV === "development",
+  port: process.env.PORT || 8082
+});
