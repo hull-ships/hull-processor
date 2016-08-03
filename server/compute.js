@@ -115,7 +115,18 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
       if (source) {
         pld[source] = { ...pld[source], ...properties };
       } else {
-        pld.traits = { ...pld.traits, ...properties };
+        _.map(properties, (v, k) => {
+          const path = k.replace("/", ".");
+          if (path.indexOf(".") > -1) {
+            _.setWith(pld, path, v, Object);
+          } else {
+            pld.traits = {
+              ...pld.traits,
+              [k]: v
+            };
+          }
+          return;
+        });
       }
     }
     return pld;

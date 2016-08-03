@@ -28,7 +28,7 @@ const TESTS = {
   },
   conflict: {
     payload: "traits({ test: 4, 'group/test': 1}); traits({ test: 2 }, { source: 'group' });",
-    result: { test: 4, "group/test": 1 }
+    result: { test: 4, "group/test": 2 }
   },
   nested: {
     payload: "traits({ value: 'val0', group: { value: 'val1', group: { value: 'val2' } } } }, { source: 'group' });",
@@ -119,7 +119,7 @@ describe("Compute Ship", () => {
       const spy = sinon.spy();
       const s = shipWithCode(payload("nested"));
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.calledWith(spy, TESTS.nested.result);
+      sinon.assert.calledWith(spy, "as", "562123b470df84b740000042");
       sinon.assert.neverCalledWithMatch(spy, "track");
     });
   });
