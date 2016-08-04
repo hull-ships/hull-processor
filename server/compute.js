@@ -143,11 +143,11 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
   }, {});
 
   return {
-    code,
-    result: {
-      logs, errors, changes, events: tracks,
-      payload: sandbox.payload,
-      user: updatedUser
-    }
+    logs,
+    errors,
+    changes,
+    events: tracks,
+    payload: sandbox.payload,
+    user: updatedUser
   };
 };

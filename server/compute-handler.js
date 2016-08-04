@@ -16,13 +16,13 @@ function computeHandler(req, res) {
 
   if (client && ship && user) {
     const startTime = new Date();
-    const computed = compute(user, ship);
+    const result = compute(user, ship);
 
     const took = new Date() - startTime;
     timings.compute = took;
 
     res
-      .send({ ship, user, took, timings, ...computed })
+      .send({ ship, user, took, timings, result })
       .end();
   } else {
     res
