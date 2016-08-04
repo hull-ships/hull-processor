@@ -16,28 +16,34 @@ function getEventsForUserId(client, user_id) {
     page: 1,
     per_page: 5
   };
+
   return client
   .post("search/events", params)
   .then((res = {}) => {
-    const esEvents = res.data;
-    if (esEvents.length) {
-      return _.map(esEvents, e => {
-        return {
-          event: e.event,
-          event_source: e.source,
-          event_type: e.type,
-          properties: _.fromPairs(_.map(e.properties, p => [p.field_name, p.text_value])),
-          context: {
-            location: {
-              latitude: e.context.location.lat,
-              longitude: e.context.location.lon
-            },
-            page: {
-              url: e.context.page_url
+    try {
+      const esEvents = res.data;
+      if (esEvents.length) {
+        return _.map(esEvents, e => {
+          const { context = {}, properties = {}, event, source, type } = e;
+          return {
+            event,
+            event_source: source,
+            event_type: type,
+            properties: _.fromPairs(_.map(properties, p => [p.field_name, p.text_value])),
+            context: {
+              location: {
+                latitude: context.location.lat,
+                longitude: context.location.lon
+              },
+              page: {
+                url: context.page_url
+              }
             }
-          }
-        };
-      });
+          };
+        });
+      }
+    } catch (e) {
+      client.logger.error("fetch.user.events.error", e.message);
     }
     return [];
   });
@@ -85,13 +91,13 @@ function searchUser(client, query) {
       if (!user) return reject(new Error("User not found"));
       const { id } = user;
       return Promise.all([
-        client.as(id, false).get(`${id}/segments`),
+        client.as(id, false).get(`${id}/segments`).catch(e => client.logger.error("fetch.user.segments.error", e.message)),
         getEventsForUserId(client, id)
       ]).then(results => {
         const [segments = [], events = []] = results;
         return resolve({ user, segments, events }, reject);
       });
-    });
+    }, e => client.logger.error("fetch.user.report.error", e.message));
   });
 }
 
@@ -116,11 +122,14 @@ export default function fetchUser(req, res, next) {
     next();
   }
 
-  return userPromise.then((payload = {}) => {
+  return userPromise
+  .then((payload = {}) => {
     const segments = _.map(payload.segments, s => _.pick(s, "id", "name", "type", "updated_at", "created_at"));
     req.hull.user = { changes: [], ...payload, segments, user: client.utils.groupTraits(payload.user) };
     return req.hull.user;
-  }).then(done, (err) => {
+  })
+  .then(done, (err) => {
+    client.logger.error("feetch.user.error", err.message)
     res.status(404);
     res.send({ reason: "user_not_found", message: err.message });
     return res.end();
