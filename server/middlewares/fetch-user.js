@@ -1,15 +1,46 @@
 import _ from "lodash";
 import Promise from "bluebird";
 
-function getUserById(client, userId) {
-  return Promise.all([
-    client.get(`${userId}/user_report`),
-    client.as(userId).get(`${userId}/segments`)
-  ]).then(results => {
-    return { user: results[0], segments: results[1] };
+function getEventsForUserId(client, user_id) {
+  if (!user_id || !client) return Promise.reject();
+  const params = {
+    query: {
+      has_parent: {
+        type: "user_report",
+        query: { match: { id: user_id } }
+      }
+    },
+    sort: { created_at: "desc" },
+    raw: true,
+    page: 1,
+    per_page: 5
+  };
+  return client
+  .post("search/events", params)
+  .then((res = {}) => {
+    const esEvents = res.data;
+    if (esEvents.length) {
+      return _.map(esEvents, e => {
+        return {
+          ..._.pick(e, "event", "context", "type", "source", "created_at"),
+          properties: _.fromPairs(_.map(e.properties, p => [p.field_name, p.text_value]))
+        };
+      });
+    }
+    return [];
   });
 }
 
+function getUserById(client, userId) {
+  return Promise.all([
+    client.get(`${userId}/user_report`),
+    client.as(userId, false).get(`${userId}/segments`),
+    getEventsForUserId(client, userId)
+  ]).then((results = []) => {
+    const [user = {}, segments = [], events = []] = results;
+    return { user, segments, events };
+  });
+}
 
 function searchUser(client, query) {
   const params = {
@@ -36,14 +67,18 @@ function searchUser(client, query) {
   }
 
   return new Promise((resolve, reject) => {
-    client.post("search/user_reports", params).then(res => {
-      return res.data[0];
-    }, reject).then(user => {
+    client.post("search/user_reports", params)
+    .then((res = {}) => {
+      const user = res.data && res.data[0];
       if (!user) return reject(new Error("User not found"));
-      return client
-        .as(user.id, false)
-        .get(`${user.id}/segments`)
-        .then(segments => resolve({ user, segments }), reject);
+      const { id } = user;
+      return Promise.all([
+        client.as(id, false).get(`${id}/segments`),
+        getEventsForUserId(client, id)
+      ]).then(results => {
+        const [segments = [], events = []] = results;
+        return resolve({ user, segments, events }, reject);
+      });
     });
   });
 }
@@ -71,7 +106,7 @@ export default function fetchUser(req, res, next) {
 
   return userPromise.then((payload = {}) => {
     const segments = _.map(payload.segments, s => _.pick(s, "id", "name", "type", "updated_at", "created_at"));
-    req.hull.user = { changes: [], events: [], ...payload, segments, user: client.utils.groupTraits(payload.user) };
+    req.hull.user = { changes: [], ...payload, segments, user: client.utils.groupTraits(payload.user) };
     return req.hull.user;
   }).then(done, (err) => {
     res.status(404);
