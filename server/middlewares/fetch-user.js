@@ -129,7 +129,7 @@ export default function fetchUser(req, res, next) {
     return req.hull.user;
   })
   .then(done, (err) => {
-    client.logger.error("feetch.user.error", err.message)
+    client.logger.error("feetch.user.error", err.message);
     res.status(404);
     res.send({ reason: "user_not_found", message: err.message });
     return res.end();
