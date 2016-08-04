@@ -37,7 +37,7 @@ module.exports = function ComputeHandler(options) {
   const { hullClient, hostSecret = "" } = options;
 
   app.use(bodyParser.json());
-  app.use(hullClient({ hostSecret, fetchShip: true, cacheShip: true }));
+  app.use(hullClient({ hostSecret, fetchShip: true, cacheShip: false }));
   app.use(fetchUser);
   app.use(computeHandler);
 
