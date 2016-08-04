@@ -1,6 +1,7 @@
 import _ from "lodash";
 import Promise from "bluebird";
 
+
 function getEventsForUserId(client, user_id) {
   if (!user_id || !client) return Promise.reject();
   const params = {
@@ -22,8 +23,19 @@ function getEventsForUserId(client, user_id) {
     if (esEvents.length) {
       return _.map(esEvents, e => {
         return {
-          ..._.pick(e, "event", "context", "type", "source", "created_at"),
-          properties: _.fromPairs(_.map(e.properties, p => [p.field_name, p.text_value]))
+          event: e.event,
+          event_source: e.source,
+          event_type: e.type,
+          properties: _.fromPairs(_.map(e.properties, p => [p.field_name, p.text_value])),
+          context: {
+            location: {
+              latitude: e.context.location.lat,
+              longitude: e.context.location.lon
+            },
+            page: {
+              url: e.context.page_url
+            }
+          }
         };
       });
     }
