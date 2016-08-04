@@ -45,7 +45,7 @@ export default class App extends Component {
           <UserPane
             className="flexColumn userPane"
             sm={4}
-            md={3}
+            md={4}
             loading={loading}
             onSearch={this.handleSearch.bind(this)}
             value={user}
@@ -56,7 +56,7 @@ export default class App extends Component {
             onChange={this.handleCodeUpdate.bind(this)}
             value={code}
             sm={4}
-            md={6}
+            md={5}
           />
           <ResultsPane
             className="flexColumn pl-1 resultPane"

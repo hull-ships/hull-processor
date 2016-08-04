@@ -46,15 +46,17 @@
     .well{
       padding:0;
     }
-    .flexRow{
-      flex-direction: row;
-      display: flex;
-    }
-    .flexColumn{
-      display: flex;
-      flex-direction: column;
-      flex: 1 1 0;
-      padding: 0 10px;
+    @media (min-width: 768px) {
+      .flexRow{
+        flex-direction: row;
+        display: flex;
+      }
+      .flexColumn{
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 0;
+        padding: 0 10px;
+      }
     }
     .flexGrow{
       flex-grow:1;
