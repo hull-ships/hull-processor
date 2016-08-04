@@ -9,21 +9,18 @@ import deepMerge from "deepmerge";
 // import isGroup from "./is-group-trait";
 
 function applyUtils(sandbox = {}) {
-  const lodash = _.functions(_).reduce(function (l, key) { // eslint-disable-line func-names
-    l[key] = function () { // eslint-disable-line func-names
-      return _[key].apply(undefined, arguments); // eslint-disable-line prefer-rest-params
-    };
+  const lodash = _.functions(_).reduce((l, key) => {
+    l[key] = (...args) => _[key](...args);
     return l;
   }, {});
 
-  sandbox.moment = deepFreeze(function () { return moment.apply(undefined, arguments); });  // eslint-disable-line prefer-rest-params, func-names
-  sandbox.urijs = deepFreeze(function () { return urijs.apply(undefined, arguments); });  // eslint-disable-line prefer-rest-params, func-names
+  sandbox.moment = deepFreeze((...args) => { return moment(...args); });
+  sandbox.urijs = deepFreeze((...args) => { return urijs(...args); });
   sandbox._ = deepFreeze(lodash);
 }
 
-function isInSegment(segments, segmentName) {
+function isInSegment(segments = [], segmentName) {
   return _.includes(_.map(segments, "name"), segmentName);
-  // return segments && segments.reduce((r, s) => { return r || s.name == segmentName }, false)
 }
 
 const sandboxes = {};
@@ -36,6 +33,9 @@ function getSandbox(ship) {
 module.exports = function compute({ user, segments, events = [] }, ship = {}) {
   const { private_settings = {} } = ship;
   const { code = "", sentry_dsn: sentryDsn } = private_settings;
+
+  // Manually add traits hash if not already there
+  user.traits = user.traits || {};
 
   const sandbox = getSandbox(ship);
   sandbox.user = user;
@@ -71,6 +71,7 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
   sandbox.captureException = function captureException(e) {
     if (sentryDsn) {
       const client = new raven.Client(sentryDsn);
+      client.setExtraContext({ user, segments, events });
       client.captureException(e);
     }
   };
@@ -114,7 +115,18 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
       if (source) {
         pld[source] = { ...pld[source], ...properties };
       } else {
-        pld.traits = { ...pld.traits, ...properties };
+        _.map(properties, (v, k) => {
+          const path = k.replace("/", ".");
+          if (path.indexOf(".") > -1) {
+            _.setWith(pld, path, v, Object);
+          } else {
+            pld.traits = {
+              ...pld.traits,
+              [k]: v
+            };
+          }
+          return;
+        });
       }
     }
     return pld;
@@ -131,11 +143,11 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
   }, {});
 
   return {
-    code,
-    result: {
-      logs, errors, changes, events: tracks,
-      payload: sandbox.payload,
-      user: updatedUser
-    }
+    logs,
+    errors,
+    changes,
+    events: tracks,
+    payload: sandbox.payload,
+    user: updatedUser
   };
 };

@@ -13,6 +13,7 @@ export default class Engine extends EventEmitter {
     this.state = { ship, loading: false };
     this.compute({ ship, userId });
     this.compute = _.debounce(this.compute, 1000);
+    this.updateParent = _.debounce(this.updateParent, 1000);
   }
 
   setState(changes) {
@@ -45,6 +46,33 @@ export default class Engine extends EventEmitter {
     this.compute({ ship, user: this.state.user });
   }
 
+  updateParent(code) {
+    if (window.parent) {
+      window.parent.postMessage(JSON.stringify({
+        from: "embedded-ship",
+        action: "update",
+        ship: { private_settings: { code } }
+      }), "*");
+    }
+  }
+  updateCode(code) {
+    const { ship } = this.state || {};
+    if (!ship || !ship.id) return;
+    const newShip = {
+      ...ship,
+      private_settings: {
+        ...ship.private_settings,
+        code
+      }
+    };
+    this.updateParent(code);
+    this.setState({ ship: newShip });
+    this.compute({
+      ship: newShip,
+      user: this.state.user
+    });
+  }
+
   compute(params) {
     if (this.state.loading) return false;
     this.setState({ loading: true });
@@ -67,6 +95,12 @@ export default class Engine extends EventEmitter {
             });
           } else {
             const { ship, user, took, result } = body || {};
+
+            // Don't kill user code
+            if (this && this.state && this.state.ship && this.state.ship.private_settings) {
+              ship.private_settings.code = this.state.ship.private_settings.code;
+            }
+
             this.setState({
               loading: false,
               initialized: true,

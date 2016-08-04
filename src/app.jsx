@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { Grid, Col, Row, Button } from "react-bootstrap";
 
-import ResultsPane from "./results";
 import UserPane from "./user";
+import CodePane from "./code";
+import ResultsPane from "./results";
 
 export default class App extends Component {
 
@@ -21,7 +22,6 @@ export default class App extends Component {
 
   _onChange = () => {
     const state = this.props.engine.getState();
-    console.log(state)
     this.setState(state);
   }
 
@@ -31,22 +31,37 @@ export default class App extends Component {
     }
   }
 
+  handleCodeUpdate(code) {
+    this.props.engine.updateCode(code);
+  }
+
   render() {
-    const { user, loading, userSearch, initialized, error } = this.state;
+    const { user, loading, userSearch, initialized, error, ship = {} } = this.state;
+    const { private_settings = {} } = ship;
+    const { code = "" } = private_settings;
     if (initialized) {
       return <Grid fluid={true} className="pt-1">
         <Row className="flexRow">
           <UserPane
             className="flexColumn userPane"
-            sm={6}
+            sm={4}
+            md={4}
             loading={loading}
             onSearch={this.handleSearch.bind(this)}
             value={user}
             error={error}
             userSearch={userSearch} />
+          <CodePane
+            className="flexColumn userPane"
+            onChange={this.handleCodeUpdate.bind(this)}
+            value={code}
+            sm={4}
+            md={5}
+          />
           <ResultsPane
             className="flexColumn pl-1 resultPane"
-            sm={6}
+            sm={4}
+            md={3}
             loading={loading}
             error={error}
             {...this.state.result} />

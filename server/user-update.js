@@ -18,15 +18,13 @@ function flatten(obj, key, group) {
 module.exports = function handle({ message = {} }, { ship, hull }) {
   const { user, segments } = message;
   try {
-    const computed = compute(message, ship);
-    const { changes, events } = computed.result;
+    const { changes, events } = compute(message, ship);
     const asUser = hull.as(user.id);
-    hull.utils.log("user.computed", changes);
     if (_.size(changes)) {
-      hull.utils.debug("Apply traits: ", { id: user.id, email: user.email, changes: JSON.stringify(changes) });
+      hull.logger.debug("user.computed", { id: user.id, email: user.email, changes: JSON.stringify(changes) });
       const flat = {
+        ...changes.traits,
         ...flatten({}, "", _.omit(changes, "traits")),
-        ...changes.traits
       };
       asUser.traits(flat);
     }
@@ -35,6 +33,6 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
       events.map(({ eventName, properties, context }) => asUser.track(eventName, properties, { source: "processor", ...context }));
     }
   } catch (err) {
-    console.warn("error in compute: ", { err, user, segments });
+    hull.logger.error("compute.error", { err, user, segments });
   }
 };

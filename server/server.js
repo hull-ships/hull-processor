@@ -5,12 +5,9 @@ import ComputeHandler from "./compute-handler";
 import responseTime from "response-time";
 import updateUser from "./user-update";
 
-const hostSecret = process.env.SECRET || "1234";
-
 module.exports = function Server(options = {}) {
-  const { port, Hull, devMode: dev } = options;
-  const { BatchHandler, NotifHandler, Routes, Middlewares } = Hull;
-  const { hullClient } = Middlewares;
+  const { port, Hull, devMode: dev, hostSecret } = options;
+  const { BatchHandler, NotifHandler, Routes, Middleware } = Hull;
   const { Readme, Manifest } = Routes;
 
   const app = express();
@@ -27,16 +24,22 @@ module.exports = function Server(options = {}) {
   app.get("/readme", Readme);
 
 
-  app.post("/compute", ComputeHandler({ hostSecret, hullClient, Hull }));
+  app.post("/compute", ComputeHandler({ hostSecret, hullClient: Middleware, Hull }));
   app.post("/batch", BatchHandler({
+    hostSecret,
+    batchSize: 100,
     groupTraits: false,
-    handler: (notifications = [], context) => {
-      notifications.map(n => updateUser(n, context));
+    handler: (notifications = [], { hull, ship }) => {
+      notifications.map(({ message }) => {
+        message.user = hull.utils.groupTraits(message.user);
+        return updateUser({ message }, { hull, ship });
+      });
     }
   }));
   app.post("/notify", NotifHandler({
-    groupTraits: false,
-    onSubscribe: function onSubscribe() {
+    hostSecret,
+    groupTraits: true,
+    onSubscribe() {
       console.warn("Hello new subscriber !");
     },
     handlers: {
@@ -55,13 +58,13 @@ module.exports = function Server(options = {}) {
         url: req.url,
         params: req.params
       };
-      console.log("Error ----------------", err.message, err.status, data);
+      Hull.logger.error("Error ----------------", err.message, err.status, data);
     }
 
     return res.status(err.status || 500).send({ message: err.message });
   });
 
-  Hull.log("started", { port });
+  Hull.logger.info("started", { port });
 
   app.listen(port);
 

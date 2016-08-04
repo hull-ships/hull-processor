@@ -23,7 +23,7 @@ export default class Results extends Component {
       payload,
       code,
       className,
-      sm
+      sm, md
      } = this.props;
     const ActivePane = (errors && errors.length) ? Errors : Output;
     const highlight = ((errors && errors.length) ? [] : _.map(_.keys(changes), k => `traits_${k}`) || []);
@@ -35,7 +35,7 @@ export default class Results extends Component {
       }).join(", ");
     }).join("\n");
 
-    return (<Col className={className} sm={sm}>
+    return (<Col className={className} md={md} sm={sm}>
       <Header title="Results">
         <Help showModal={codeIsEmpty}/>
       </Header>

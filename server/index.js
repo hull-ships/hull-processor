@@ -1,13 +1,14 @@
-import Hull from "hull";
-import Server from "./server";
+if (process.env.NEW_RELIC_LICENSE_KEY) {
+  console.warn("Starting newrelic agent with key: ", process.env.NEW_RELIC_LICENSE_KEY);
+  require("newrelic"); // eslint-disable-line global-require
+}
 
+const Hull = require("hull");
+const Server = require("./server");
 
-Hull.onLog(function onLog(message, data, ctx = {}) {
-  console.log(`[${ctx.id}] processor.${message}`, JSON.stringify(data || ""));
-});
-Hull.onMetric(function onMetric(metric, value, ctx = {}) {
-  console.log(`[${ctx.id}] processor.${metric}`, value);
-});
+if (process.env.LOG_LEVEL) {
+  Hull.logger.transports.console.level = process.env.LOG_LEVEL;
+}
 
 Server({
   Hull,

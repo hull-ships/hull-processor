@@ -18,7 +18,6 @@ export default class Help extends Component {
   }
 
   render() {
-    let tooltip = <Tooltip className="in" placement="left" id='tip'>Ship Help and Docs, Read me!</Tooltip>;
     const sample = `
 console.log(\`Hello \$\{user.name}\`);
 traits({ coconuts: 12, swallows: 12 });
@@ -35,9 +34,7 @@ if(false) { track("Viewed Monthy Python", { coconuts: 12 });}
     `;
     return (
       <div>
-        <OverlayTrigger overlay={tooltip}>
-          <Button bsStyle="default" bsSize="sm" clasName='btn-pill btn-rounded' onClick={this.open.bind(this)} > Help </Button>
-        </OverlayTrigger>
+        <Button bsStyle="warning" bsSize="sm" clasName='btn-pill btn-rounded' onClick={this.open.bind(this)} > Help </Button>
 
         <Modal show={this.state.showModal} bsSize='large' onHide={this.close.bind(this)}>
           <Modal.Header closeButton>

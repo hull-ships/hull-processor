@@ -10,8 +10,10 @@ const CODE = {
   empty: " ",
   invalid: " return false;",
   identity: "traits({})",
+  one: "traits({ domain: 'test' })",
   new_boolean: "traits({ new_boolean: true });",
   group: "traits({ line: 'test'}, { source: 'group' });",
+  utils: "traits({ keys: _.keys({ a: 1, b: 2 }).join(','), host: urijs('http://hull.io/hello').host(), hello_at: moment('2016-12-01').startOf('year').format('YYYYMMDD') })"
 };
 
 function shipWithCode(s = {}, code = {}) {
@@ -31,28 +33,40 @@ function applyCompute(c) {
 describe("Compute Ship", () => {
   describe("Compute method", () => {
     it("Should not change content if code does not return", () => {
-      const computed = applyCompute(CODE.empty);
-      expect(computed.result.user).to.be.eql(user);
+      const result = applyCompute(CODE.empty);
+      expect(result.user).to.be.eql(user);
     });
 
     it("Should not change content if code returns invalid ", () => {
-      const computed = applyCompute(CODE.invalid);
-      expect(computed.result.user).to.be.eql(user);
+      const result = applyCompute(CODE.invalid);
+      expect(result.user).to.be.eql(user);
     });
 
     it("Should not change content if code does not change content", () => {
-      const computed = applyCompute(CODE.identity);
-      expect(computed.result.user).to.be.eql(user);
+      const result = applyCompute(CODE.identity);
+      expect(result.user).to.be.eql(user);
+    });
+
+    it("Should only add the correct number of entries and nothing else", () => {
+      const result = applyCompute(CODE.one);
+      expect(result.changes.traits).to.deep.equal({ domain: "test" });
     });
 
     it("Should add trait when code adds a trait", () => {
-      const computed = applyCompute(CODE.new_boolean);
-      expect(computed).to.have.deep.property("result.user.traits.new_boolean", true);
+      const result = applyCompute(CODE.new_boolean);
+      expect(result).to.have.deep.property("user.traits.new_boolean", true);
     });
 
     it("Should return grouped objects when groups are passed", () => {
-      const computed = applyCompute(CODE.group);
-      expect(computed).to.have.deep.property("result.user.group.line", "test");
+      const result = applyCompute(CODE.group);
+      expect(result).to.have.deep.property("user.group.line", "test");
+    });
+
+    it("Should return grouped objects when groups are passed", () => {
+      const result = applyCompute(CODE.utils);
+      expect(result).to.have.deep.property("changes.traits.hello_at", "20160101");
+      expect(result).to.have.deep.property("changes.traits.host", "hull.io");
+      expect(result).to.have.deep.property("changes.traits.keys", "a,b");
     });
   });
 });
