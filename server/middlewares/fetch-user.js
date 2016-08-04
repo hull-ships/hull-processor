@@ -25,6 +25,7 @@ function getEventsForUserId(client, user_id) {
       if (esEvents.length) {
         return _.map(esEvents, e => {
           const { context = {}, properties = {}, event, source, type } = e;
+          const { location = {} } = context;
           return {
             event,
             event_source: source,
@@ -32,8 +33,8 @@ function getEventsForUserId(client, user_id) {
             properties: _.fromPairs(_.map(properties, p => [p.field_name, p.text_value])),
             context: {
               location: {
-                latitude: context.location.lat,
-                longitude: context.location.lon
+                latitude: location.lat,
+                longitude: location.lon
               },
               page: {
                 url: context.page_url
