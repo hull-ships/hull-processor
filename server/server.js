@@ -30,6 +30,7 @@ module.exports = function Server(options = {}) {
     batchSize: 100,
     groupTraits: false,
     handler: (notifications = [], { hull, ship }) => {
+      hull.logger.debug("processor.batch.process", { notifications: notifications.length });
       notifications.map(({ message }) => {
         message.user = hull.utils.groupTraits(message.user);
         return updateUser({ message }, { hull, ship });
@@ -64,7 +65,7 @@ module.exports = function Server(options = {}) {
     return res.status(err.status || 500).send({ message: err.message });
   });
 
-  Hull.logger.info("started", { port });
+  Hull.logger.info("processor.started", { port });
 
   app.listen(port);
 
