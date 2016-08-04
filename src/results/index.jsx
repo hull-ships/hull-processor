@@ -19,6 +19,7 @@ export default class Results extends Component {
     const {
       changes = {},
       errors = [],
+      events = [],
       logs = [],
       payload,
       code,
@@ -35,18 +36,33 @@ export default class Results extends Component {
       }).join(", ");
     }).join("\n");
 
+    let output = "";
+    if (_.size(changes)) {
+      const traits = JSON.stringify(changes, null, 2);
+      output = `/* TRAITS */
+${traits}
+`;
+    }
+    if (events.length) {
+      const eventString = _.map(events, e => {
+        const props = JSON.stringify(e.properties, null, 2);
+        return `track("${e.eventName}", ${props})
+`; });
+      output = `${output}
+/* EVENTS */
+${eventString}`;
+    }
     return (<Col className={className} md={md} sm={sm}>
       <Header title="Results">
         <Help showModal={codeIsEmpty}/>
       </Header>
       <hr/>
       <ActivePane
-        changes={changes}
+        changes={output}
         logs={logOutput}
         errors={errors}
         payload={payload}
         highlight={highlight} />
     </Col>);
   }
-
 }
