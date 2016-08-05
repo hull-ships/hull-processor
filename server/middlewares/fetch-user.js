@@ -27,10 +27,20 @@ function getEventsForUserId(client, user_id) {
         return _.map(esEvents, e => {
           const { context = {}, props = {}, event, source, type } = e;
           const { location = {} } = context;
-          const properties = _.reduce(props, (m, p) => {
-            m[p.field_name] = p[_.find(PROP_TYPE_DETECT_ORDER, d => p[d] !== undefined)];
-            return m;
-          }, {});
+          const properties = {};
+          _.reduce(props, (pp, p) =>
+            _.set(
+              pp,
+              p.field_name,
+              _.get(
+                p,
+                _.find(PROP_TYPE_DETECT_ORDER,
+                  _.has.bind(undefined, p)
+                )
+              )
+            )
+          , {});
+          client.logger.debug("hull.event.build", { properties, event, source, type });
           return {
             event,
             properties,
