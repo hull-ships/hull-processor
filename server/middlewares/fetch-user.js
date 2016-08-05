@@ -1,6 +1,7 @@
 import _ from "lodash";
 import Promise from "bluebird";
 
+const PROP_TYPE_DETECT_ORDER = ["bool_value", "date_value", "num_value", "text_value"];
 
 function getEventsForUserId(client, user_id) {
   if (!user_id || !client) return Promise.reject();
@@ -24,13 +25,17 @@ function getEventsForUserId(client, user_id) {
       const esEvents = res.data;
       if (esEvents.length) {
         return _.map(esEvents, e => {
-          const { context = {}, properties = {}, event, source, type } = e;
+          const { context = {}, props = {}, event, source, type } = e;
           const { location = {} } = context;
+          const properties = _.reduce(props, (m, p) => {
+            m[p.field_name] = p[_.find(PROP_TYPE_DETECT_ORDER, d => p[d] !== undefined)];
+            return m;
+          }, {});
           return {
             event,
+            properties,
             event_source: source,
             event_type: type,
-            properties: _.fromPairs(_.map(properties, p => [p.field_name, p.text_value])),
             context: {
               location: {
                 latitude: location.lat,
