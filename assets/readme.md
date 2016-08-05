@@ -40,7 +40,6 @@ if(false) { track("Viewed Monthy Python", { coconuts: 12 });}
 Be careful to not apply trait operations (such as increments) unconditionally otherwise you'll end up with an infinite increment loop.
 
 ##### You can emit up to 10 tracking events with [track()](https://github.com/hull/hull-node/blob/master/README.md#usertrackevent-props-context)
->>>>>>> master
 Be careful to not generate events unconditionally otherwise you'll end up with an infinite loop of events and recomputations.
 
 ---
