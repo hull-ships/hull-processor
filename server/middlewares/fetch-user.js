@@ -27,8 +27,7 @@ function getEventsForUserId(client, user_id) {
         return _.map(esEvents, e => {
           const { context = {}, props = {}, event, source, type } = e;
           const { location = {} } = context;
-          const properties = {};
-          _.reduce(props, (pp, p) =>
+          const properties = _.reduce(props, (pp, p) =>
             _.set(
               pp,
               p.field_name,
