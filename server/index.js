@@ -10,6 +10,18 @@ if (process.env.LOG_LEVEL) {
   Hull.logger.transports.console.level = process.env.LOG_LEVEL;
 }
 
+if (process.env.LOGSTASH_HOST && process.env.LOGSTASH_HOST) {
+  const Logstash = require("winston-logstash").Logstash; // eslint-disable-line global-require
+  Hull.logger.add(Logstash, {
+    node_name: "processor",
+    port: process.env.LOGSTASH_PORT,
+    host: process.env.LOGSTASH_HOST
+  });
+}
+// https://www.npmjs.com/package/express-winston
+
+Hull.logger.info("processor.boot");
+
 Server({
   Hull,
   hostSecret: process.env.SECRET || "1234",
