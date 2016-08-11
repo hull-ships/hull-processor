@@ -25,7 +25,7 @@ function getEventsForUserId(client, user_id) {
       const esEvents = res.data;
       if (esEvents.length) {
         return _.map(esEvents, e => {
-          const { context = {}, props = {}, event, source, type } = e;
+          const { context = {}, props = {}, event, created_at, source, type } = e;
           const { location = {} } = context;
           const properties = _.reduce(props, (pp, p) =>
             _.set(
@@ -42,6 +42,7 @@ function getEventsForUserId(client, user_id) {
           client.logger.debug("hull.event.build", { properties, event, source, type });
           return {
             event,
+            created_at,
             properties,
             event_source: source,
             event_type: type,
