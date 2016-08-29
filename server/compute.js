@@ -102,7 +102,7 @@ module.exports = function compute({ changes = {}, user, segments, events = [] },
   try {
     const script = new vm.Script(`
       try {
-        results.push((function() {
+        results.push(function() {
           "use strict";
           ${code}
         }());
