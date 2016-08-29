@@ -46,85 +46,105 @@ function payload(p) {
 
 describe("Compute Ship", () => {
   describe("User Update Handler", () => {
-    it("Should not call traits if no changes", () => {
+    it("Should not call traits if no changes", (done) => {
       const spy = sinon.spy();
       const s = shipWithCode("traits({})");
-      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.neverCalledWithMatch(spy, "traits");
-      sinon.assert.neverCalledWithMatch(spy, "track");
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+        sinon.assert.neverCalledWithMatch(spy, "traits");
+        sinon.assert.neverCalledWithMatch(spy, "track");
+        done();
+      });
     });
 
-    it("Should call with a correct payload for a simple trait", () => {
+    it("Should call with a correct payload for a simple trait", (done) => {
       const spy = sinon.spy();
       const s = shipWithCode(payload("simple"));
-      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.calledWith(spy, "traits", TESTS.simple.result);
-      sinon.assert.neverCalledWithMatch(spy, "track");
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+        sinon.assert.calledWith(spy, "traits", TESTS.simple.result);
+        sinon.assert.neverCalledWithMatch(spy, "track");
+        done();
+      });
     });
 
-    it("Should call with a correct payload for a complex trait", () => {
+    it("Should call with a correct payload for a complex trait", (done) => {
       const spy = sinon.spy();
       const s = shipWithCode(payload("complex"));
-      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.calledWith(spy, "traits", TESTS.complex.result);
-      sinon.assert.neverCalledWithMatch(spy, "track");
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+        sinon.assert.calledWith(spy, "traits", TESTS.complex.result);
+        sinon.assert.neverCalledWithMatch(spy, "track");
+        done();
+      });
     });
 
-    it("Should handle conflicts the way it's expected", () => {
+    it("Should handle conflicts the way it's expected", (done) => {
       const spy = sinon.spy();
       const s = shipWithCode(payload("conflict"));
-      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.calledWith(spy, "traits", TESTS.conflict.result);
-      sinon.assert.neverCalledWithMatch(spy, "track");
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+        sinon.assert.calledWith(spy, "traits", TESTS.conflict.result);
+        sinon.assert.neverCalledWithMatch(spy, "track");
+        done();
+      });
     });
 
-    it("Should call with a track for a simple track", () => {
+    it("Should call with a track for a simple track", (done) => {
       const spy = sinon.spy();
       const s = shipWithCode("track('Event', { key: 'value' }); return { traits: { test:'trait' } };");
-      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.calledWith(spy, "track", "Event", { key: "value" }, { ip: "0", source: "processor" });
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+        sinon.assert.calledWith(spy, "track", "Event", { key: "value" }, { ip: "0", source: "processor" });
+        done();
+      });
     });
 
-    it("Should call with 10 tracks for 10 tracks", () => {
+    it("Should call with 10 tracks for 10 tracks", (done) => {
       const spy = sinon.spy();
       const s = shipWithCode("track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); return { };");
-      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.callCount(spy, 12);
-      sinon.assert.calledWith(spy, "track", "Event", { key: "value" });
-      sinon.assert.neverCalledWithMatch(spy, "traits");
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+        sinon.assert.callCount(spy, 12);
+        sinon.assert.calledWith(spy, "track", "Event", { key: "value" });
+        sinon.assert.neverCalledWithMatch(spy, "traits");
+        done();
+      });
     });
 
-    it("Should call with 10 tracks for 12 tracks", () => {
+    it("Should call with 10 tracks for 12 tracks", (done) => {
       const spy = sinon.spy();
       const s = shipWithCode("track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); return { };");
-      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.callCount(spy, 14);
-      sinon.assert.calledWith(spy, "track", "Event", { key: "value" });
-      sinon.assert.neverCalledWithMatch(spy, "traits");
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+        sinon.assert.callCount(spy, 14);
+        sinon.assert.calledWith(spy, "track", "Event", { key: "value" });
+        sinon.assert.neverCalledWithMatch(spy, "traits");
+        done();
+      });
     });
 
-    it("Should not call traits if there is an empty return", () => {
+    it("Should not call traits if there is an empty return", (done) => {
       const spy = sinon.spy();
       const s = shipWithCode("track('Event', { key: 'value' }); return {};");
-      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.calledWith(spy, "track", "Event", { key: "value" });
-      sinon.assert.neverCalledWithMatch(spy, "traits");
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+        sinon.assert.calledWith(spy, "track", "Event", { key: "value" });
+        sinon.assert.neverCalledWithMatch(spy, "traits");
+        done();
+      });
     });
 
-    it("Should not call traits if there is no return", () => {
+    it("Should not call traits if there is no return", (done) => {
       const spy = sinon.spy();
       const s = shipWithCode("track('Event', { key: 'value' }); return;");
-      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.calledWith(spy, "track", "Event", { key: "value" });
-      sinon.assert.neverCalledWithMatch(spy, "traits");
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+        sinon.assert.calledWith(spy, "track", "Event", { key: "value" });
+        sinon.assert.neverCalledWithMatch(spy, "traits");
+        done();
+      });
     });
 
-    it("Should properly flatten nested groups", () => {
+    it("Should properly flatten nested groups", (done) => {
       const spy = sinon.spy();
       const s = shipWithCode(payload("nested"));
-      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.calledWith(spy, "as", "562123b470df84b740000042");
-      sinon.assert.neverCalledWithMatch(spy, "track");
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+        sinon.assert.calledWith(spy, "as", "562123b470df84b740000042");
+        sinon.assert.neverCalledWithMatch(spy, "track");
+        done();
+      });
     });
 
     it("Should call hull logger", () => {

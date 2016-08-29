@@ -16,19 +16,17 @@ function computeHandler(req, res) {
 
   if (client && ship && user) {
     const startTime = new Date();
-    const result = compute(user, ship, { preview: true });
-
-    const took = new Date() - startTime;
-    timings.compute = took;
-
-    res
-      .send({ ship, user, took, timings, result })
-      .end();
+    compute(user, ship, { preview: true })
+    .then(result => {
+      const took = new Date() - startTime;
+      timings.compute = took;
+      res.send({ ship, user, took, timings, result })
+        .end();
+    }).catch(error => res.status(500).json({ error }));
   } else {
     res
       .status(400)
-      .send({ reason: "missing_params", message: "Missing Params" })
-      .end();
+      .json({ reason: "missing_params", message: "Missing Params" });
   }
 }
 
