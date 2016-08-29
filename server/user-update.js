@@ -17,8 +17,8 @@ function flatten(obj, key, group) {
 
 module.exports = function handle({ message = {} }, { ship, hull }) {
   const { user, segments } = message;
-  try {
-    const { changes, events } = compute(message, ship);
+  return compute(message, ship)
+  .then(({ changes, events }) => {
     const asUser = hull.as(user.id);
 
     hull.logger.debug("compute.user.debug", { id: user.id, email: user.email, changes: JSON.stringify(changes) });
@@ -35,7 +35,8 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
     if (events.length > 0) {
       events.map(({ eventName, properties, context }) => asUser.track(eventName, properties, { source: "processor", ...context }));
     }
-  } catch (err) {
-    hull.logger.error("compute.error", { err, user, segments });
-  }
+  })
+  .catch(err =>
+    hull.logger.error("compute.error", { err, user, segments })
+  );
 };

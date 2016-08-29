@@ -6,7 +6,8 @@ import raven from "raven";
 import deepDiff from "deep-diff";
 import deepFreeze from "deep-freeze";
 import deepMerge from "deepmerge";
-// import isGroup from "./is-group-trait";
+import request from "request";
+import Promise from "bluebird";
 
 function applyUtils(sandbox = {}) {
   const lodash = _.functions(_).reduce((l, key) => {
@@ -45,13 +46,16 @@ module.exports = function compute({ changes = {}, user, segments, events = [] },
   sandbox.ship = ship;
   sandbox.payload = {};
   sandbox.isInSegment = isInSegment.bind(null, segments);
+
   applyUtils(sandbox);
 
   let tracks = [];
   const userTraits = [];
   const logs = [];
   const errors = [];
+  let isAsync = false;
 
+  sandbox.results = [];
   sandbox.errors = errors;
   sandbox.logs = logs;
   sandbox.track = (eventName, properties = {}, context = {}) => {
@@ -59,6 +63,17 @@ module.exports = function compute({ changes = {}, user, segments, events = [] },
   };
   sandbox.traits = (properties = {}, context = {}) => {
     userTraits.push({ properties, context });
+  };
+
+  sandbox.request = (options, callback) => {
+    isAsync = true;
+    return request.defaults({ timeout: 3000 })(options, (error, response, body) => {
+      try {
+        callback(error, response, body);
+      } catch (err) {
+        errors.push(err.toString());
+      }
+    });
   };
 
   function log(...args) {
@@ -87,7 +102,7 @@ module.exports = function compute({ changes = {}, user, segments, events = [] },
   try {
     const script = new vm.Script(`
       try {
-        (function() {
+        results.push((function() {
           "use strict";
           ${code}
         }());
@@ -101,54 +116,65 @@ module.exports = function compute({ changes = {}, user, segments, events = [] },
     sandbox.captureException(err);
   }
 
-  if (tracks.length > 10) {
-    logs.unshift([tracks]);
-    logs.unshift([`You're trying to send ${tracks.length} calls at a time. We will only process the first 10`]);
-    logs.unshift(["You can't send more than 10 tracking calls in one batch."]);
-    tracks = _.slice(tracks, 0, 10);
+  if (isAsync && !_.some(_.compact(sandbox.results), (r) => _.isFunction(r.then))) {
+    errors.push("It seems you’re using 'request' which is asynchronous.");
+    errors.push("You need to return a 'new Promise' and 'resolve' or 'reject' it in you 'request' callback.");
   }
 
+  return Promise.all(sandbox.results)
+  .catch((err) => {
+    errors.push(err.toString());
+    sandbox.captureException(err);
+  })
+  .then(() => {
+    if (tracks.length > 10) {
+      logs.unshift([tracks]);
+      logs.unshift([`You're trying to send ${tracks.length} calls at a time. We will only process the first 10`]);
+      logs.unshift(["You can't send more than 10 tracking calls in one batch."]);
+      tracks = _.slice(tracks, 0, 10);
+    }
 
-  const payload = _.reduce(userTraits, (pld, pl = {}) => {
-    const { properties, context = {} } = pl;
-    if (properties) {
-      const { source } = context;
-      if (source) {
-        pld[source] = { ...pld[source], ...properties };
-      } else {
-        _.map(properties, (v, k) => {
-          const path = k.replace("/", ".");
-          if (path.indexOf(".") > -1) {
-            _.setWith(pld, path, v, Object);
-          } else {
-            pld.traits = {
-              ...pld.traits,
-              [k]: v
-            };
-          }
-          return;
-        });
+    const payload = _.reduce(userTraits, (pld, pl = {}) => {
+      const { properties, context = {} } = pl;
+      if (properties) {
+        const { source } = context;
+        if (source) {
+          pld[source] = { ...pld[source], ...properties };
+        } else {
+          _.map(properties, (v, k) => {
+            const path = k.replace("/", ".");
+            if (path.indexOf(".") > -1) {
+              _.setWith(pld, path, v, Object);
+            } else {
+              pld.traits = {
+                ...pld.traits,
+                [k]: v
+              };
+            }
+            return;
+          });
+        }
       }
-    }
-    return pld;
-  }, {});
+      return pld;
+    }, {});
 
-  const updatedUser = deepMerge(user, payload);
+    const updatedUser = deepMerge(user, payload);
 
-  const diff = deepDiff(user, updatedUser) || [];
-  const changed = _.reduce(diff, (memo, d) => {
-    if (d.kind === "N" || d.kind === "E") {
-      _.set(memo, d.path, d.rhs);
-    }
-    return memo;
-  }, {});
+    const diff = deepDiff(user, updatedUser) || [];
+    const changed = _.reduce(diff, (memo, d) => {
+      if (d.kind === "N" || d.kind === "E") {
+        _.set(memo, d.path, d.rhs);
+      }
+      return memo;
+    }, {});
 
-  return {
-    logs,
-    errors,
-    changes: changed,
-    events: tracks,
-    payload: sandbox.payload,
-    user: updatedUser
-  };
+    return {
+      logs,
+      errors,
+      changed,
+      events: tracks,
+      payload: sandbox.payload,
+      user: updatedUser
+    };
+  });
 };

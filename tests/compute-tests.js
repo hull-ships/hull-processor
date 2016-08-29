@@ -32,41 +32,55 @@ function applyCompute(c) {
 
 describe("Compute Ship", () => {
   describe("Compute method", () => {
-    it("Should not change content if code does not return", () => {
-      const result = applyCompute(CODE.empty);
-      expect(result.user).to.be.eql(user);
+    it("Should not change content if code does not return", (done) => {
+      applyCompute(CODE.empty).then(result => {
+        expect(result.user).to.be.eql(user);
+        done();
+      });
     });
 
-    it("Should not change content if code returns invalid ", () => {
-      const result = applyCompute(CODE.invalid);
-      expect(result.user).to.be.eql(user);
+    it("Should not change content if code returns invalid ", (done) => {
+      applyCompute(CODE.invalid).then(result => {
+        expect(result.user).to.be.eql(user);
+        done();
+      });
     });
 
-    it("Should not change content if code does not change content", () => {
-      const result = applyCompute(CODE.identity);
-      expect(result.user).to.be.eql(user);
+    it("Should not change content if code does not change content", (done) => {
+      applyCompute(CODE.identity).then(result => {
+        expect(result.user).to.be.eql(user);
+        done();
+      });
     });
 
-    it("Should only add the correct number of entries and nothing else", () => {
-      const result = applyCompute(CODE.one);
-      expect(result.changes.traits).to.deep.equal({ domain: "test" });
+    it("Should only add the correct number of entries and nothing else", (done) => {
+      applyCompute(CODE.one).then(result => {
+        expect(result.changes.traits).to.deep.equal({ domain: "test" });
+        done();
+      });
     });
 
-    it("Should add trait when code adds a trait", () => {
-      const result = applyCompute(CODE.new_boolean);
-      expect(result).to.have.deep.property("user.traits.new_boolean", true);
+    it("Should add trait when code adds a trait", (done) => {
+      applyCompute(CODE.new_boolean).then(result => {
+        expect(result).to.have.deep.property("user.traits.new_boolean", true);
+        done();
+      });
     });
 
-    it("Should return grouped objects when groups are passed", () => {
-      const result = applyCompute(CODE.group);
-      expect(result).to.have.deep.property("user.group.line", "test");
+    it("Should return grouped objects when groups are passed", (done) => {
+      applyCompute(CODE.group).then(result => {
+        expect(result).to.have.deep.property("user.group.line", "test");
+        done();
+      });
     });
 
-    it("Should return grouped objects when groups are passed", () => {
-      const result = applyCompute(CODE.utils);
-      expect(result).to.have.deep.property("changes.traits.hello_at", "20160101");
-      expect(result).to.have.deep.property("changes.traits.host", "hull.io");
-      expect(result).to.have.deep.property("changes.traits.keys", "a,b");
+    it("Should return grouped objects when groups are passed", (done) => {
+      applyCompute(CODE.utils).then(result => {
+        expect(result).to.have.deep.property("changes.traits.hello_at", "20160101");
+        expect(result).to.have.deep.property("changes.traits.host", "hull.io");
+        expect(result).to.have.deep.property("changes.traits.keys", "a,b");
+        done();
+      });
     });
   });
 });
