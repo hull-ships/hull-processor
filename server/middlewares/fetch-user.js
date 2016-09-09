@@ -17,6 +17,9 @@ function getEventsForUserId(client, user_id) {
 
   return client
   .post("search/events", params)
+  .catch(err => {
+    return { data: [] };
+  })
   .then((res = {}) => {
     try {
       const esEvents = res.data;
