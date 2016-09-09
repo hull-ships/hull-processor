@@ -37,6 +37,8 @@ module.exports = function compute({ changes = {}, user, segments, events = [] },
   const { private_settings = {} } = ship;
   const { code = "", sentry_dsn: sentryDsn } = private_settings;
 
+
+
   // Manually add traits hash if not already there
   user.traits = user.traits || {};
 
