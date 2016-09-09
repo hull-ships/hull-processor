@@ -31,7 +31,7 @@ function computeHandler(req, res) {
   }
 }
 
-function haltOnTimedout(req, res, next){
+function haltOnTimedout(req, res, next) {
   if (!req.timedout) next();
 }
 
