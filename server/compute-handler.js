@@ -1,6 +1,7 @@
 import connect from "connect";
 import compute from "./compute";
 import bodyParser from "body-parser";
+import timeout from "connect-timeout";
 import fetchUser from "./middlewares/fetch-user";
 
 function computeHandler(req, res) {
@@ -30,14 +31,22 @@ function computeHandler(req, res) {
   }
 }
 
+function haltOnTimedout(req, res, next){
+  if (!req.timedout) next();
+}
+
 module.exports = function ComputeHandler(options) {
   const app = connect();
   const { hullClient, hostSecret = "" } = options;
 
+  app.use(timeout("15s"));
   app.use(bodyParser.json());
+  app.use(haltOnTimedout);
   app.use(hullClient({ hostSecret, fetchShip: true, cacheShip: false }));
   app.use(fetchUser);
+  app.use(haltOnTimedout);
   app.use(computeHandler);
+  app.use(haltOnTimedout);
 
   return function c(req, res) {
     return app.handle(req, res);
