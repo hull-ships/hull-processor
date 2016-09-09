@@ -52,6 +52,7 @@
     "classnames": "^2.2.5",
     "codemirror": "^5.16.0",
     "connect": "^3.4.1",
+    "connect-timeout": "^1.7.0",
     "css-loader": "^0.23.1",
     "deep-diff": "^0.3.4",
     "deep-freeze": "0.0.1",
