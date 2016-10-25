@@ -39,7 +39,7 @@ module.exports = function ComputeHandler(options) {
   const app = connect();
   const { hullClient, hostSecret = "" } = options;
 
-  app.use(timeout("15s"));
+  app.use(timeout("28s"));
   app.use(bodyParser.json());
   app.use(haltOnTimedout);
   app.use(hullClient({ hostSecret, fetchShip: true, cacheShip: false }));
