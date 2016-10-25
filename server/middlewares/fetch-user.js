@@ -141,11 +141,25 @@ export default function fetchUser(req, res, next) {
   return userPromise
   .then((payload = {}) => {
     const segments = _.map(payload.segments, s => _.pick(s, "id", "name", "type", "updated_at", "created_at"));
-    req.hull.user = { changes: [], ...payload, segments, user: client.utils.groupTraits(payload.user) };
+
+    const randKeys = _.sampleSize(_.keys(payload.user), 3);
+    const changes = {
+      user: _.reduce(randKeys, (m, k) => {
+        m[k] = [null, payload.user[k]];
+        m.THOSE_ARE_FOR_PREVIEW_ONLY = [null, "fake_values"];
+        return m;
+      }, {}),
+      is_new: false,
+      segments: {
+        entered: [_.first(segments)],
+        left: [_.last(segments)]
+      }
+    };
+    req.hull.user = { changes, ...payload, segments, user: client.utils.groupTraits(payload.user) };
     return req.hull.user;
   })
   .then(done, (err) => {
-    client.logger.error("feetch.user.error", err.message);
+    client.logger.error("fetch.user.error", err.message);
     res.status(404);
     res.send({ reason: "user_not_found", message: err.message });
     return res.end();

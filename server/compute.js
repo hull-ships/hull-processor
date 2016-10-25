@@ -30,7 +30,7 @@ function getSandbox(ship) {
   return sandboxes[ship.id];
 }
 
-module.exports = function compute({ user, segments, events = [] }, ship = {}) {
+module.exports = function compute({ changes = {}, user, segments, events = [] }, ship = {}) {
   const { private_settings = {} } = ship;
   const { code = "", sentry_dsn: sentryDsn } = private_settings;
 
@@ -38,6 +38,7 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
   user.traits = user.traits || {};
 
   const sandbox = getSandbox(ship);
+  sandbox.changes = changes;
   sandbox.user = user;
   sandbox.events = events;
   sandbox.segments = segments;
@@ -135,7 +136,7 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
   const updatedUser = deepMerge(user, payload);
 
   const diff = deepDiff(user, updatedUser) || [];
-  const changes = _.reduce(diff, (memo, d) => {
+  const changed = _.reduce(diff, (memo, d) => {
     if (d.kind === "N" || d.kind === "E") {
       _.set(memo, d.path, d.rhs);
     }
@@ -145,7 +146,7 @@ module.exports = function compute({ user, segments, events = [] }, ship = {}) {
   return {
     logs,
     errors,
-    changes,
+    changes: changed,
     events: tracks,
     payload: sandbox.payload,
     user: updatedUser
