@@ -61,7 +61,7 @@ A preview of the updated user, a summary of the changes that would be applied an
 |-----------------------------------|--------------------------------------------------------------------------------------------------------------|
 | `ship`                            | The Ship's data. Can be used to store additional data                                                        |
 | `user`                            | The User data (as seen on the left column)                                                                   |
-| `changes`                         | An Array of all the changed properties since last recompute                                                  |
+| `changes`                         | An object of all the changed properties since last recompute                                                  |
 | `events`                          | An Array of all the events since last recompute                                                              |
 | `segments`                        | An Array of the segments the user belongs to.                                                                |
 | `traits(properties, context)`     | A method to Update User Traits. Optionally define a `context` with a `source` key to save in a custom group  |

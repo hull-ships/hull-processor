@@ -122,7 +122,7 @@ if(false) { track("Viewed Monthy Python", { coconuts: 12 });}
                     </tr>
                     <tr>
                       <td><code>changes</code></td>
-                      <td><p><small>An array of all the changed properties since last recompute</small></p></td>
+                      <td><p><small>An object of all the changed properties since last recompute</small></p></td>
                     </tr>
                     <tr>
                       <td><code>events</code></td>
