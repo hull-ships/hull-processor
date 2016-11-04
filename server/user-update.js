@@ -28,8 +28,8 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
         ...changes.traits,
         ...flatten({}, "", _.omit(changes, "traits")),
       };
-      hull.logger.info("compute.user.computed", { id: user.id });
-      asUser.traits(flat);
+      hull.logger.info("compute.user.computed", { id: user.id, changes: flat });
+      if (_.size(flat)) asUser.traits(flat);
     }
 
     if (events.length > 0) {
