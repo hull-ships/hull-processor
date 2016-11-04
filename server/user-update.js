@@ -21,7 +21,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
     const { changes, events } = compute(message, ship);
     const asUser = hull.as(user.id);
 
-    // hull.logger.debug("compute.user.debug", { id: user.id, email: user.email, changes: JSON.stringify(changes) });
+    hull.logger.debug("compute.user.debug", { id: user.id, email: user.email, changes: JSON.stringify(changes) });
 
     if (_.size(changes)) {
       const flat = {
