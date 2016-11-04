@@ -21,7 +21,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
   .then(({ changes, events, errors, logs }) => {
     const asUser = hull.as(user.id);
 
-    hull.logger.debug("compute.user.debug", { id: user.id, email: user.email, changes });
+    hull.logger.debug("compute.user.debug", { id: user.id, email: user.email, changes: JSON.stringify(changes) });
 
     if (_.size(changes)) {
       const flat = {
@@ -30,7 +30,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
       };
 
       if (_.size(flat)) {
-        hull.logger.info("compute.user.computed", { id: user.id, email: user.email, changes: flat });
+        hull.logger.info("compute.user.computed", { id: user.id, email: user.email, changes: JSON.stringify(flat) });
         asUser.traits(flat);
       }
     }
