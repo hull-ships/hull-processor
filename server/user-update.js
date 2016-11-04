@@ -28,7 +28,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
         ...changes.traits,
         ...flatten({}, "", _.omit(changes, "traits")),
       };
-      
+
       if (_.size(flat)) {
         hull.logger.info("compute.user.computed", { id: user.id, changes: JSON.stringify(flat) });
         asUser.traits(flat);
