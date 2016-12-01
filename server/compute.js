@@ -30,7 +30,11 @@ function getSandbox(ship) {
   if (!s) sandboxes[ship.id] = vm.createContext({});
   return sandboxes[ship.id];
 }
+<<<<<<< HEAD
 const TOP_LEVEL_FIELDS = ["tags", "name", "description", "extra", "picture", "settings", "username", "email", "contact_email", "image", "first_name", "last_name", "address", "created_at", "phone", "domain", "accepts_marketing"];
+=======
+const TOP_LEVEL_FIELDS = ["tags", "name", "description", "extra", "picture", "settings", "username", "email", "contact_email", "image", "first_name", "last_name", "address", "created_at", "phone"];
+>>>>>>> Add support for properly updating top level fields
 
 module.exports = function compute({ changes = {}, user, segments, events = [] }, ship = {}, options = {}) {
   const { preview } = options;
@@ -157,6 +161,8 @@ module.exports = function compute({ changes = {}, user, segments, events = [] },
             const path = k.replace("/", ".");
             if (path.indexOf(".") > -1) {
               _.setWith(pld, path, v, Object);
+            } else if (_.includes(TOP_LEVEL_FIELDS)) {
+              pld[k] = v;
             } else {
               pld.traits = {
                 ...pld.traits,
