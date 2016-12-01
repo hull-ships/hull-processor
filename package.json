@@ -25,7 +25,7 @@
     "build:client": "NODE_ENV=production ./node_modules/.bin/webpack --config ./webpack.config.js --progress --profile --colors",
     "build:server": "./node_modules/.bin/babel server -d lib",
     "start": "node ./lib",
-    "start:dev": "NODE_ENV=development ./node_modules/.bin/nodemon -V -w server -x ./node_modules/.bin/babel-node -- server",
+    "start:dev": "NODE_ENV=development LOG_LEVEL=debug ./node_modules/.bin/nodemon -V -w server -x ./node_modules/.bin/babel-node -- server",
     "test": "npm run test:lint && npm run test:units",
     "test:lint": "./node_modules/.bin/eslint server",
     "test:modules": "npm outdated --depth=0",
