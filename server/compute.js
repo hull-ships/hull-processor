@@ -29,7 +29,7 @@ function getSandbox(ship) {
   if (!s) sandboxes[ship.id] = vm.createContext({});
   return sandboxes[ship.id];
 }
-const TOP_LEVEL_FIELDS = ["tags", "name", "description", "extra", "picture", "settings", "username", "email", "contact_email", "image", "first_name", "last_name", "address", "created_at", "phone"];
+const TOP_LEVEL_FIELDS = ["tags", "name", "description", "extra", "picture", "settings", "username", "email", "contact_email", "image", "first_name", "last_name", "address", "created_at", "phone", "domain", "accepts_marketing"];
 
 module.exports = function compute({ changes = {}, user, segments, events = [] }, ship = {}) {
   const { private_settings = {} } = ship;
