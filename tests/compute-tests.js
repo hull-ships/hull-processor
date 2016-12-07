@@ -10,7 +10,7 @@ const CODE = {
   empty: " ",
   invalid: " return false;",
   identity: "traits({})",
-  one: "traits({ domain: 'test' })",
+  one: "traits({ domain: 'test', boom: 'bam' })",
   new_boolean: "traits({ new_boolean: true });",
   group: "traits({ line: 'test'}, { source: 'group' });",
   utils: "traits({ keys: _.keys({ a: 1, b: 2 }).join(','), host: urijs('http://hull.io/hello').host(), hello_at: moment('2016-12-01').startOf('year').format('YYYYMMDD') })"
@@ -49,7 +49,7 @@ describe("Compute Ship", () => {
 
     it("Should only add the correct number of entries and nothing else", () => {
       const result = applyCompute(CODE.one);
-      expect(result.changes.traits).to.deep.equal({ domain: "test" });
+      expect(result.changes).to.deep.equal({ traits: { boom: "bam" }, domain: "test" });
     });
 
     it("Should add trait when code adds a trait", () => {
