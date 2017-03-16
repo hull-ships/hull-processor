@@ -23,3 +23,12 @@ npm install -g gulp
 npm install
 gulp
 ```
+
+### Notes
+
+1. Due to merging and diff calculating strategy, following use scenario can lead to an unexpected result:
+    ```js
+    user.traits.custom_ids = ["A", "B", "C"];
+    traits({ custom_ids: ["A", "B"] });
+    // processor ignores removing that array element
+    ```
