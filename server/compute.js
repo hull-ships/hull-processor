@@ -135,6 +135,7 @@ module.exports = function compute({ changes = {}, user, segments, events = [] },
     errors.push("You need to return a 'new Promise' and 'resolve' or 'reject' it in you 'request' callback.");
   }
 
+<<<<<<< HEAD
   return Promise.all(sandbox.results)
   .catch((err) => {
     errors.push(err.toString());
@@ -161,7 +162,7 @@ module.exports = function compute({ changes = {}, user, segments, events = [] },
             const path = k.replace("/", ".");
             if (path.indexOf(".") > -1) {
               _.setWith(pld, path, v, Object);
-            } else if (_.includes(TOP_LEVEL_FIELDS)) {
+            } else if (_.includes(TOP_LEVEL_FIELDS, k)) {
               pld[k] = v;
             } else {
               pld.traits = {
@@ -189,7 +190,7 @@ module.exports = function compute({ changes = {}, user, segments, events = [] },
       // when we have an array updated we set the whole
       // array in `changed` constant
       if (d.kind === "A") {
-        _.set(memo, d.path, _.get(updatedUser, d.path, []));
+        _.set(memo, d.path, _.get(payload, d.path, []));
       }
       return memo;
     }, {});
