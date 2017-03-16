@@ -13,7 +13,12 @@ const CODE = {
   one: "traits({ domain: 'test', boom: 'bam' })",
   new_boolean: "traits({ new_boolean: true });",
   group: "traits({ line: 'test'}, { source: 'group' });",
-  utils: "traits({ keys: _.keys({ a: 1, b: 2 }).join(','), host: urijs('http://hull.io/hello').host(), hello_at: moment('2016-12-01').startOf('year').format('YYYYMMDD') })"
+  utils: "traits({ keys: _.keys({ a: 1, b: 2 }).join(','), host: urijs('http://hull.io/hello').host(), hello_at: moment('2016-12-01').startOf('year').format('YYYYMMDD') })",
+  add_array_element: "traits({ testing_array: ['A', 'B', 'C', 'E'] })",
+  modify_array_element: "traits({ testing_array: ['F', 'B', 'C', 'E'] })",
+  delete_array_element: "traits({ testing_array: ['A', 'B'] })",
+  array_to_string: "traits({ testing_array: 'abcdef' })",
+  string_to_array: "traits({ foo: ['A', 'B'] })"
 };
 
 function shipWithCode(s = {}, code = {}) {
@@ -67,6 +72,32 @@ describe("Compute Ship", () => {
       expect(result).to.have.deep.property("changes.traits.hello_at", "20160101");
       expect(result).to.have.deep.property("changes.traits.host", "hull.io");
       expect(result).to.have.deep.property("changes.traits.keys", "a,b");
+    });
+
+    it("Should add an array element", () => {
+      const result = applyCompute(CODE.add_array_element);
+      expect(result.changes.traits.testing_array).to.deep.equal(["A", "B", "C", "E"]);
+    });
+
+    it("Should modify an array element", () => {
+      const result = applyCompute(CODE.modify_array_element);
+      expect(result.changes.traits.testing_array).to.deep.equal(["F", "B", "C", "E"]);
+    });
+
+    it("Should delete an array element", () => {
+      const result = applyCompute(CODE.delete_array_element);
+      console.log("DELETE", result.changes);
+      expect(result.changes.traits.testing_array).to.deep.equal(["A", "B"]);
+    });
+
+    it("Should change an array to string", () => {
+      const result = applyCompute(CODE.array_to_string);
+      expect(result.changes.traits.testing_array).to.equal("abcdef");
+    });
+
+    it("Should change a string to an array", () => {
+      const result = applyCompute(CODE.string_to_array);
+      expect(result.changes.traits.foo).to.deep.equal(["A", "B"]);
     });
   });
 });

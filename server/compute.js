@@ -136,7 +136,10 @@ module.exports = function compute({ changes = {}, user, segments, events = [] },
     return pld;
   }, {});
 
-  const updatedUser = deepMerge(user, payload);
+  const updatedUser = deepMerge(user, payload, {
+    // we don't concatenate arrays, we use only new values:
+    arrayMerge: (destinationArray, sourceArray) => sourceArray
+  });
 
   const diff = deepDiff(user, updatedUser) || [];
   const changed = _.reduce(diff, (memo, d) => {
@@ -146,7 +149,7 @@ module.exports = function compute({ changes = {}, user, segments, events = [] },
     // when we have an array updated we set the whole
     // array in `changed` constant
     if (d.kind === "A") {
-      _.set(memo, d.path, _.get(updatedUser, d.path, []));
+      _.set(memo, d.path, _.get(payload, d.path, []));
     }
     return memo;
   }, {});
