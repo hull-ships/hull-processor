@@ -189,7 +189,7 @@ module.exports = function compute({ changes = {}, user, segments, events = [] },
       // when we have an array updated we set the whole
       // array in `changed` constant
       if (d.kind === "A") {
-        _.set(memo, d.path, _.get(payload, d.path, []));
+        _.set(memo, d.path, _.get(updatedUser, d.path, []));
       }
       return memo;
     }, {});
