@@ -18,7 +18,7 @@ function flatten(obj, key, group) {
 module.exports = function handle({ message = {} }, { ship, hull }) {
   const { user, segments } = message;
   return compute(message, ship)
-  .then(({ changes, events, errors, logs }) => {
+  .then(({ changes, accountChanges, events, account, errors, logs }) => {
     const asUser = hull.as(user.id);
 
     hull.logger.debug("compute.user.debug", { id: user.id, email: user.email, changes });
@@ -35,12 +35,25 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
       }
     }
 
-    if (errors && errors.length > 0) {
-      hull.logger.error("compute.user.error", { id: user.id, email: user.email, errors });
+    if (_.size(accountChanges)) {
+      const flat = {
+        ...changes.traits,
+        ...flatten({}, "", _.omit(changes, "traits")),
+      };
+
+      if (_.size(flat)) {
+        const { domain } = account;
+        hull.logger.info("compute.account.computed", { id: account.id, changes: flat });
+        asUser.account({ domain }).traits(flat);
+      }
     }
 
     if (events.length > 0) {
       events.map(({ eventName, properties, context }) => asUser.track(eventName, properties, { ip: "0", source: "processor", ...context }));
+    }
+
+    if (errors && errors.length > 0) {
+      hull.logger.error("compute.user.error", { id: user.id, email: user.email, errors });
     }
 
     if (logs && logs.length) {
