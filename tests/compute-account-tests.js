@@ -18,6 +18,7 @@ const CODE = {
   delete_array_element: "hull.account().traits({ testing_array: ['A', 'B'] })",
   array_to_string: "hull.account().traits({ testing_array: 'abcdef' })",
   string_to_array: "hull.account().traits({ foo: ['A', 'B'] })",
+  user_and_account_traits: "hull.traits({ age: 24 }); hull.account({ domain: 'facebook.com' }).traits({ country_code: 'us' });"
 };
 
 function shipWithCode(s = {}, code = {}) {
@@ -105,6 +106,13 @@ describe("Compute Ship for accounts", () => {
       const result = applyCompute(CODE.string_to_array);
       expect(result.user).to.be.eql(user);
       expect(result.changes.account.traits.foo).to.deep.equal(["A", "B"]);
+    });
+
+    it("Should change both user and account", () => {
+      const result = applyCompute(CODE.user_and_account_traits);
+      expect(result.accountClaims).to.eql({ domain: "facebook.com" });
+      expect(result.changes.user).to.deep.equal({ traits: { age: 24 } });
+      expect(result.changes.account).to.deep.equal({ traits: { country_code: "us" } });
     });
   });
 });

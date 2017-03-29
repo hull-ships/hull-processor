@@ -19,19 +19,23 @@ function shipWithCode(code = {}, s = ship) {
 
 const TESTS = {
   simple: {
-    payload: "traits({ test: 'trait' });",
+    payload_old: "traits({ test: 'trait' });",
+    payload: "hull.traits({ test: 'trait' });",
     result: { test: "trait" }
   },
   complex: {
-    payload: "traits({ test:10 }); traits({ test:1 },{ source:'group' });",
+    payload_old: "traits({ test:10 }); traits({ test:1 },{ source:'group' });",
+    payload: "hull.traits({ test:10 }); traits({ test:1 },{ source:'group' });",
     result: { test: 10, "group/test": 1 }
   },
   conflict: {
-    payload: "traits({ test: 4, 'group/test': 1}); traits({ test: 2 }, { source: 'group' });",
+    payload_old: "traits({ test: 4, 'group/test': 1}); traits({ test: 2 }, { source: 'group' });",
+    payload: "hull.traits({ test: 4, 'group/test': 1}); traits({ test: 2 }, { source: 'group' });",
     result: { test: 4, "group/test": 2 }
   },
   nested: {
-    payload: "traits({ value: 'val0', group: { value: 'val1', group: { value: 'val2' } } } }, { source: 'group' });",
+    payload_old: "traits({ value: 'val0', group: { value: 'val1', group: { value: 'val2' } } } }, { source: 'group' });",
+    payload: "hull.traits({ value: 'val0', group: { value: 'val1', group: { value: 'val2' } } } }, { source: 'group' });",
     result: { "traits_group/value": "val0", "traits_group/group/value": "val1", "traits_group/group/group/value": "val2" }
   },
   console: {
@@ -39,6 +43,10 @@ const TESTS = {
     result: {}
   }
 };
+
+function payload_old(p) {
+  return TESTS[p].payload_old;
+}
 
 function payload(p) {
   return TESTS[p].payload;
@@ -153,6 +161,32 @@ describe("Compute Ship", () => {
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
       const { id, email } = message.user;
       sinon.assert.calledWith(spy, "logger.info", "compute.console.log", { id, email, log: ["boom", "bam"] });
+    });
+  });
+
+  describe("User Update Handler using scoped hull object", () => {
+    it("Should not call traits if no changes", () => {
+      const spy = sinon.spy();
+      const s = shipWithCode("traits({})");
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
+      sinon.assert.neverCalledWithMatch(spy, "traits");
+      sinon.assert.neverCalledWithMatch(spy, "track");
+    });
+
+    it("Should call with a correct payload for a simple trait", () => {
+      const spy = sinon.spy();
+      const s = shipWithCode(payload("simple"));
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
+      sinon.assert.calledWith(spy, "traits", TESTS.simple.result);
+      sinon.assert.neverCalledWithMatch(spy, "track");
+    });
+
+    it("Should call with a correct payload for a complex trait", () => {
+      const spy = sinon.spy();
+      const s = shipWithCode(payload("complex"));
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
+      sinon.assert.calledWith(spy, "traits", TESTS.complex.result);
+      sinon.assert.neverCalledWithMatch(spy, "track");
     });
   });
 });
