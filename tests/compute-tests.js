@@ -6,7 +6,8 @@ should();
 
 const payload = { events, segments, user };
 
-const CODE = {
+// We need to keep backward compatibility (traits method scoped to the user by default)
+const OLD_CODE = {
   empty: " ",
   invalid: " return false;",
   identity: "traits({})",
@@ -21,6 +22,22 @@ const CODE = {
   string_to_array: "traits({ foo: ['A', 'B'] })",
   console_log: "console.log('hello log')",
   console_debug: "console.debug('hello debug')"
+};
+
+// New version: using hull object scoped to the user, mocking the hull-node library
+const CODE = {
+  empty: " ",
+  invalid: " return false;",
+  identity: "hull.traits({})",
+  one: "hull.traits({ domain: 'test', boom: 'bam' })",
+  new_boolean: "hull.traits({ new_boolean: true });",
+  group: "hull.traits({ line: 'test'}, { source: 'group' });",
+  utils: "hull.traits({ keys: _.keys({ a: 1, b: 2 }).join(','), host: urijs('http://hull.io/hello').host(), hello_at: moment('2016-12-01').startOf('year').format('YYYYMMDD') })",
+  add_array_element: "hull.traits({ testing_array: ['A', 'B', 'C', 'E'] })",
+  modify_array_element: "hull.traits({ testing_array: ['F', 'B', 'C', 'E'] })",
+  delete_array_element: "hull.traits({ testing_array: ['A', 'B'] })",
+  array_to_string: "hull.traits({ testing_array: 'abcdef' })",
+  string_to_array: "hull.traits({ foo: ['A', 'B'] })",
 };
 
 function shipWithCode(s = {}, code = {}) {

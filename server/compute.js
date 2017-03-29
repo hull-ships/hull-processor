@@ -40,11 +40,12 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
 
   // Manually add traits hash if not already there
   user.traits = user.traits || {};
+  account = account || {};
 
   const sandbox = getSandbox(ship);
   sandbox.changes = changes;
   sandbox.user = user;
-  sandbox.account = account || {};
+  sandbox.account = account;
   sandbox.events = events;
   sandbox.segments = segments;
   sandbox.account_segments = account_segments || [];
@@ -194,13 +195,15 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
     }, {});
 
     // we don't concatenate arrays, we use only new values:
-    const arrayMerge = (destinationArray, sourceArray) => sourceArray;
+    const arrayMerge = (destinationArray, sourceArray) => sourceArray
     const updatedUser = deepMerge(user, payload, { arrayMerge });
+    console.log('account:', account)
+    console.log('payload:', payload)
     const updatedAccount = deepMerge(account, payload, { arrayMerge });
 
     const userDiff = deepDiff(user, updatedUser) || [];
     const accountDiff = deepDiff(account, updatedAccount) || [];
-
+    
     const updateChanges = (memo, d) => {
       if (d.kind === "N" || d.kind === "E") {
         _.set(memo, d.path, d.rhs);
@@ -211,7 +214,7 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
         _.set(memo, d.path, _.get(payload, d.path, []));
       }
       return memo;
-    };
+    }
 
     const userChanged = _.reduce(userDiff, updateChanges, {});
     const accountChanged = _.reduce(accountDiff, updateChanges, {});
@@ -226,5 +229,5 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
       user: updatedUser,
       account: updatedAccount
     };
-  });
+  })
 };
