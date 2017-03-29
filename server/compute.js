@@ -20,6 +20,46 @@ function applyUtils(sandbox = {}) {
   sandbox._ = deepFreeze(lodash);
 }
 
+const buildPayload = (pld, pl = {}) => {
+  const { properties, context = {} } = pl;
+  if (properties) {
+    const { source } = context;
+    if (source) {
+      pld[source] = { ...pld[source], ...properties };
+    } else {
+      _.map(properties, (v, k) => {
+        const path = k.replace("/", ".");
+        if (path.indexOf(".") > -1) {
+          _.setWith(pld, path, v, Object);
+        } else if (_.includes(TOP_LEVEL_FIELDS, k)) {
+          pld[k] = v;
+        } else {
+          pld.traits = {
+            ...pld.traits,
+            [k]: v
+          };
+        }
+        return;
+      });
+    }
+  }
+  return pld;
+}
+
+const updateChanges = (payload) => {
+  return (memo, d) => {
+    if (d.kind === "N" || d.kind === "E") {
+      _.set(memo, d.path, d.rhs);
+    }
+    // when we have an array updated we set the whole
+    // array in `changed` constant
+    if (d.kind === "A") {
+      _.set(memo, d.path, _.get(payload, d.path, []));
+    }
+    return memo;
+  }
+}
+
 function isInSegment(segments = [], segmentName) {
   return _.includes(_.map(segments, "name"), segmentName);
 }
@@ -72,7 +112,6 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
   sandbox.traits = (properties = {}, context = {}) => {
     userTraits.push({ properties, context });
   };
-
   sandbox.hull = {
     account: (claims = null) => {
       if (claims) accountClaims = claims;
@@ -89,7 +128,7 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
     tracks: (eventName, properties = {}, context = {}) => {
       if (eventName) tracks.push({ eventName, properties, context });
     }
-  }
+  };
 
   sandbox.request = (options, callback) => {
     isAsync = true;
@@ -168,66 +207,37 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
       tracks = _.slice(tracks, 0, 10);
     }
 
-    const payload = _.reduce(userTraits, (pld, pl = {}) => {
-      const { properties, context = {} } = pl;
-      if (properties) {
-        const { source } = context;
-        if (source) {
-          pld[source] = { ...pld[source], ...properties };
-        } else {
-          _.map(properties, (v, k) => {
-            const path = k.replace("/", ".");
-            if (path.indexOf(".") > -1) {
-              _.setWith(pld, path, v, Object);
-            } else if (_.includes(TOP_LEVEL_FIELDS, k)) {
-              pld[k] = v;
-            } else {
-              pld.traits = {
-                ...pld.traits,
-                [k]: v
-              };
-            }
-            return;
-          });
-        }
-      }
-      return pld;
-    }, {});
+    const payload = {
+      user: _.reduce(userTraits, buildPayload, {}),
+      account: _.reduce(accountTraits, buildPayload, {}),
+    }
 
     // we don't concatenate arrays, we use only new values:
     const arrayMerge = (destinationArray, sourceArray) => sourceArray
-    const updatedUser = deepMerge(user, payload, { arrayMerge });
-    console.log('account:', account)
-    console.log('payload:', payload)
-    const updatedAccount = deepMerge(account, payload, { arrayMerge });
-
-    const userDiff = deepDiff(user, updatedUser) || [];
-    const accountDiff = deepDiff(account, updatedAccount) || [];
-    
-    const updateChanges = (memo, d) => {
-      if (d.kind === "N" || d.kind === "E") {
-        _.set(memo, d.path, d.rhs);
-      }
-      // when we have an array updated we set the whole
-      // array in `changed` constant
-      if (d.kind === "A") {
-        _.set(memo, d.path, _.get(payload, d.path, []));
-      }
-      return memo;
+    const updated = {
+      user: deepMerge(user, payload.user, { arrayMerge }),
+      account: deepMerge(account, payload.account, { arrayMerge }),
     }
 
-    const userChanged = _.reduce(userDiff, updateChanges, {});
-    const accountChanged = _.reduce(accountDiff, updateChanges, {});
+    const diff = {
+      user: deepDiff(user, updated.user) || [],
+      account: deepDiff(account, updated.account) || [],
+    }
+
+    const changed = {
+      user: _.reduce(diff.user, updateChanges(payload.user), {}),
+      account: _.reduce(diff.account, updateChanges(payload.account), {}),
+    }
 
     return {
       logs,
       errors,
-      changes: userChanged,
-      accountChanges: accountChanged,
+      changes: changed,
       events: tracks,
       payload: sandbox.payload,
-      user: updatedUser,
-      account: updatedAccount
+      user: updated.user,
+      account: updated.account,
+      accountClaims: accountClaims
     };
   })
 };

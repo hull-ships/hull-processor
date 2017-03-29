@@ -18,15 +18,16 @@ function flatten(obj, key, group) {
 module.exports = function handle({ message = {} }, { ship, hull }) {
   const { user, segments } = message;
   return compute(message, ship)
-  .then(({ changes, accountChanges, events, account, errors, logs }) => {
+  .then(({ changes, events, account, accountClaims, errors, logs }) => {
     const asUser = hull.as(user.id);
 
     hull.logger.debug("compute.user.debug", { id: user.id, email: user.email, changes });
 
-    if (_.size(changes)) {
+    // Update user traits
+    if (_.size(changes.user)) {
       const flat = {
-        ...changes.traits,
-        ...flatten({}, "", _.omit(changes, "traits")),
+        ...changes.user.traits,
+        ...flatten({}, "", _.omit(changes.user, "traits")),
       };
 
       if (_.size(flat)) {
@@ -35,17 +36,20 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
       }
     }
 
-    if (_.size(accountChanges)) {
+    // Update account traits
+    if (_.size(changes.account)) {
       const flat = {
-        ...changes.traits,
-        ...flatten({}, "", _.omit(changes, "traits")),
+        ...changes.account.traits,
+        ...flatten({}, "", _.omit(changes.account, "traits")),
       };
 
       if (_.size(flat)) {
-        const { domain } = account;
         hull.logger.info("compute.account.computed", { id: account.id, changes: flat });
-        asUser.account({ domain }).traits(flat);
+        asUser.account(accountClaims).traits(flat);
       }
+    } else if (accountClaims) {
+      // Link account
+      asUser.account(accountClaims);
     }
 
     if (events.length > 0) {
