@@ -19,7 +19,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
   const { user, segments } = message;
   return compute(message, ship)
   .then(({ changes, events, account, accountClaims, errors, logs }) => {
-    const asUser = hull.as(user.id);
+    const asUser = hull.asUser(user.id);
 
     hull.logger.debug("compute.user.debug", { id: user.id, email: user.email, changes });
 

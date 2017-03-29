@@ -67,7 +67,7 @@ function getEventsForUserId(client, user_id) {
 function getUserById(client, userId) {
   return Promise.all([
     client.get(`${userId}/user_report`),
-    client.as(userId, false).get(`${userId}/segments`),
+    client.asUser(userId, false).get(`${userId}/segments`),
     getEventsForUserId(client, userId)
   ]).then((results = []) => {
     const [user = {}, segments = [], events = []] = results;
@@ -106,7 +106,7 @@ function searchUser(client, query) {
       if (!user) return reject(new Error("User not found"));
       const { id } = user;
       return Promise.all([
-        client.as(id, false).get(`${id}/segments`).catch(e => client.logger.error("fetch.user.segments.error", e.message)),
+        client.asUser(id, false).get(`${id}/segments`).catch(e => client.logger.error("fetch.user.segments.error", e.message)),
         getEventsForUserId(client, id)
       ]).then(results => {
         const [segments = [], events = []] = results;

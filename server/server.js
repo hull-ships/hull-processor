@@ -1,31 +1,19 @@
-import express from "express";
-import path from "path";
-import devMode from "./dev-mode";
+import { notifHandler, batchHandler } from "hull/lib/utils";
 import ComputeHandler from "./compute-handler";
-import responseTime from "response-time";
 import updateUser from "./user-update";
+import devMode from "./dev-mode";
 
-module.exports = function Server(options = {}) {
-  const { port, Hull, devMode: dev, hostSecret } = options;
-  const { BatchHandler, NotifHandler, Routes, Middleware } = Hull;
-  const { Readme, Manifest } = Routes;
+module.exports = function Server(app, options = {}) {
+  const { port, Hull, hostSecret, clientConfig = {} } = options;
 
-  const app = express();
+  const connector = new Hull.Connector({ hostSecret, port, clientConfig });
 
-  if (dev) app.use(devMode());
-  app.use(responseTime());
-  app.use(express.static(path.resolve(__dirname, "..", "dist")));
-  app.use(express.static(path.resolve(__dirname, "..", "assets")));
+  app.post("/compute", ComputeHandler({ hostSecret, connector, Hull }));
 
-  app.set("views", path.resolve(__dirname, "..", "views"));
+  if (options.devMode) app.use(devMode());
+  connector.setupApp(app);
 
-  app.get("/manifest.json", Manifest(__dirname));
-  app.get("/", Readme);
-  app.get("/readme", Readme);
-
-
-  app.post("/compute", ComputeHandler({ hostSecret, hullClient: Middleware, Hull }));
-  app.post("/batch", BatchHandler({
+  app.post("/batch", batchHandler({
     hostSecret,
     batchSize: 100,
     groupTraits: false,
@@ -37,14 +25,19 @@ module.exports = function Server(options = {}) {
       });
     }
   }));
-  app.post("/notify", NotifHandler({
+  app.post("/notify", notifHandler({
     hostSecret,
     groupTraits: true,
     onSubscribe() {
       console.warn("Hello new subscriber !");
     },
     handlers: {
-      "user:update": updateUser
+      "user:update": (ctx, messages = []) => {
+        return Promise.all(messages.map(message => updateUser({ message }, {
+          ship: ctx.ship,
+          hull: ctx.client
+        })));
+      }
     }
   }));
 
