@@ -10,6 +10,8 @@ if (process.env.LOG_LEVEL) {
   Hull.logger.transports.console.level = process.env.LOG_LEVEL;
 }
 
+Hull.logger.transports.console.json = true;
+
 if (process.env.LOGSTASH_HOST && process.env.LOGSTASH_HOST) {
   const Logstash = require("winston-logstash").Logstash; // eslint-disable-line global-require
   Hull.logger.add(Logstash, {
