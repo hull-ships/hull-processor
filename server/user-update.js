@@ -36,7 +36,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
     }
 
     if (events.length > 0) {
-      events.map(({ eventName, properties, context }) => asUser.track(eventName, properties, { source: "processor", ...context }));
+      events.map(({ eventName, properties, context }) => asUser.track(eventName, properties, { ip: "0", source: "processor", ...context }));
     }
   } catch (err) {
     hull.logger.error("compute.error", { err, user, segments });

@@ -78,7 +78,7 @@ describe("Compute Ship", () => {
       const spy = sinon.spy();
       const s = shipWithCode("track('Event', { key: 'value' }); return { traits: { test:'trait' } };");
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.calledWith(spy, "track", "Event", { key: "value" });
+      sinon.assert.calledWith(spy, "track", "Event", { key: "value" }, { ip: "0", source: "processor" });
     });
 
     it("Should call with 10 tracks for 10 tracks", () => {

@@ -86,7 +86,6 @@ describe("Compute Ship", () => {
 
     it("Should delete an array element", () => {
       const result = applyCompute(CODE.delete_array_element);
-      console.log("DELETE", result.changes);
       expect(result.changes.traits.testing_array).to.deep.equal(["A", "B"]);
     });
 
