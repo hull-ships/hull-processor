@@ -35,7 +35,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
       }
     }
 
-    if (errors) {
+    if (errors && errors.length > 0) {
       hull.logger.error("compute.user.error", { id: user.id, email: user.email, errors });
     }
 
