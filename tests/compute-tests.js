@@ -1,4 +1,6 @@
 /* global describe, it */
+import sinon from "sinon";
+
 const compute = require("../server/compute");
 const { events, segments, user, ship } = require("./fixtures");
 const { expect, should } = require("chai");
@@ -18,7 +20,8 @@ const CODE = {
   modify_array_element: "traits({ testing_array: ['F', 'B', 'C', 'E'] })",
   delete_array_element: "traits({ testing_array: ['A', 'B'] })",
   array_to_string: "traits({ testing_array: 'abcdef' })",
-  string_to_array: "traits({ foo: ['A', 'B'] })"
+  string_to_array: "traits({ foo: ['A', 'B'] })",
+  logger: "Hull.logger.info('some test message')"
 };
 
 function shipWithCode(s = {}, code = {}) {
@@ -97,6 +100,12 @@ describe("Compute Ship", () => {
     it("Should change a string to an array", () => {
       const result = applyCompute(CODE.string_to_array);
       expect(result.changes.traits.foo).to.deep.equal(["A", "B"]);
+    });
+
+    it("Should log to console", () => {
+      sinon.spy(console, "info");
+      applyCompute(CODE.logger);
+      expect(console.info).to.be.called; //eslint-disable-line 
     });
   });
 });
