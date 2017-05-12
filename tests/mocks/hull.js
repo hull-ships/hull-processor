@@ -44,10 +44,22 @@ export default function HullSpy(ship, spy) {
       return new Hull();
     };
     this.logger = {
-      info: (...args) => console.log(...args),
-      error: (...args) => console.log(...args),
-      debug: (...args) => console.log(...args),
-      log: (...args) => console.log(...args)
+      info: (...args) => {
+        if (spy) spy("logger.info", ...args);
+        console.log(...args);
+      },
+      error: (...args) => {
+        if (spy) spy("logger.error", ...args);
+        console.log(...args);
+      },
+      debug: (...args) => {
+        if (spy) spy("logger.debug", ...args);
+        console.log(...args);
+      },
+      log: (...args) => {
+        if (spy) spy("logger.log", ...args);
+        console.log(...args);
+      }
     };
   };
 

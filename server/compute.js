@@ -31,7 +31,8 @@ function getSandbox(ship) {
 }
 const TOP_LEVEL_FIELDS = ["tags", "name", "description", "extra", "picture", "settings", "username", "email", "contact_email", "image", "first_name", "last_name", "address", "created_at", "phone", "domain", "accepts_marketing"];
 
-module.exports = function compute({ changes = {}, user, segments, events = [] }, ship = {}) {
+module.exports = function compute({ changes = {}, user, segments, events = [] }, ship = {}, options = {}) {
+  const { preview } = options;
   const { private_settings = {} } = ship;
   const { code = "", sentry_dsn: sentryDsn } = private_settings;
 
@@ -102,7 +103,7 @@ module.exports = function compute({ changes = {}, user, segments, events = [] },
     sandbox.captureException(err);
   }
 
-  if (tracks.length > 10) {
+  if (preview && tracks.length > 10) {
     logs.unshift([tracks]);
     logs.unshift([`You're trying to send ${tracks.length} calls at a time. We will only process the first 10`]);
     logs.unshift(["You can't send more than 10 tracking calls in one batch."]);
