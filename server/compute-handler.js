@@ -16,7 +16,7 @@ function computeHandler(req, res) {
 
   if (client && ship && user) {
     const startTime = new Date();
-    const result = compute(user, ship);
+    const result = compute(user, ship, { preview: true });
 
     const took = new Date() - startTime;
     timings.compute = took;

@@ -34,6 +34,10 @@ const TESTS = {
     payload: "traits({ value: 'val0', group: { value: 'val1', group: { value: 'val2' } } } }, { source: 'group' });",
     result: { "traits_group/value": "val0", "traits_group/group/value": "val1", "traits_group/group/group/value": "val2" }
   },
+  console: {
+    payload: "console.log('boom', 'bam')",
+    result: {}
+  }
 };
 
 function payload(p) {
@@ -85,7 +89,7 @@ describe("Compute Ship", () => {
       const spy = sinon.spy();
       const s = shipWithCode("track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); return { };");
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.callCount(spy, 11);
+      sinon.assert.callCount(spy, 12);
       sinon.assert.calledWith(spy, "track", "Event", { key: "value" });
       sinon.assert.neverCalledWithMatch(spy, "traits");
     });
@@ -94,7 +98,7 @@ describe("Compute Ship", () => {
       const spy = sinon.spy();
       const s = shipWithCode("track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); return { };");
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.callCount(spy, 11);
+      sinon.assert.callCount(spy, 14);
       sinon.assert.calledWith(spy, "track", "Event", { key: "value" });
       sinon.assert.neverCalledWithMatch(spy, "traits");
     });
@@ -121,6 +125,13 @@ describe("Compute Ship", () => {
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
       sinon.assert.calledWith(spy, "as", "562123b470df84b740000042");
       sinon.assert.neverCalledWithMatch(spy, "track");
+    });
+
+    it("Should call hull logger", () => {
+      const spy = sinon.spy();
+      const s = shipWithCode(payload("console"));
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
+      sinon.assert.calledWith(spy, "logger.info", "compute.console.log", ["boom", "bam"]);
     });
   });
 });
