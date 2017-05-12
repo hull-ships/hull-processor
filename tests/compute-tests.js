@@ -21,7 +21,7 @@ const CODE = {
   delete_array_element: "traits({ testing_array: ['A', 'B'] })",
   array_to_string: "traits({ testing_array: 'abcdef' })",
   string_to_array: "traits({ foo: ['A', 'B'] })",
-  logger: "Hull.logger.info('some test message')"
+  logger: "logInfo('some test message')"
 };
 
 function shipWithCode(s = {}, code = {}) {
