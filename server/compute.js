@@ -98,7 +98,7 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
   let tracks = [];
   const userTraits = [];
   const accountTraits = [];
-  let accountClaims = null;
+  let accountClaims = {};
   const logs = [];
   const errors = [];
   let isAsync = false;

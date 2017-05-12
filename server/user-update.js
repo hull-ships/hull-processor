@@ -65,6 +65,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
     }
   })
   .catch(err =>
+    console.log("error:", { err, message: err.message });
     hull.logger.error("compute.error", { err, user, segments })
   );
 };
