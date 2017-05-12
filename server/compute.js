@@ -6,6 +6,7 @@ import raven from "raven";
 import deepDiff from "deep-diff";
 import deepFreeze from "deep-freeze";
 import deepMerge from "deepmerge";
+import Hull from "hull";
 // import isGroup from "./is-group-trait";
 
 function applyUtils(sandbox = {}) {
@@ -47,6 +48,10 @@ module.exports = function compute({ changes = {}, user, segments, events = [] },
   sandbox.ship = ship;
   sandbox.payload = {};
   sandbox.isInSegment = isInSegment.bind(null, segments);
+  sandbox.logInfo = function logInfo(... args) {
+    const hull = new Hull({ id: ship.id, secret: process.env.SECRET || "1234" });
+    hull.logger.info("processor.console", { data: args });
+  };
   applyUtils(sandbox);
 
   let tracks = [];
