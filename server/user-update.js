@@ -21,7 +21,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
   .then(({ changes, events, account, accountClaims, errors, logs }) => {
     const asUser = hull.asUser(user.id);
 
-    hull.logger.debug("compute.user.debug", { id: user.id, email: user.email, changes });
+    hull.logger.debug("compute.user.debug", { id: user.id, email: user.email, changes, accountClaims });
 
     // Update user traits
     if (_.size(changes.user)) {
@@ -47,9 +47,9 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
         hull.logger.info("compute.account.computed", { id: account.id, changes: flat });
         asUser.account(accountClaims).traits(flat);
       }
-    } else if (accountClaims) {
+    } else if (_.size(accountClaims) && (_.size(account) || !_.isMatch(account, accountClaims))) {
       // Link account
-      asUser.account(accountClaims);
+      asUser.account(accountClaims).traits({});
     }
 
     if (events.length > 0) {
