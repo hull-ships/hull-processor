@@ -7,15 +7,12 @@ function getEventsForUserId(client, user_id) {
   if (!user_id || !client) return Promise.reject();
   const params = {
     query: {
-      has_parent: {
-        type: "user_report",
-        query: { match: { id: user_id } }
-      }
+      term: { _parent: user_id }
     },
     sort: { created_at: "desc" },
     raw: true,
     page: 1,
-    per_page: 5
+    per_page: 50
   };
 
   return client
@@ -39,7 +36,6 @@ function getEventsForUserId(client, user_id) {
               )
             )
           , {});
-          client.logger.debug("hull.event.build", { properties, event, source, type });
           return {
             event,
             created_at,
@@ -86,18 +82,18 @@ function searchUser(client, query) {
     per_page: 1
   };
 
+  const should = [
+    "id",
+    "name",
+    "name.exact",
+    "email",
+    "email.exact",
+    "contact_email",
+    "contact_email.exact"
+  ].map(key => { return { term: { [key]: query } }; });
+
   if (query) {
-    params.query = { multi_match: {
-      query,
-      fields: [
-        "name",
-        "name.exact",
-        "email",
-        "email.exact",
-        "contact_email",
-        "contact_email.exact"
-      ]
-    } };
+    params.query = { bool: { should, minimum_should_match: 1 } };
   }
 
   return new Promise((resolve, reject) => {

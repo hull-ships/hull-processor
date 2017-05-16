@@ -18,7 +18,9 @@ const CODE = {
   modify_array_element: "traits({ testing_array: ['F', 'B', 'C', 'E'] })",
   delete_array_element: "traits({ testing_array: ['A', 'B'] })",
   array_to_string: "traits({ testing_array: 'abcdef' })",
-  string_to_array: "traits({ foo: ['A', 'B'] })"
+  string_to_array: "traits({ foo: ['A', 'B'] })",
+  console_log: "console.log('hello log')",
+  console_debug: "console.debug('hello debug')"
 };
 
 function shipWithCode(s = {}, code = {}) {
@@ -31,8 +33,8 @@ function shipWithCode(s = {}, code = {}) {
   };
 }
 
-function applyCompute(c) {
-  return compute(payload, shipWithCode(ship, c));
+function applyCompute(c, options) {
+  return compute(payload, shipWithCode(ship, c), options);
 }
 
 describe("Compute Ship", () => {
@@ -97,6 +99,21 @@ describe("Compute Ship", () => {
     it("Should change a string to an array", () => {
       const result = applyCompute(CODE.string_to_array);
       expect(result.changes.traits.foo).to.deep.equal(["A", "B"]);
+    });
+
+    it("return logs", () => {
+      const result = applyCompute(CODE.console_log);
+      expect(result.logs).to.deep.equal([["hello log"]]);
+    });
+
+    it("return debug logs in preview mode", () => {
+      const result = applyCompute(CODE.console_debug, { preview: true });
+      expect(result.logs).to.deep.equal([["hello debug"]]);
+    });
+
+    it("ignore debug logs in normal mode", () => {
+      const result = applyCompute(CODE.console_debug);
+      expect(result.logs.length).to.eql(0);
     });
   });
 });

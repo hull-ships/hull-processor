@@ -66,10 +66,18 @@ module.exports = function compute({ changes = {}, user, segments, events = [] },
   function log(...args) {
     logs.push(args);
   }
+
+  function debug(...args) {
+    // Only show debug logs in preview mode
+    if (options.preview) {
+      logs.push(args);
+    }
+  }
+
   function logError(...args) {
     errors.push(args);
   }
-  sandbox.console = { log, warn: log, error: logError };
+  sandbox.console = { log, warn: log, error: logError, debug };
 
   sandbox.captureException = function captureException(e) {
     if (sentryDsn) {
