@@ -80,7 +80,8 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
 
   // Manually add traits hash if not already there
   user.traits = user.traits || {};
-  account = account || {};
+  account = account || user.account || {};
+  delete user.account;
 
   const sandbox = getSandbox(ship);
   sandbox.changes = changes;
