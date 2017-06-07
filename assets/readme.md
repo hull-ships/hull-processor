@@ -13,7 +13,7 @@ When a User is updated, Processor will receive it along with all the events perf
 ![Screenshot](screen.png)
 
 ## Left Column
-A sample user with all his/her properties, segments, account, account, latest events and changes since last recompute. You can search for a specific user. 
+A sample user with all his/her properties, segments, account, latest events and changes since last recompute. You can search for a specific user. 
 
 ---
 
