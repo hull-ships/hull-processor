@@ -41,7 +41,7 @@ describe("Compute Ship for accounts", () => {
       const result = applyCompute(CODE.identity);
       expect(result.user).to.be.eql(user);
       expect(result.account).to.be.eql(account);
-      expect(result.accountClaims).to.be.eql(null);
+      expect(result.accountClaims).to.be.eql({});
     });
 
     it("Should set account claims", () => {

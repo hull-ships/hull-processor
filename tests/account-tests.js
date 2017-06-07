@@ -38,50 +38,48 @@ function payload(p) {
   return TESTS[p].payload;
 }
 
-describe("Compute Ship", () => {
-  describe("Account Update Handler", () => {
-    it("Should not call traits if no changes", () => {
-      const spy = sinon.spy();
-      const s = shipWithCode("traits({})");
-      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.neverCalledWithMatch(spy, "traits");
-      sinon.assert.neverCalledWithMatch(spy, "track");
-    });
+describe("Account Update Handler", () => {
+  it("Should not call traits if no changes", () => {
+    const spy = sinon.spy();
+    const s = shipWithCode("traits({})");
+    updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
+    sinon.assert.neverCalledWithMatch(spy, "traits");
+    sinon.assert.neverCalledWithMatch(spy, "track");
+  });
 
-    it("Should call account with claims", () => {
-      const spy = sinon.spy();
-      const s = shipWithCode(payload("claim"));
-      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.calledWith(spy, "account", { domain: "facebook.com" });
-      sinon.assert.neverCalledWithMatch(spy, "traits");
-      sinon.assert.neverCalledWithMatch(spy, "track");
-    });
+  it("Should call account with claims", () => {
+    const spy = sinon.spy();
+    const s = shipWithCode(payload("claim"));
+    updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
+    sinon.assert.calledWith(spy, "account", { domain: "facebook.com" });
+    sinon.assert.calledWith(spy, "traits", {});
+    sinon.assert.neverCalledWithMatch(spy, "track");
+  });
 
-    it("Should call with a correct payload for a simple trait", () => {
-      const spy = sinon.spy();
-      const s = shipWithCode(payload("simple"));
-      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.calledWith(spy, "account");
-      sinon.assert.calledWith(spy, "traits", TESTS.simple.result);
-      sinon.assert.neverCalledWithMatch(spy, "track");
-    });
+  it("Should call with a correct payload for a simple trait", () => {
+    const spy = sinon.spy();
+    const s = shipWithCode(payload("simple"));
+    updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
+    sinon.assert.calledWith(spy, "account");
+    sinon.assert.calledWith(spy, "traits", TESTS.simple.result);
+    sinon.assert.neverCalledWithMatch(spy, "track");
+  });
 
-    it("Should call with a correct payload for a complex trait", () => {
-      const spy = sinon.spy();
-      const s = shipWithCode(payload("complex"));
-      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.calledWith(spy, "account");
-      sinon.assert.calledWith(spy, "traits", TESTS.complex.result);
-      sinon.assert.neverCalledWithMatch(spy, "track");
-    });
+  it("Should call with a correct payload for a complex trait", () => {
+    const spy = sinon.spy();
+    const s = shipWithCode(payload("complex"));
+    updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
+    sinon.assert.calledWith(spy, "account");
+    sinon.assert.calledWith(spy, "traits", TESTS.complex.result);
+    sinon.assert.neverCalledWithMatch(spy, "track");
+  });
 
-    it("Should handle conflicts the way it's expected", () => {
-      const spy = sinon.spy();
-      const s = shipWithCode(payload("conflict"));
-      updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
-      sinon.assert.calledWith(spy, "account");
-      sinon.assert.calledWith(spy, "traits", TESTS.conflict.result);
-      sinon.assert.neverCalledWithMatch(spy, "track");
-    });
+  it("Should handle conflicts the way it's expected", () => {
+    const spy = sinon.spy();
+    const s = shipWithCode(payload("conflict"));
+    updateUser({ message }, { hull: hullSpy(s, spy), ship: s });
+    sinon.assert.calledWith(spy, "account");
+    sinon.assert.calledWith(spy, "traits", TESTS.conflict.result);
+    sinon.assert.neverCalledWithMatch(spy, "track");
   });
 });
