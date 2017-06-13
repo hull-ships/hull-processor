@@ -64,8 +64,8 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
       logs.map(log => hull.logger.info("compute.console.log", { id: user.id, email: user.email, log }));
     }
   })
-  .catch(err =>
+  .catch(err => {
     console.log("error:", { err, message: err.message });
-    hull.logger.error("compute.error", { err, user, segments })
-  );
+    hull.logger.error("compute.error", { err, user, segments });
+  });
 };
