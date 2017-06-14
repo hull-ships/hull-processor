@@ -44,11 +44,12 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
       };
 
       if (_.size(flat)) {
-        hull.logger.info("compute.account.computed", { id: account.id, changes: flat });
+        hull.logger.info("compute.account.computed", { user: _.pick(user, "id", "email"), account: _.pick(account, "id"), accountClaims, changes: flat });
         asUser.account(accountClaims).traits(flat);
       }
     } else if (_.size(accountClaims) && (_.size(account) || !_.isMatch(account, accountClaims))) {
       // Link account
+      hull.logger.info("compute.account.link", { user: _.pick(user, "id", "email"), account: _.pick(account, "id"), accountClaims });
       asUser.account(accountClaims).traits({});
     }
 
