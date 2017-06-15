@@ -19,6 +19,10 @@ function computeHandler(req, res) {
     const startTime = new Date();
     compute(user, ship, { preview: true })
     .then(result => {
+      const logs = result.logs;
+      if (logs && logs.length) {
+        logs.map(line => req.hull.client.logger.info("preview.console.log", line));
+      }
       const took = new Date() - startTime;
       timings.compute = took;
       res.send({ ship, user, took, timings, result })

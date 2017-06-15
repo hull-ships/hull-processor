@@ -126,7 +126,7 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
     traits: (properties = {}, context = {}) => {
       userTraits.push({ properties, context });
     },
-    tracks: (eventName, properties = {}, context = {}) => {
+    track: (eventName, properties = {}, context = {}) => {
       if (eventName) tracks.push({ eventName, properties, context });
     }
   };

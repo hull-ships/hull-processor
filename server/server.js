@@ -27,16 +27,16 @@ module.exports = function Server(app, options = {}) {
   }));
   app.post("/notify", notifHandler({
     hostSecret,
-    groupTraits: true,
     onSubscribe() {
       console.warn("Hello new subscriber !");
     },
     handlers: {
-      "user:update": (ctx, messages = []) => {
-        return Promise.all(messages.map(message => updateUser({ message }, {
-          ship: ctx.ship,
-          hull: ctx.client
-        })));
+      "user:update": ({ ship, client: hull }, messages = []) => {
+        return Promise.all(messages.map(message => {
+          // TODO: enable groupTraits option in the notifHandler
+          message.user = hull.utils.groupTraits(message.user);
+          return updateUser({ message }, { ship, hull });
+        }));
       }
     }
   }));
