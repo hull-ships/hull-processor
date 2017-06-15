@@ -1,8 +1,8 @@
 import connect from "connect";
-import compute from "./compute";
+import compute from "../compute";
 import bodyParser from "body-parser";
 import timeout from "connect-timeout";
-import fetchUser from "./middlewares/fetch-user";
+import fetchUser from "../middlewares/fetch-user";
 
 function computeHandler(req, res) {
   const { client, timings } = req.hull;
@@ -39,7 +39,7 @@ function haltOnTimedout(req, res, next) {
   if (!req.timedout) next();
 }
 
-module.exports = function ComputeHandler(options) {
+export default function ComputeHandler(options) {
   const app = connect();
   const { connector, hostSecret = "" } = options;
 
@@ -55,4 +55,4 @@ module.exports = function ComputeHandler(options) {
   return function c(req, res) {
     return app.handle(req, res);
   };
-};
+}

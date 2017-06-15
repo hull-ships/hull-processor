@@ -1,5 +1,4 @@
 import Hull from "hull";
-import express from "express";
 
 import server from "./server";
 
@@ -33,6 +32,8 @@ const options = {
   port: process.env.PORT || 8082
 };
 
-const app = express();
+const connector = new Hull.Connector(options);
+const app = server(connector, options);
+connector.startApp(app);
 
-server(app, options);
+Hull.logger.info("processor.started", { port: options.port });
