@@ -20,78 +20,71 @@ describe("computing users", () => {
     setTimeout(() => {
       minihull.listen(8081);
       minihull.install("http://localhost:8000").then(() => {
-        minihull.updateFirstShip({
-          access_token: "processor"
-        });
         done();
       });
     }, 100);
   });
 
-  it("should send traits to the firehose", (done) => {
-    const code = "hull.traits({ foo: \"bar\" })";
+  describe("using the /notify endpoint", () => {
+    it("should send traits to the firehose", (done) => {
+      const code = "hull.traits({ foo: \"bar\" })";
 
-    minihull.users().push(user);
-    minihull.ships().set("0.private_settings", { code }).write();
-    minihull.sendNotification("user_report:update", { user });
-    minihull.on("incoming.request@/api/v1/firehose", (req) => {
-      // traits
-      const body = req.body.batch[0].body;
-      expect(body).to.eql({ foo: "bar" });
+      minihull.ships().set("0.private_settings", { code }).write();
+      minihull.sendNotification("user_report:update", { user });
+      minihull.on("incoming.request@/api/v1/firehose", (req) => {
+        // traits
+        const body = req.body.batch[0].body;
+        expect(body).to.eql({ foo: "bar" });
 
-      // claims
-      const access_token = jwtDecode(req.body.batch[0].headers["Hull-Access-Token"]);
-      expect(access_token["io.hull.subjectType"]).to.equal("user");
-      expect(access_token.sub).to.equal(user.id);
+        // claims
+        const access_token = jwtDecode(req.body.batch[0].headers["Hull-Access-Token"]);
+        expect(access_token["io.hull.subjectType"]).to.equal("user");
+        expect(access_token.sub).to.equal(user.id);
 
-      done();
+        done();
+      });
+    });
+
+    it("should send an account link to the firehose", (done) => {
+      const code = "hull.account({ domain: user.domain });";
+
+      minihull.ships().set("0.private_settings", { code }).write();
+      minihull.sendNotification("user_report:update", { user });
+      minihull.on("incoming.request@/api/v1/firehose", (req) => {
+        // traits
+        const body = req.body.batch[0].body;
+        expect(body).to.eql({});
+
+        // claims
+        const access_token = jwtDecode(req.body.batch[0].headers["Hull-Access-Token"]);
+        expect(access_token["io.hull.subjectType"]).to.equal("account");
+        expect(access_token["io.hull.asUser"]).to.eql({ id: user.id });
+        expect(access_token["io.hull.asAccount"]).to.eql({ domain: user.domain });
+
+        done();
+      });
+    });
+
+    it("should send account traits to the firehose", (done) => {
+      const code = "hull.account().traits({ name: \"Hull\"});";
+
+      minihull.ships().set("0.private_settings", { code }).write();
+      minihull.sendNotification("user_report:update", { user });
+      minihull.on("incoming.request@/api/v1/firehose", (req) => {
+        // traits
+        const body = req.body.batch[0].body;
+        expect(body).to.eql({ name: "Hull" });
+
+        // claims
+        const access_token = jwtDecode(req.body.batch[0].headers["Hull-Access-Token"]);
+        expect(access_token["io.hull.subjectType"]).to.equal("account");
+        expect(access_token["io.hull.asUser"]).to.eql({ id: user.id });
+        expect(access_token).to.not.have.property("io.hull.asAccount");
+
+        done();
+      });
     });
   });
-
-  it("should send an account link to the firehose", (done) => {
-    const code = "hull.account({ domain: user.domain });";
-
-    minihull.users().push(user);
-    minihull.ships().set("0.private_settings", { code }).write();
-    minihull.sendNotification("user_report:update", { user });
-    minihull.on("incoming.request@/api/v1/firehose", (req) => {
-      // traits
-      const body = req.body.batch[0].body;
-      expect(body).to.eql({});
-
-      // claims
-      const access_token = jwtDecode(req.body.batch[0].headers["Hull-Access-Token"]);
-      expect(access_token["io.hull.subjectType"]).to.equal("account");
-      expect(access_token["io.hull.asUser"]).to.eql({ id: user.id });
-      expect(access_token["io.hull.asAccount"]).to.eql({ domain: user.domain });
-
-      done();
-    });
-  });
-
-  it("should send account traits to the firehose", (done) => {
-    const code = "hull.account().traits({ name: \"Hull\"});";
-
-    minihull.users().push(user);
-    // TODO: add accounts in minihull
-    minihull.ships().set("0.private_settings", { code }).write();
-    minihull.sendNotification("user_report:update", { user });
-    minihull.on("incoming.request@/api/v1/firehose", (req) => {
-      // traits
-      const body = req.body.batch[0].body;
-      expect(body).to.eql({ name: "Hull" });
-
-      // claims
-      const access_token = jwtDecode(req.body.batch[0].headers["Hull-Access-Token"]);
-
-      console.log("access_token", access_token);
-      expect(access_token["io.hull.subjectType"]).to.equal("account");
-      expect(access_token["io.hull.asUser"]).to.eql({ id: user.id });
-      expect(access_token).to.not.have.property("io.hull.asAccount");
-
-      done();
-    });
-  }).timeout(5000);
 
   afterEach(() => {
     minihull.resetDbState();
