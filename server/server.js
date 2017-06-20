@@ -4,7 +4,7 @@ import ComputeHandler from "./actions/compute-handler";
 import NotifyHandler from "./actions/notify-handler";
 import devMode from "./dev-mode";
 
-module.exports = function Server(connector, options = {}) {
+export default function Server(connector, options = {}) {
   const app = express();
   const { Hull, hostSecret } = options;
 
@@ -13,8 +13,8 @@ module.exports = function Server(connector, options = {}) {
   if (options.devMode) app.use(devMode());
   connector.setupApp(app);
 
-  app.post("/batch", NotifyHandler(hostSecret));
-  app.post("/notify", NotifyHandler(hostSecret));
+  app.post("/batch", NotifyHandler);
+  app.post("/notify", NotifyHandler);
 
   // Error Handler
   app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
@@ -34,4 +34,4 @@ module.exports = function Server(connector, options = {}) {
   });
 
   return app;
-};
+}
