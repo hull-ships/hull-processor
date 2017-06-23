@@ -131,9 +131,9 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
     }
   };
 
-  sandbox.request = (options, callback) => {
+  sandbox.request = (opts, callback) => {
     isAsync = true;
-    return request.defaults({ timeout: 3000 })(options, (error, response, body) => {
+    return request.defaults({ timeout: 3000 })(opts, (error, response, body) => {
       try {
         callback(error, response, body);
       } catch (err) {

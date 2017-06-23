@@ -8,8 +8,6 @@ const payload = { events, segments, user };
 
 // We need to keep backward compatibility (traits method scoped to the user by default)
 const OLD_CODE = {
-  empty: " ",
-  invalid: " return false;",
   identity: "traits({})",
   one: "traits({ domain: 'test', boom: 'bam' })",
   new_boolean: "traits({ new_boolean: true });",
@@ -19,9 +17,7 @@ const OLD_CODE = {
   modify_array_element: "traits({ testing_array: ['F', 'B', 'C', 'E'] })",
   delete_array_element: "traits({ testing_array: ['A', 'B'] })",
   array_to_string: "traits({ testing_array: 'abcdef' })",
-  string_to_array: "traits({ foo: ['A', 'B'] })",
-  console_log: "console.log('hello log')",
-  console_debug: "console.debug('hello debug')"
+  string_to_array: "traits({ foo: ['A', 'B'] })"
 };
 
 // New version: using hull object scoped to the user, mocking the hull-node library
@@ -38,6 +34,8 @@ const CODE = {
   delete_array_element: "hull.traits({ testing_array: ['A', 'B'] })",
   array_to_string: "hull.traits({ testing_array: 'abcdef' })",
   string_to_array: "hull.traits({ foo: ['A', 'B'] })",
+  console_log: "console.log('hello log')",
+  console_debug: "console.debug('hello debug')"
 };
 
 function shipWithCode(s = {}, code = {}) {
@@ -55,25 +53,7 @@ function applyCompute(c, options) {
 }
 
 describe("Compute Ship", () => {
-  describe("Compute method", () => {
-    it("Should not change content if code does not return", (done) => {
-      applyCompute(OLD_CODE.empty).then(result => {
-        expect(result.user).to.be.eql(user);
-        expect(result.account).to.be.eql({});
-        expect(result.changes).to.be.eql({ user: {}, account: {} });
-        done();
-      });
-    });
-
-    it("Should not change content if code returns invalid ", (done) => {
-      applyCompute(OLD_CODE.invalid).then(result => {
-        expect(result.user).to.be.eql(user);
-        expect(result.account).to.be.eql({});
-        expect(result.changes).to.be.eql({ user: {}, account: {} });
-        done();
-      });
-    });
-
+  describe("Compute method with old code", () => {
     it("Should not change content if code does not change content", (done) => {
       applyCompute(OLD_CODE.identity).then(result => {
         expect(result.user).to.be.eql(user);
@@ -253,19 +233,25 @@ describe("Compute Ship", () => {
       });
     });
 
-    it("return logs", () => {
-      const result = applyCompute(CODE.console_log);
-      expect(result.logs).to.deep.equal([["hello log"]]);
+    it("return logs", (done) => {
+      applyCompute(CODE.console_log).then(result => {
+        expect(result.logs).to.deep.equal([["hello log"]]);
+        done();
+      });
     });
 
-    it("return debug logs in preview mode", () => {
-      const result = applyCompute(CODE.console_debug, { preview: true });
-      expect(result.logs).to.deep.equal([["hello debug"]]);
+    it("return debug logs in preview mode", (done) => {
+      applyCompute(CODE.console_debug, { preview: true }).then(result => {
+        expect(result.logs).to.deep.equal([["hello debug"]]);
+        done();
+      });
     });
 
-    it("ignore debug logs in normal mode", () => {
-      const result = applyCompute(CODE.console_debug);
-      expect(result.logs.length).to.eql(0);
+    it("ignore debug logs in normal mode", (done) => {
+      applyCompute(CODE.console_debug).then(result => {
+        expect(result.logs.length).to.eql(0);
+        done();
+      });
     });
   });
 });
