@@ -21,7 +21,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
   .then(({ changes, events, account, accountClaims, logs, errors }) => {
     const asUser = hull.asUser(user.id);
 
-    hull.logger.debug("compute.user.debug", { id: user.id, email: user.email, changes, accountClaims });
+    hull.logger.debug("compute.user.debug", { id: user.hull_id, email: user.email, changes, accountClaims });
 
     // Update user traits
     if (_.size(changes.user)) {
@@ -31,7 +31,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
       };
 
       if (_.size(flat)) {
-        hull.logger.info("compute.user.computed", { id: user.id, email: user.email, changes: JSON.stringify(flat) });
+        hull.logger.info("compute.user.computed", { id: user.hull_id, email: user.email, changes: JSON.stringify(flat) });
         asUser.traits(flat);
       }
     }
@@ -44,12 +44,12 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
       };
 
       if (_.size(flat)) {
-        hull.logger.info("compute.account.computed", { user: _.pick(user, "id", "email"), account: _.pick(account, "id"), accountClaims, changes: flat });
+        hull.logger.info("compute.account.computed", { user: _.pick(user, "hull_id", "email"), account: _.pick(account, "id"), accountClaims, changes: flat });
         asUser.account(accountClaims).traits(flat);
       }
     } else if (_.size(accountClaims) && (_.size(account) || !_.isMatch(account, accountClaims))) {
       // Link account
-      hull.logger.info("compute.account.link", { user: _.pick(user, "id", "email"), account: _.pick(account, "id"), accountClaims });
+      hull.logger.info("compute.account.link", { user: _.pick(user, "hull_id", "email"), account: _.pick(account, "id"), accountClaims });
       asUser.account(accountClaims).traits({});
     }
 
@@ -66,7 +66,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
     }
 
     if (logs && logs.length) {
-      logs.map(log => hull.logger.info("compute.console.log", { id: user.id, email: user.email, log }));
+      logs.map(log => hull.logger.info("compute.console.log", { id: user.hull_id, email: user.email, log }));
     }
 
     if (logs && logs.length) {
