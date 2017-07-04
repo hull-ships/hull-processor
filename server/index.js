@@ -21,6 +21,7 @@ if (process.env.LOGSTASH_HOST && process.env.LOGSTASH_HOST) {
     host: process.env.LOGSTASH_HOST
   });
 }
+
 // https://www.npmjs.com/package/express-winston
 
 Hull.logger.debug("processor.boot");
