@@ -1,8 +1,8 @@
 import connect from "connect";
-import compute from "./compute";
+import compute from "../compute";
 import bodyParser from "body-parser";
 import timeout from "connect-timeout";
-import fetchUser from "./middlewares/fetch-user";
+import fetchUser from "../middlewares/fetch-user";
 
 function computeHandler(req, res) {
   const { client, timings } = req.hull;
@@ -17,8 +17,12 @@ function computeHandler(req, res) {
 
   if (client && ship && user) {
     const startTime = new Date();
-    compute(user, ship)
+    compute(user, ship, { preview: true })
     .then(result => {
+      const logs = result.logs;
+      if (logs && logs.length) {
+        logs.map(line => req.hull.client.logger.info("preview.console.log", line));
+      }
       const took = new Date() - startTime;
       timings.compute = took;
       res.send({ ship, user, took, timings, result })
@@ -35,14 +39,14 @@ function haltOnTimedout(req, res, next) {
   if (!req.timedout) next();
 }
 
-module.exports = function ComputeHandler(options) {
+export default function ComputeHandler(options) {
   const app = connect();
-  const { hullClient, hostSecret = "" } = options;
+  const { connector, hostSecret = "" } = options;
 
   app.use(timeout("28s"));
   app.use(bodyParser.json());
   app.use(haltOnTimedout);
-  app.use(hullClient({ hostSecret, fetchShip: true, cacheShip: false }));
+  app.use(connector.clientMiddleware({ hostSecret, fetchShip: true, cacheShip: false }));
   app.use(fetchUser);
   app.use(haltOnTimedout);
   app.use(computeHandler);
@@ -51,4 +55,4 @@ module.exports = function ComputeHandler(options) {
   return function c(req, res) {
     return app.handle(req, res);
   };
-};
+}

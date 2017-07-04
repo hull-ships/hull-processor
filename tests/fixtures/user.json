@@ -173,7 +173,10 @@
     "hasviewedproductsfrequentlyatsometime": true,
     "is_recent": false,
     "registered_at": "2016-05-30T23:36:42Z",
-    "website": "hull.io"
+    "website": "hull.io",
+    "testing_array": [
+      "A", "B", "C"
+    ]
   },
   "user_id": "562123b470df84b740000042"
 }

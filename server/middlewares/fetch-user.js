@@ -7,15 +7,12 @@ function getEventsForUserId(client, user_id) {
   if (!user_id || !client) return Promise.reject();
   const params = {
     query: {
-      has_parent: {
-        type: "user_report",
-        query: { match: { id: user_id } }
-      }
+      term: { _parent: user_id }
     },
     sort: { created_at: "desc" },
     raw: true,
     page: 1,
-    per_page: 5
+    per_page: 50
   };
 
   return client
@@ -42,7 +39,6 @@ function getEventsForUserId(client, user_id) {
               )
             )
           , {});
-          client.logger.debug("hull.event.build", { properties, event, source, type });
           return {
             event,
             created_at,
@@ -71,7 +67,7 @@ function getEventsForUserId(client, user_id) {
 function getUserById(client, userId) {
   return Promise.all([
     client.get(`${userId}/user_report`),
-    client.as(userId, false).get(`${userId}/segments`),
+    client.asUser(userId, false).get(`${userId}/segments`),
     getEventsForUserId(client, userId)
   ]).then((results = []) => {
     const [user = {}, segments = [], events = []] = results;
@@ -89,18 +85,18 @@ function searchUser(client, query) {
     per_page: 1
   };
 
+  const should = [
+    "id",
+    "name",
+    "name.exact",
+    "email",
+    "email.exact",
+    "contact_email",
+    "contact_email.exact"
+  ].map(key => { return { term: { [key]: query } }; });
+
   if (query) {
-    params.query = { multi_match: {
-      query,
-      fields: [
-        "name",
-        "name.exact",
-        "email",
-        "email.exact",
-        "contact_email",
-        "contact_email.exact"
-      ]
-    } };
+    params.query = { bool: { should, minimum_should_match: 1 } };
   }
 
   return new Promise((resolve, reject) => {
@@ -110,7 +106,7 @@ function searchUser(client, query) {
       if (!user) return reject(new Error("User not found"));
       const { id } = user;
       return Promise.all([
-        client.as(id, false).get(`${id}/segments`).catch(e => client.logger.error("fetch.user.segments.error", e.message)),
+        client.asUser(id, false).get(`${id}/segments`).catch(e => client.logger.error("fetch.user.segments.error", e.message)),
         getEventsForUserId(client, id)
       ]).then(results => {
         const [segments = [], events = []] = results;

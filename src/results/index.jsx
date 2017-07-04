@@ -20,6 +20,7 @@ export default class Results extends Component {
       changes = {},
       errors = [],
       events = [],
+      accountClaims = {},
       logs = [],
       payload,
       code,
@@ -41,6 +42,13 @@ export default class Results extends Component {
       const traits = JSON.stringify(changes, null, 2);
       output = `/* TRAITS */
 ${traits}
+`;
+    }
+    if (_.size(accountClaims)) {
+      const claims = JSON.stringify(accountClaims, null, 2);
+      output = `${output}
+/* ACCOUNT CLAIMS */
+${claims}
 `;
     }
     if (events.length) {
