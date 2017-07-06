@@ -35,9 +35,8 @@ gulp
 
 ### Logs
 
-These are log messages that are specific for Processor Connector :
+  These are log messages that are specific for Processor Connector :
 
-* preview.console.log - logging each log that arrived in compute handler
-* compute.user.computed - logged after successful computing traits in user-update
-* compute.account.computed - logged after successful updating traits in user-update
-* compute.account.link - logged after successful linking for account
+    * compute.user.computed - logged after successful computing traits about user in user-update
+    * compute.account.computed - logged after successful computing traits about account in user-update
+    * compute.account.link - logged after successful linking for account
