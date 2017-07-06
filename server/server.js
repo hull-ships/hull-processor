@@ -32,6 +32,5 @@ export default function Server(connector, options = {}) {
 
     return res.status(err.status || 500).send({ message: err.message });
   });
-
   return app;
 }
