@@ -159,8 +159,7 @@ describe("Compute Ship", () => {
       const spy = sinon.spy();
       const s = shipWithCode(payload("console"));
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
-        const { id, email } = message.user;
-        sinon.assert.calledWith(spy, "logger.info", "compute.console.log", { id, email, log: ["boom", "bam"] });
+        sinon.assert.calledWith(spy, "logger.info", "compute.console.log", { log: ["boom", "bam"] });
         done();
       });
     });

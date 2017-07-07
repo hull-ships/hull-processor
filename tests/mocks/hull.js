@@ -36,7 +36,9 @@ export default function HullSpy(ship, spy) {
       return new Hull();
     };
     this.asUser = (...args) => {
-      if (spy) spy("asUser", ...args);
+      if (spy) {
+        spy("asUser", ...args);
+      }
       return new Hull();
     };
     this.account = (...args) => {
