@@ -26,7 +26,7 @@ import Engine from "./engine";
         engine.updateShip(message.ship);
       }
     });
-    console.log(engine)
+    console.log(engine);
     ReactDOM.render(<App engine={engine} />, root);
   });
 }());

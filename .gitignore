@@ -6,6 +6,7 @@ stats.json
 npm-debug.log
 newrelic_agent.log
 .env*
+.idea
 
 dist
 lib

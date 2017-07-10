@@ -1,7 +1,6 @@
 import compute from "./compute";
 import _ from "lodash";
 import isGroup from "./is-group-trait";
-// import _ from "lodash";
 
 function flatten(obj, key, group) {
   return _.reduce(group, (m, v, k) => {
@@ -21,7 +20,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
   .then(({ changes, events, account, accountClaims, logs, errors }) => {
     const asUser = hull.asUser(user.id);
 
-    hull.logger.debug("compute.user.debug", { id: user.id, email: user.email, changes, accountClaims });
+    asUser.logger.info("compute.user.debug", { changes, accountClaims });
 
     // Update user traits
     if (_.size(changes.user)) {
@@ -31,7 +30,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
       };
 
       if (_.size(flat)) {
-        hull.logger.info("compute.user.computed", { id: user.id, email: user.email, changes: JSON.stringify(flat) });
+        asUser.logger.info("compute.user.computed", { changes: flat });
         asUser.traits(flat);
       }
     }
@@ -44,17 +43,17 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
       };
 
       if (_.size(flat)) {
-        hull.logger.info("compute.account.computed", { user: _.pick(user, "id", "email"), account: _.pick(account, "id"), accountClaims, changes: flat });
+        asUser.logger.info("compute.account.computed", { account: _.pick(account, "id"), accountClaims, changes: flat });
         asUser.account(accountClaims).traits(flat);
       }
     } else if (_.size(accountClaims) && (_.size(account) || !_.isMatch(account, accountClaims))) {
       // Link account
-      hull.logger.info("compute.account.link", { user: _.pick(user, "id", "email"), account: _.pick(account, "id"), accountClaims });
+      asUser.logger.info("compute.account.link", { account: _.pick(account, "id"), accountClaims });
       asUser.account(accountClaims).traits({});
     }
 
     if (errors && errors.length > 0) {
-      hull.logger.error("compute.user.error", { id: user.id, email: user.email, errors });
+      asUser.logger.info("compute.user.error", { errors });
     }
 
     if (events.length > 0) {
@@ -62,19 +61,15 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
     }
 
     if (errors && errors.length > 0) {
-      hull.logger.error("compute.user.error", { id: user.id, email: user.email, errors });
+      asUser.logger.info("compute.user.error", { errors });
     }
 
     if (logs && logs.length) {
-      logs.map(log => hull.logger.info("compute.console.log", { id: user.id, email: user.email, log }));
-    }
-
-    if (logs && logs.length) {
-      logs.map(line => hull.logger.info("compute.console.log", line));
+      logs.map(log => asUser.logger.info("compute.console.log", { log }));
     }
   })
   .catch(err => {
     console.log("error:", { err, message: err.message });
-    hull.logger.error("compute.error", { err, user, segments });
+    hull.asUser({ id: user.id }).logger.info("compute.error", { err, user, segments });
   });
 };

@@ -21,7 +21,7 @@ function computeHandler(req, res) {
     .then(result => {
       const logs = result.logs;
       if (logs && logs.length) {
-        logs.map(line => req.hull.client.logger.info("preview.console.log", line));
+        logs.map(line => req.hull.client.logger.debug("preview.console.log", line));
       }
       const took = new Date() - startTime;
       timings.compute = took;

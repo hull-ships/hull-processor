@@ -32,3 +32,23 @@ gulp
     traits({ custom_ids: ["A", "B"] });
     // processor ignores removing that array element
     ```
+
+### Logs
+
+  These are log messages that are specific for Processor Connector :
+    info :
+
+      * compute.user.computed - logged after successful computing traits about user in user-update
+      * compute.account.computed - logged after successful computing traits about account in user-update
+      * compute.account.link - logged after successful linking for account
+      * compute.user.computed - logged after successful computing
+      * compute.user.error - logged when encountered error during compute operation
+      * compute.console.log - these are additional logs that should be displayed after compute
+      * compute.error - general logging about errors that encountered during updating user
+
+    error :
+      * fetch.user.events.error - logged when encountered error during user events fetch
+      * fetch.user.segments.error - logged when encountered error during user segments fetch
+      * fetch.user.report.error - logged when encountered problems during search for user reports
+      * fetch.user.error - logged when encountered error during user fetch
+
