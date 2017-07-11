@@ -20,7 +20,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
   .then(({ changes, events, account, accountClaims, logs, errors }) => {
     const asUser = hull.asUser(user.id);
 
-    asUser.logger.info("compute.user.debug", { changes, accountClaims });
+    asUser.logger.info("compute.user.start", { changes, accountClaims });
 
     // Update user traits
     if (_.size(changes.user)) {
@@ -52,24 +52,19 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
       asUser.account(accountClaims).traits({});
     }
 
-    if (errors && errors.length > 0) {
-      asUser.logger.info("compute.user.error", { errors });
-    }
-
     if (events.length > 0) {
       events.map(({ eventName, properties, context }) => asUser.track(eventName, properties, { ip: "0", source: "processor", ...context }));
     }
 
     if (errors && errors.length > 0) {
-      asUser.logger.info("compute.user.error", { errors });
+      asUser.logger.info("compute.user.error", { errors, sandbox: true });
     }
 
     if (logs && logs.length) {
-      logs.map(log => asUser.logger.info("compute.console.log", { log }));
+      logs.map(log => asUser.logger.info("compute.user.log", { log }));
     }
   })
   .catch(err => {
-    console.log("error:", { err, message: err.message });
-    hull.asUser({ id: user.id }).logger.info("compute.error", { err, user, segments });
+    hull.asUser({ id: user.id }).logger.info("compute.user.error", { err, user, segments, sandbox: false });
   });
 };
