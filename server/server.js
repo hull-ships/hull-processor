@@ -1,55 +1,23 @@
 import express from "express";
-import path from "path";
+
+import ComputeHandler from "./actions/compute-handler";
+import NotifyHandler from "./actions/notify-handler";
 import devMode from "./dev-mode";
-import ComputeHandler from "./compute-handler";
-import responseTime from "response-time";
-import updateUser from "./user-update";
 
-module.exports = function Server(options = {}) {
-  const { port, Hull, devMode: dev, hostSecret } = options;
-  const { BatchHandler, NotifHandler, Routes, Middleware } = Hull;
-  const { Readme, Manifest } = Routes;
-
+export default function Server(connector, options = {}) {
   const app = express();
+  const { hostSecret } = options;
 
-  if (dev) app.use(devMode());
-  app.use(responseTime());
-  app.use(express.static(path.resolve(__dirname, "..", "dist")));
-  app.use(express.static(path.resolve(__dirname, "..", "assets")));
+  app.post("/compute", ComputeHandler({ hostSecret, connector }));
 
-  app.set("views", path.resolve(__dirname, "..", "views"));
+  if (options.devMode) app.use(devMode());
+  connector.setupApp(app);
 
-  app.get("/manifest.json", Manifest(__dirname));
-  app.get("/", Readme);
-  app.get("/readme", Readme);
-
-
-  app.post("/compute", ComputeHandler({ hostSecret, hullClient: Middleware, Hull }));
-  app.post("/batch", BatchHandler({
-    hostSecret,
-    batchSize: 100,
-    groupTraits: false,
-    handler: (notifications = [], { hull, ship }) => {
-      hull.logger.debug("processor.batch.process", { notifications: notifications.length });
-      notifications.map(({ message }) => {
-        message.user = hull.utils.groupTraits(message.user);
-        return updateUser({ message }, { hull, ship });
-      });
-    }
-  }));
-  app.post("/notify", NotifHandler({
-    hostSecret,
-    groupTraits: true,
-    onSubscribe() {
-      console.warn("Hello new subscriber !");
-    },
-    handlers: {
-      "user:update": updateUser
-    }
-  }));
+  app.post("/batch", NotifyHandler);
+  app.post("/notify", NotifyHandler);
 
   // Error Handler
-  app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
+  app.use((err, req, res) => { // eslint-disable-line no-unused-vars
     if (err) {
       const data = {
         status: err.status,
@@ -59,15 +27,10 @@ module.exports = function Server(options = {}) {
         url: req.url,
         params: req.params
       };
-      Hull.logger.error("Error ----------------", err.message, err.status, data);
+      req.hull.logger.error("Error ----------------", err.message, err.status, data);
     }
 
     return res.status(err.status || 500).send({ message: err.message });
   });
-
-  Hull.logger.info("processor.started", { port });
-
-  app.listen(port);
-
   return app;
-};
+}

@@ -1,6 +1,4 @@
-const hullClient = require("hull/lib/middleware/client");
-const NotifHandler = require("hull/lib/notif-handler");
-const BatchHandler = require("hull/lib/batch-handler");
+import { notifHandler, batchHandler } from "hull/lib/utils";
 
 const hullSecret = "hullSecret";
 const config = {
@@ -10,12 +8,6 @@ const config = {
 };
 
 function noop() {}
-
-const Routes = {
-  Readme() { return noop; },
-  OAuth() { return noop; },
-  Manifest() { return noop; }
-};
 
 export default function HullSpy(ship, spy) {
   const Hull = function Hull() {
@@ -43,6 +35,16 @@ export default function HullSpy(ship, spy) {
       if (spy) spy("as", ...args);
       return new Hull();
     };
+    this.asUser = (...args) => {
+      if (spy) {
+        spy("asUser", ...args);
+      }
+      return new Hull();
+    };
+    this.account = (...args) => {
+      if (spy) spy("account", ...args);
+      return new Hull();
+    };
     this.logger = {
       info: (...args) => {
         if (spy) spy("logger.info", ...args);
@@ -63,11 +65,9 @@ export default function HullSpy(ship, spy) {
     };
   };
 
-  Hull.Routes = Routes;
   Hull.log = noop;
-  Hull.NotifHandler = NotifHandler.bind(undefined, Hull);
-  Hull.BatchHandler = BatchHandler.bind(undefined, Hull);
-  Hull.Middlewares = { hullClient: hullClient.bind(undefined, Hull) };
+  Hull.notifHandler = notifHandler.bind(undefined, Hull);
+  Hull.batchHandler = batchHandler.bind(undefined, Hull);
 
   return new Hull(config);
 }
