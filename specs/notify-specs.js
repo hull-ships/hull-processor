@@ -1,4 +1,5 @@
 const { expect } = require("chai");
+const fs = require("fs");
 const jwtDecode = require("jwt-decode");
 const Minihull = require("minihull");
 
@@ -29,8 +30,8 @@ describe("computing users", () => {
     it("should send traits to the firehose", (done) => {
       const code = "hull.traits({ foo: \"bar\" })";
 
-      minihull.ships().set("0.private_settings", { code }).write();
-      minihull.sendNotification("user_report:update", { user });
+      minihull.mimicUpdateConnector({ code });
+      minihull.mimicSendNotification("user_report:update", { user });
       minihull.on("incoming.request@/api/v1/firehose", (req) => {
         // traits
         const body = req.body.batch[0].body;
@@ -48,8 +49,8 @@ describe("computing users", () => {
     it("should send an account link to the firehose", (done) => {
       const code = "hull.account({ domain: user.domain });";
 
-      minihull.ships().set("0.private_settings", { code }).write();
-      minihull.sendNotification("user_report:update", { user });
+      minihull.mimicUpdateConnector({ code });
+      minihull.mimicSendNotification("user_report:update", { user });
       minihull.on("incoming.request@/api/v1/firehose", (req) => {
         // traits
         const body = req.body.batch[0].body;
@@ -68,8 +69,8 @@ describe("computing users", () => {
     it("should send account traits to the firehose", (done) => {
       const code = "hull.account().traits({ name: \"Hull\"});";
 
-      minihull.ships().set("0.private_settings", { code }).write();
-      minihull.sendNotification("user_report:update", { user });
+      minihull.mimicUpdateConnector({ code });
+      minihull.mimicSendNotification("user_report:update", { user });
       minihull.on("incoming.request@/api/v1/firehose", (req) => {
         // traits
         const body = req.body.batch[0].body;
@@ -86,8 +87,90 @@ describe("computing users", () => {
     });
   });
 
+  describe("regression tests on production code", () => {
+    it("should have the same result than appcues production version", (done) => {
+      const namespace = "appcues";
+      const path = `specs/fixtures/${namespace}`;
+
+      if (!fs.existsSync(path)) return done();
+
+      const code = fs.readFileSync(`${path}/code.js`, "utf8");
+      const message = JSON.parse(fs.readFileSync(`${path}/user.json`, "utf8"));
+      const traits = JSON.parse(fs.readFileSync(`${path}/result.json`, "utf8")).traits;
+
+      minihull.mimicUpdateConnector({ code });
+      minihull.mimicSendNotification("user_report:update", message);
+      minihull.on("incoming.request@/api/v1/firehose", (req) => {
+        // traits
+        const body = req.body.batch[0].body;
+        expect(body).to.eql(traits);
+
+        // claims
+        const access_token = jwtDecode(req.body.batch[0].headers["Hull-Access-Token"]);
+        expect(access_token["io.hull.subjectType"]).to.equal("user");
+        expect(access_token.sub).to.eql(message.user.id);
+        expect(access_token).to.not.have.property("io.hull.asAccount");
+
+        done();
+      });
+    });
+
+    it("should have the same result than lengow production version", (done) => {
+      const namespace = "lengow";
+      const path = `specs/fixtures/${namespace}`;
+
+      if (!fs.existsSync(path)) return done();
+
+      const code = fs.readFileSync(`${path}/code.js`, "utf8");
+      const message = JSON.parse(fs.readFileSync(`${path}/user.json`, "utf8"));
+      const traits = JSON.parse(fs.readFileSync(`${path}/result.json`, "utf8")).traits;
+
+      minihull.mimicUpdateConnector({ code });
+      minihull.mimicSendNotification("user_report:update", message);
+      minihull.on("incoming.request@/api/v1/firehose", (req) => {
+        // traits
+        const body = req.body.batch[0].body;
+        expect(body).to.eql(traits);
+
+        // claims
+        const access_token = jwtDecode(req.body.batch[0].headers["Hull-Access-Token"]);
+        expect(access_token["io.hull.subjectType"]).to.equal("user");
+        expect(access_token.sub).to.eql(message.user.id);
+        expect(access_token).to.not.have.property("io.hull.asAccount");
+
+        done();
+      });
+    });
+
+    it("should have the same result than mention production version", (done) => {
+      const namespace = "mention";
+      const path = `specs/fixtures/${namespace}`;
+
+      if (!fs.existsSync(path)) return done();
+
+      const code = fs.readFileSync(`${path}/code.js`, "utf8");
+      const message = JSON.parse(fs.readFileSync(`${path}/user.json`, "utf8"));
+      const traits = JSON.parse(fs.readFileSync(`${path}/result.json`, "utf8")).traits;
+
+      minihull.mimicUpdateConnector({ code });
+      minihull.mimicSendNotification("user_report:update", message);
+      minihull.on("incoming.request@/api/v1/firehose", (req) => {
+        // traits
+        const body = req.body.batch[0].body;
+        expect(body).to.eql(traits);
+
+        // claims
+        const access_token = jwtDecode(req.body.batch[0].headers["Hull-Access-Token"]);
+        expect(access_token["io.hull.subjectType"]).to.equal("user");
+        expect(access_token.sub).to.eql(message.user.id);
+        expect(access_token).to.not.have.property("io.hull.asAccount");
+
+        done();
+      });
+    });
+  });
+
   afterEach(() => {
-    minihull.resetDbState();
     minihull.close();
     server.close();
   });
