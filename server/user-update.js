@@ -31,7 +31,12 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
 
       if (_.size(flat)) {
         asUser.logger.info("compute.user.computed", { changes: flat });
-        asUser.traits(flat);
+        if (flat.email) {
+          hull.asUser({ id: user.id, email: flat.email }).traits(flat);
+        } else {
+          asUser.traits(flat);
+        }
+        
       }
     }
 
