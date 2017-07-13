@@ -36,7 +36,6 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
         } else {
           asUser.traits(flat);
         }
-        
       }
     }
 
