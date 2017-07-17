@@ -7,7 +7,6 @@ import superagent from "superagent";
 import Promise from "bluebird";
 import Engine from "./engine";
 
-
 (function main() {
   const { ship, organization, secret } = queryParams();
 
@@ -21,12 +20,10 @@ import Engine from "./engine";
     const engine = new Engine({ ship, organization, secret }, { ship: app, currentUser });
 
     window.addEventListener("message", ({ data: message }) => {
-      console.log("Received message", message);
       if (message && message.event === "ship.update" && message.ship) {
         engine.updateShip(message.ship);
       }
     });
-    console.log(engine);
     ReactDOM.render(<App engine={engine} />, root);
   });
 }());
