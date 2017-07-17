@@ -107,7 +107,7 @@ describe("Compute Ship", () => {
       const spy = sinon.spy();
       const s = shipWithCode("track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); return { };");
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
-        sinon.assert.callCount(spy, 12);
+        sinon.assert.callCount(spy, 24);
         sinon.assert.calledWith(spy, "track", "Event", { key: "value" });
         sinon.assert.neverCalledWithMatch(spy, "traits");
         done();
@@ -118,7 +118,7 @@ describe("Compute Ship", () => {
       const spy = sinon.spy();
       const s = shipWithCode("track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); return { };");
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
-        sinon.assert.callCount(spy, 14);
+        sinon.assert.callCount(spy, 28);
         sinon.assert.calledWith(spy, "track", "Event", { key: "value" });
         sinon.assert.neverCalledWithMatch(spy, "traits");
         done();
@@ -149,7 +149,7 @@ describe("Compute Ship", () => {
       const spy = sinon.spy();
       const s = shipWithCode(payload("nested"));
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
-        sinon.assert.calledWith(spy, "asUser", "562123b470df84b740000042");
+        sinon.assert.calledWith(spy, "asUser", message.user);
         sinon.assert.neverCalledWithMatch(spy, "track");
         done();
       });
