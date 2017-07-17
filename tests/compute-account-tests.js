@@ -59,7 +59,7 @@ describe("Compute Ship for accounts", () => {
       applyCompute(CODE.one).then(result => {
         expect(result.user).to.be.eql(user);
         expect(result.changes.user).to.be.eql({});
-        expect(result.changes.account).to.deep.equal({ traits: { boom: "bam" }, domain: "test" });
+        expect(result.changes.account).to.deep.equal({ boom: "bam", domain: "test" });
         done();
       });
     });
@@ -67,7 +67,7 @@ describe("Compute Ship for accounts", () => {
     it("Should add trait when code adds a trait", (done) => {
       applyCompute(CODE.new_boolean).then(result => {
         expect(result.user).to.be.eql(user);
-        expect(result).to.have.deep.property("account.traits.new_boolean", true);
+        expect(result).to.have.deep.property("account.new_boolean", true);
         done();
       });
     });
@@ -83,9 +83,9 @@ describe("Compute Ship for accounts", () => {
     it("Should return grouped objects when groups are passed", (done) => {
       applyCompute(CODE.utils).then(result => {
         expect(result.user).to.be.eql(user);
-        expect(result).to.have.deep.property("changes.account.traits.hello_at", "20160101");
-        expect(result).to.have.deep.property("changes.account.traits.host", "hull.io");
-        expect(result).to.have.deep.property("changes.account.traits.keys", "a,b");
+        expect(result).to.have.deep.property("changes.account.hello_at", "20160101");
+        expect(result).to.have.deep.property("changes.account.host", "hull.io");
+        expect(result).to.have.deep.property("changes.account.keys", "a,b");
         done();
       });
     });
@@ -93,7 +93,7 @@ describe("Compute Ship for accounts", () => {
     it("Should add an array element", (done) => {
       applyCompute(CODE.add_array_element).then(result => {
         expect(result.user).to.be.eql(user);
-        expect(result.changes.account.traits.testing_array).to.deep.equal(["A", "B", "C", "E"]);
+        expect(result.changes.account.testing_array).to.deep.equal(["A", "B", "C", "E"]);
         done();
       });
     });
@@ -101,7 +101,7 @@ describe("Compute Ship for accounts", () => {
     it("Should modify an array element", (done) => {
       applyCompute(CODE.modify_array_element).then(result => {
         expect(result.user).to.be.eql(user);
-        expect(result.changes.account.traits.testing_array).to.deep.equal(["F", "B", "C", "E"]);
+        expect(result.changes.account.testing_array).to.deep.equal(["F", "B", "C", "E"]);
         done();
       });
     });
@@ -109,7 +109,7 @@ describe("Compute Ship for accounts", () => {
     it("Should delete an array element", (done) => {
       applyCompute(CODE.delete_array_element).then(result => {
         expect(result.user).to.be.eql(user);
-        expect(result.changes.account.traits.testing_array).to.deep.equal(["A", "B"]);
+        expect(result.changes.account.testing_array).to.deep.equal(["A", "B"]);
         done();
       });
     });
@@ -117,7 +117,7 @@ describe("Compute Ship for accounts", () => {
     it("Should change an array to string", (done) => {
       applyCompute(CODE.array_to_string).then(result => {
         expect(result.user).to.be.eql(user);
-        expect(result.changes.account.traits.testing_array).to.equal("abcdef");
+        expect(result.changes.account.testing_array).to.equal("abcdef");
         done();
       });
     });
@@ -125,7 +125,7 @@ describe("Compute Ship for accounts", () => {
     it("Should change a string to an array", (done) => {
       applyCompute(CODE.string_to_array).then(result => {
         expect(result.user).to.be.eql(user);
-        expect(result.changes.account.traits.foo).to.deep.equal(["A", "B"]);
+        expect(result.changes.account.foo).to.deep.equal(["A", "B"]);
         done();
       });
     });
@@ -134,7 +134,7 @@ describe("Compute Ship for accounts", () => {
       applyCompute(CODE.user_and_account_traits).then(result => {
         expect(result.accountClaims).to.eql({ domain: "facebook.com" });
         expect(result.changes.user).to.deep.equal({ traits: { age: 24 } });
-        expect(result.changes.account).to.deep.equal({ traits: { country_code: "us" } });
+        expect(result.changes.account).to.deep.equal({ country_code: "us" });
         done();
       });
     });

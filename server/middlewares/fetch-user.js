@@ -153,7 +153,14 @@ export default function fetchUser(req, res, next) {
         left: [_.last(segments)]
       }
     };
-    req.hull.user = { changes, ...payload, segments, user: client.utils.groupTraits(payload.user) };
+    const groupedUser = client.utils.groupTraits(payload.user);
+    req.hull.user = {
+      changes,
+      ...payload,
+      segments,
+      user: _.omit(groupedUser, "account"),
+      account: client.utils.groupTraits(groupedUser.account)
+    };
     return req.hull.user;
   })
   .then(done, (err) => {
