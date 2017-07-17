@@ -1,20 +1,20 @@
-'use strict';
+"use strict";
 /* global module,import */
 
-import React, { Component } from 'react';
-import classnames from 'classnames';
-import SVGIcon from 'svg-inline-react';
-import styles from './icon.css';
-import icons from './icon_list';
+import React, { Component } from "react";
+import classnames from "classnames";
+import SVGIcon from "svg-inline-react";
+import styles from "./icon.css";
+import icons from "./icon_list";
 
-export default (props)=>{
-  const pp = _.omit(props, 'styles');
-  const { name , color, style, colorize, className } = pp;
+export default (props) => {
+  const pp = _.omit(props, "styles");
+  const { name, color, style, colorize, className } = pp;
   const src = icons[name];
   if (!src) {
     return <i/>;
   }
-  pp.size = pp.size || 16
+  pp.size = pp.size || 16;
 
   const cls = classnames({
     [styles.responsive]: !!pp.responsive,
@@ -25,4 +25,4 @@ export default (props)=>{
     [styles.colorized]: !!colorize
   });
   return <SVGIcon src={src} className={cls} {...pp} />;
-}
+};
