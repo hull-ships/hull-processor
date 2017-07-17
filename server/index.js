@@ -30,6 +30,7 @@ const options = {
   hostSecret: process.env.SECRET || "1234",
   devMode: process.env.NODE_ENV === "development",
   port: process.env.PORT || 8082,
+  Hull,
   clientConfig: {
     firehoseUrl: process.env.OVERRIDE_FIREHOSE_URL
   }
