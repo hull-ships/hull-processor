@@ -1,6 +1,7 @@
 import React from "react";
 import className from "classnames";
 
+
 const CodeMirror = React.createClass({
   propTypes: {
     onChange: React.PropTypes.func,
@@ -13,7 +14,15 @@ const CodeMirror = React.createClass({
     codeMirrorInstance: React.PropTypes.object,
   },
   getCodeMirrorInstance() {
-    return this.props.codeMirrorInstance || require("codemirror");
+    if (this.props.codeMirrorInstance) return this.props.codeMirrorInstance;
+    const cm = require("codemirror");
+    require("codemirror/addon/fold/foldcode");
+    require("codemirror/addon/fold/foldgutter");
+    require("codemirror/addon/fold/foldgutter.css");
+    require("codemirror/addon/fold/brace-fold");
+    require("codemirror/addon/fold/indent-fold");
+    require("codemirror/addon/fold/comment-fold");
+    return cm;
   },
   getInitialState() {
     return {

@@ -1,5 +1,5 @@
 import _ from "lodash";
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
 import Codemirror from "./react-codemirror";
 import stringify from "json-stable-stringify";
 
@@ -56,6 +56,10 @@ export default class Area extends Component {
           name: this.props.javascript ? "javascript" : "application/ld+json",
           json: true
         },
+        gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+        extraKeys: { "Ctrl-Q": cm => cm.foldCode(cm.getCursor()) },
+        foldGutter: true,
+        lineNumbers: true,
         lineWrapping: wrap,
         readOnly: true
       }}

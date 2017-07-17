@@ -23,16 +23,23 @@ export default class Code extends Component {
     const options = {
       mode: "javascript",
       lineNumbers: true,
-      gutters: ["CodeMirror-lint-markers"],
+      gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+      extraKeys: { "Ctrl-Q": cm => cm.foldCode(cm.getCursor()) },
+      foldGutter: true,
       lint: true
     };
 
     const { className, sm, md, onChange, value } = this.props;
-    const title = <span>Code <small> Write code below, see preview on right. Click save when done</small></span>;
+    const title = <span>Code <small><code>Ctrl-Q</code> to toggle code folding. Click save when done.</small></span>;
     return <Col className={className} md={md} sm={sm}>
       <Header title={title}/>
       <hr/>
-      <Codemirror style={{ height: "auto" }} value={value} onChange={onChange} options={options} />
+      <Codemirror
+        style={{ height: "auto" }}
+        value={value}
+        onChange={onChange}
+        options={options}
+      />
     </Col>;
   }
 }
