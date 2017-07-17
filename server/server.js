@@ -30,6 +30,7 @@ export default function Server(connector, options = {}) {
       Hull.logger.error("Error ----------------", err.message, err.status, data);
       return res.status(err.status || 500).send({ message: err.message });
     }
+    return res.status(err.status || 500).send({ message: "undefined error" });
   });
   return app;
 }
