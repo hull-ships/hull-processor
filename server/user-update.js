@@ -17,12 +17,10 @@ function flatten(obj, key, group) {
 
 module.exports = function handle({ message = {} }, { ship, hull }) {
   const { user, segments } = message;
+  const asUser = hull.asUser(user);
+  asUser.logger.info("incoming.user.start");
   return compute(message, ship)
   .then(({ changes, events, account, accountClaims, logs, errors }) => {
-    const asUser = hull.asUser(user.id);
-
-    asUser.logger.info("compute.user.start", { changes, accountClaims });
-
     // Update user traits
     if (_.size(changes.user)) {
       const flat = {
@@ -31,9 +29,11 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
       };
 
       if (_.size(flat)) {
-        asUser.logger.info("compute.user.computed", { changes: flat });
         asUser.traits(flat);
+        asUser.logger.info("incoming.user.success", { changes: flat });
       }
+    } else {
+      asUser.logger.info("incoming.user.skip", { message: "No Changes" });
     }
 
     // Update account traits
@@ -41,21 +41,25 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
       const flat = flatten({}, "", changes.account);
 
       if (_.size(flat)) {
-        asUser.logger.info("compute.account.computed", { account: _.pick(account, "id"), accountClaims, changes: flat });
-        asUser.account(accountClaims).traits(flat);
+        const asAccount = asUser.account(accountClaims);
+        asAccount.traits(flat);
+        asAccount.logger.info("incoming.account.success", { changes: flat });
       }
     } else if (_.size(accountClaims) && (_.size(account) || !_.isMatch(account, accountClaims))) {
       // Link account
-      asUser.logger.info("compute.account.link", { account: _.pick(account, "id"), accountClaims });
       asUser.account(accountClaims).traits({});
+      asUser.logger.info("incoming.account.link", { account: _.pick(account, "id"), accountClaims });
     }
 
     if (events.length > 0) {
-      events.map(({ eventName, properties, context }) => asUser.track(eventName, properties, { ip: "0", source: "processor", ...context }));
+      events.map(({ eventName, properties, context }) => {
+        asUser.logger.info("incoming.event.track", { properties, eventName });
+        return asUser.track(eventName, properties, { ip: "0", source: "processor", ...context });
+      });
     }
 
     if (errors && errors.length > 0) {
-      asUser.logger.info("compute.user.error", { errors, sandbox: true });
+      asUser.logger.info("incoming.user.error", { errors, sandbox: true });
     }
 
     if (logs && logs.length) {
@@ -63,6 +67,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
     }
   })
   .catch(err => {
-    hull.asUser({ id: user.id }).logger.info("compute.user.error", { err, user, segments, sandbox: false });
+    console.log("error:", { err, message: err.message });
+    asUser.logger.info("incoming.user.error", { err, user, segments, sandbox: false });
   });
 };
