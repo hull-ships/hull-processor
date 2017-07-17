@@ -38,13 +38,13 @@ gulp
   These are log messages that are specific for Processor Connector :
     info :
 
-      * compute.user.computed - logged after successful computing traits about user in user-update
-      * compute.account.computed - logged after successful computing traits about account in user-update
-      * compute.account.link - logged after successful linking for account
-      * compute.user.computed - logged after successful computing
-      * compute.user.error - logged when encountered error during compute operation
       * compute.console.log - these are additional logs that should be displayed after compute
-      * compute.error - general logging about errors that encountered during updating user
+      * incoming.user.success - logged after successful computing traits about user in user-update
+      * incoming.user.skip - logged if user hasn't been changed at at all.
+      * incoming.account.computed - logged after successful computing traits about account in user-update
+      * incoming.account.link - logged after successful linking for account
+      * incoming.user.computed - logged after successful computing
+      * incoming.user.error - general logging about errors that encountered during updating user
 
     error :
       * fetch.user.events.error - logged when encountered error during user events fetch
