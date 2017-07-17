@@ -19,7 +19,7 @@ export default class Area extends Component {
   }
 
   componentDidUpdate() {
-    this.props.highlight.length && this.cm && this.cm.addOverlay({token:this.buildHighlighter()})
+    this.props.highlight.length && this.cm && this.cm.addOverlay({ token: this.buildHighlighter() });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -28,8 +28,8 @@ export default class Area extends Component {
     return true;
   }
 
-  buildHighlighter(){
-    const tokens = _.map(this.props.highlight, (t) => `("${t}":)` );
+  buildHighlighter() {
+    const tokens = _.map(this.props.highlight, (t) => `("${t}":)`);
     const rgs = `(${tokens.join("|")})`;
     const rgx = new RegExp(rgs, "gi");
 
