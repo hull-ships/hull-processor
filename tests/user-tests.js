@@ -107,7 +107,7 @@ describe("Compute Ship", () => {
       const spy = sinon.spy();
       const s = shipWithCode("track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); return { };");
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
-        sinon.assert.callCount(spy, 24);
+        sinon.assert.callCount(spy, 23);
         sinon.assert.calledWith(spy, "track", "Event", { key: "value" });
         sinon.assert.neverCalledWithMatch(spy, "traits");
         done();
@@ -118,7 +118,7 @@ describe("Compute Ship", () => {
       const spy = sinon.spy();
       const s = shipWithCode("track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); track('Event', { key: 'value' }); return { };");
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
-        sinon.assert.callCount(spy, 28);
+        sinon.assert.callCount(spy, 27);
         sinon.assert.calledWith(spy, "track", "Event", { key: "value" });
         sinon.assert.neverCalledWithMatch(spy, "traits");
         done();
@@ -159,7 +159,7 @@ describe("Compute Ship", () => {
       const spy = sinon.spy();
       const s = shipWithCode(payload("console"));
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
-        sinon.assert.calledWith(spy, "logger.info", "compute.console.log", { log: ["boom", "bam"] });
+        sinon.assert.calledWith(spy, "logger.info", "compute.user.log", { log: ["boom", "bam"] });
         done();
       });
     });
