@@ -59,7 +59,7 @@ describe("computing users", () => {
         // claims
         const access_token = jwtDecode(req.body.batch[0].headers["Hull-Access-Token"]);
         expect(access_token["io.hull.subjectType"]).to.equal("account");
-        expect(access_token["io.hull.asUser"]).to.eql({ id: user.id });
+        expect(access_token["io.hull.asUser"]).to.eql({ id: user.id, email: user.email });
         expect(access_token["io.hull.asAccount"]).to.eql({ domain: user.domain });
 
         done();
@@ -79,7 +79,7 @@ describe("computing users", () => {
         // claims
         const access_token = jwtDecode(req.body.batch[0].headers["Hull-Access-Token"]);
         expect(access_token["io.hull.subjectType"]).to.equal("account");
-        expect(access_token["io.hull.asUser"]).to.eql({ id: user.id });
+        expect(access_token["io.hull.asUser"]).to.eql({ id: user.id, email: user.email });
         expect(access_token).to.not.have.property("io.hull.asAccount");
 
         done();
