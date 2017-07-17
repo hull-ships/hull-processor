@@ -1,3 +1,4 @@
+
 import compute from "./compute";
 import _ from "lodash";
 import isGroup from "./is-group-trait";
@@ -37,10 +38,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
 
     // Update account traits
     if (_.size(changes.account)) {
-      const flat = {
-        ...changes.account.traits,
-        ...flatten({}, "", _.omit(changes.account, "traits")),
-      };
+      const flat = flatten({}, "", changes.account);
 
       if (_.size(flat)) {
         asUser.logger.info("compute.account.computed", { account: _.pick(account, "id"), accountClaims, changes: flat });
