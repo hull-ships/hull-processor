@@ -17,7 +17,7 @@ export default function Server(connector, options = {}) {
   app.post("/notify", NotifyHandler);
 
   // Error Handler
-  app.use((err, req, res) => { // eslint-disable-line no-unused-vars
+  app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
     if (err) {
       const data = {
         status: err.status,
