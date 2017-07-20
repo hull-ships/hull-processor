@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Alert, Modal, Tooltip, Button, Popover, OverlayTrigger, Row, Col, Table} from "react-bootstrap";
-import Icon from './icon';
+import { Alert, Modal, Tooltip, Button, Popover, OverlayTrigger, Row, Col, Table } from "react-bootstrap";
+import Icon from "./icon";
 
 export default class Help extends Component {
 
@@ -193,6 +193,6 @@ if(false) { hull.track("Viewed Monthy Python", { coconuts: 12 });}
           </Modal.Footer>
         </Modal>
       </div>
-    )
+    );
   }
 }

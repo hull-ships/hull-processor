@@ -47,7 +47,7 @@ ${traits}
     if (_.size(accountClaims)) {
       const claims = JSON.stringify(accountClaims, null, 2);
       output = `${output}
-/* ACCOUNT CLAIMS */
+/* Account Lookup Identifiers */
 ${claims}
 `;
     }
@@ -61,7 +61,7 @@ ${claims}
 ${eventString}`;
     }
     return (<Col className={className} md={md} sm={sm}>
-      <Header title="Results">
+      <Header title="Results Preview">
         <Help showModal={codeIsEmpty}/>
       </Header>
       <hr/>

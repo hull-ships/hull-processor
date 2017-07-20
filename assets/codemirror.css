@@ -2,10 +2,79 @@
 
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
-  font-family: monospace;
+  font-family: monaco, monospace;
   height: 300px;
-  color: black;
+  color: #3F4654;
+  -webkit-font-smoothing: subpixel-antialiased;
+  border: 1px solid #eee;
+  height: auto;
+  font-size: 12px;
 }
+
+.userPane .CodeMirror{
+  height: calc( 100% - 80px );
+}
+
+.resultPane .ReactCodeMirror {
+  min-height: 60px;
+  height: 50%;
+}
+
+
+.fieldPillContainer{
+  position: relative;
+  height: calc(100vh - 82px);
+}
+.fieldPill {
+  opacity: .6;
+  position: absolute;
+  right: 16px;
+  background: #eee;
+  z-index: 10;
+  padding: 5px 10px;
+  color: #3f4654;
+  border-radius: 20px;
+}
+hr{
+  margin: 10px 0;
+}
+body{
+  background-color: white;
+  height: 100%;
+}
+pre{
+  margin:0;
+}
+.well{
+  padding:0;
+}
+@media (min-width: 768px) {
+  .flexRow{
+    flex-direction: row;
+    display: flex;
+  }
+  .flexColumn{
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    padding: 0 10px;
+  }
+}
+.flexGrow{
+  flex-grow:1;
+}
+.input-group-btn,
+.input-group-addon{
+  vertical-align: top;
+}
+.input-group input.form-control-sm[type='text'].form-control{
+  padding-top: 0;
+  padding-bottom: 11px;
+}
+.grid{
+  height: 100vh;
+}
+
 
 /* PADDING */
 
@@ -14,6 +83,8 @@
 }
 .CodeMirror pre {
   padding: 0 4px; /* Horizontal padding of content */
+  font-size: 11px;
+  line-height:1.4;
 }
 
 .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
@@ -23,21 +94,22 @@
 /* GUTTER */
 
 .CodeMirror-gutters {
-  border-right: 1px solid #ddd;
-  background-color: #f7f7f7;
+  border-right: 1px solid #eee;
+  background-color: #FFF;
   white-space: nowrap;
+  min-height: 100%;
 }
 .CodeMirror-linenumbers {}
 .CodeMirror-linenumber {
   padding: 0 3px 0 5px;
   min-width: 20px;
   text-align: right;
-  color: #999;
+  color: #c2cad6;
   white-space: nowrap;
 }
 
 .CodeMirror-guttermarker { color: black; }
-.CodeMirror-guttermarker-subtle { color: #999; }
+.CodeMirror-guttermarker-subtle { color: #c2cad6; }
 
 /* CURSOR */
 
@@ -104,10 +176,10 @@
 .cm-link {text-decoration: underline;}
 .cm-strikethrough {text-decoration: line-through;}
 
-.cm-s-default .cm-keyword {color: #708;}
+.cm-s-default .cm-keyword {color: #4BC2B8;}
 .cm-s-default .cm-atom {color: #219;}
 .cm-s-default .cm-number {color: #164;}
-.cm-s-default .cm-def {color: #00f;}
+.cm-s-default .cm-def {color: #0093E6;}
 .cm-s-default .cm-variable,
 .cm-s-default .cm-punctuation,
 .cm-s-default .cm-property,
@@ -115,7 +187,7 @@
 .cm-s-default .cm-variable-2 {color: #05a;}
 .cm-s-default .cm-variable-3 {color: #085;}
 .cm-s-default .cm-comment {color: #a50;}
-.cm-s-default .cm-string {color: #a11;}
+.cm-s-default .cm-string {color: #E75F45;}
 .cm-s-default .cm-string-2 {color: #f50;}
 .cm-s-default .cm-meta {color: #555;}
 .cm-s-default .cm-qualifier {color: #555;}
@@ -333,3 +405,25 @@ div.CodeMirror-dragcursors {
 
 /* Help users use markselection to safely style text background */
 span.CodeMirror-selectedtext { background: none; }
+
+
+.CodeMirror-foldmarker {
+  color: #4bc2b8;
+  text-shadow: rgba(75, 194, 184, 0.55)  1px 1px 2px, rgba(75, 194, 184, 0.55)  -1px -1px 2px, rgba(75, 194, 184, 0.55)  1px -1px 2px, rgba(75, 194, 184, 0.55)  -1px 1px 2px;
+  font-family: arial;
+  line-height: .3;
+  cursor: pointer;
+}
+.CodeMirror-foldgutter {
+  width: .7em;
+}
+.CodeMirror-foldgutter-open,
+.CodeMirror-foldgutter-folded {
+  cursor: pointer;
+}
+.CodeMirror-foldgutter-open:after {
+  content: "\25BE";
+}
+.CodeMirror-foldgutter-folded:after {
+  content: "\25B8";
+}

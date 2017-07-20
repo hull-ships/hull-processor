@@ -22,8 +22,8 @@ function applyUtils(sandbox = {}) {
   sandbox._ = deepFreeze(lodash);
 }
 
-const buildPayload = (pld, pl = {}) => {
-  const { properties, context = {} } = pl;
+const buildPayload = (pld, traitsCall = {}) => {
+  const { properties, context = {} } = traitsCall;
   if (properties) {
     const { source } = context;
     if (source) {
@@ -43,6 +43,19 @@ const buildPayload = (pld, pl = {}) => {
         }
         return;
       });
+    }
+  }
+  return pld;
+};
+
+const buildAccountPayload = (pld, traitsCall = {}) => {
+  const { properties, context = {} } = traitsCall;
+  if (properties) {
+    const { source } = context;
+    if (source) {
+      pld[source] = { ...pld[source], ...properties };
+    } else {
+      _.map(properties, function applyTraits(v, k) { pld[k] = v; });
     }
   }
   return pld;
@@ -210,7 +223,7 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
 
     const payload = {
       user: _.reduce(userTraits, buildPayload, {}),
-      account: _.reduce(accountTraits, buildPayload, {}),
+      account: _.reduce(accountTraits, buildAccountPayload, {}),
     };
 
     // we don't concatenate arrays, we use only new values:

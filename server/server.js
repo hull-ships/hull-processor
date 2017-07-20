@@ -6,7 +6,7 @@ import devMode from "./dev-mode";
 
 export default function Server(connector, options = {}) {
   const app = express();
-  const { hostSecret } = options;
+  const { Hull, hostSecret } = options;
 
   app.post("/compute", ComputeHandler({ hostSecret, connector }));
 
@@ -17,7 +17,7 @@ export default function Server(connector, options = {}) {
   app.post("/notify", NotifyHandler);
 
   // Error Handler
-  app.use((err, req, res) => { // eslint-disable-line no-unused-vars
+  app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
     if (err) {
       const data = {
         status: err.status,
@@ -27,10 +27,10 @@ export default function Server(connector, options = {}) {
         url: req.url,
         params: req.params
       };
-      req.hull.logger.error("Error ----------------", err.message, err.status, data);
+      Hull.logger.error("Error ----------------", err.message, err.status, data);
+      return res.status(err.status || 500).send({ message: err.message });
     }
-
-    return res.status(err.status || 500).send({ message: err.message });
+    return res.status(err.status || 500).send({ message: "undefined error" });
   });
   return app;
 }
