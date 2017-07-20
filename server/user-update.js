@@ -31,8 +31,12 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
       };
 
       if (_.size(flat)) {
-        asUser.traits(flat);
         asUser.logger.info("incoming.user.success", { changes: flat });
+        if (flat.email) {
+          hull.asUser({ id: user.id, email: flat.email }).traits(flat);
+        } else {
+          asUser.traits(flat);
+        }
       }
     } else {
       asUser.logger.info("incoming.user.skip", { message: "No Changes" });
