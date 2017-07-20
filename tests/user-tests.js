@@ -38,6 +38,11 @@ const TESTS = {
     payload: "hull.traits({ value: 'val0', group: { value: 'val1', group: { value: 'val2' } } } }, { source: 'group' });",
     result: { "traits_group/value": "val0", "traits_group/group/value": "val1", "traits_group/group/group/value": "val2" }
   },
+  withEmail: {
+    payload_old: "traits({ name: 'Hello Friend', email: 'hello@friend.com' });",
+    payload: "hull.traits({ name: 'Hello Friend', email: 'hello@friend.com' });",
+    result: { "email" : "hello@friend.com", "name" : "Hello Friend" }
+  },
   console: {
     payload: "console.log('boom', 'bam')",
     result: {}
@@ -54,6 +59,16 @@ function payload(p) {
 
 describe("Compute Ship", () => {
   describe("User Update Handler", () => {
+    
+    it("Should use email in the asUser method call", (done) => {
+      const spy = sinon.spy();
+      const s = shipWithCode(payload("withEmail"));
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+        sinon.assert.calledWith(spy, "asUser", { "email" : "hello@friend.com", "id" : message.user.id });
+        done();
+      });
+    });
+
     it("Should not call traits if no changes", (done) => {
       const spy = sinon.spy();
       const s = shipWithCode("traits({})");
