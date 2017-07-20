@@ -17,6 +17,9 @@ function getEventsForUserId(client, user_id) {
 
   return client
   .post("search/events", params)
+  .catch(error => {
+    return { data: [], error };
+  })
   .then((res = {}) => {
     try {
       const esEvents = res.data;
@@ -64,7 +67,7 @@ function getEventsForUserId(client, user_id) {
 function getUserById(client, userId) {
   return Promise.all([
     client.get(`${userId}/user_report`),
-    client.as(userId, false).get(`${userId}/segments`),
+    client.asUser(userId, false).get(`${userId}/segments`),
     getEventsForUserId(client, userId)
   ]).then((results = []) => {
     const [user = {}, segments = [], events = []] = results;
@@ -103,7 +106,7 @@ function searchUser(client, query) {
       if (!user) return reject(new Error("User not found"));
       const { id } = user;
       return Promise.all([
-        client.as(id, false).get(`${id}/segments`).catch(e => client.logger.error("fetch.user.segments.error", e.message)),
+        client.asUser(id, false).get(`${id}/segments`).catch(e => client.logger.error("fetch.user.segments.error", e.message)),
         getEventsForUserId(client, id)
       ]).then(results => {
         const [segments = [], events = []] = results;
@@ -137,7 +140,6 @@ export default function fetchUser(req, res, next) {
   return userPromise
   .then((payload = {}) => {
     const segments = _.map(payload.segments, s => _.pick(s, "id", "name", "type", "updated_at", "created_at"));
-
     const randKeys = _.sampleSize(_.keys(payload.user), 3);
     const changes = {
       user: _.reduce(randKeys, (m, k) => {
@@ -151,7 +153,14 @@ export default function fetchUser(req, res, next) {
         left: [_.last(segments)]
       }
     };
-    req.hull.user = { changes, ...payload, segments, user: client.utils.groupTraits(payload.user) };
+    const groupedUser = client.utils.groupTraits(payload.user);
+    req.hull.user = {
+      changes,
+      ...payload,
+      segments,
+      user: _.omit(groupedUser, "account"),
+      account: client.utils.groupTraits(groupedUser.account)
+    };
     return req.hull.user;
   })
   .then(done, (err) => {

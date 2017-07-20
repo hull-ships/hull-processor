@@ -20,6 +20,7 @@ export default class Results extends Component {
       changes = {},
       errors = [],
       events = [],
+      accountClaims = {},
       logs = [],
       payload,
       code,
@@ -43,6 +44,13 @@ export default class Results extends Component {
 ${traits}
 `;
     }
+    if (_.size(accountClaims)) {
+      const claims = JSON.stringify(accountClaims, null, 2);
+      output = `${output}
+/* Account Lookup Identifiers */
+${claims}
+`;
+    }
     if (events.length) {
       const eventString = _.map(events, e => {
         const props = JSON.stringify(e.properties, null, 2);
@@ -53,7 +61,7 @@ ${traits}
 ${eventString}`;
     }
     return (<Col className={className} md={md} sm={sm}>
-      <Header title="Results">
+      <Header title="Results Preview">
         <Help showModal={codeIsEmpty}/>
       </Header>
       <hr/>
