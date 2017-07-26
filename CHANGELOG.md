@@ -1,3 +1,6 @@
+# 0.1.2
+- make sure we don't store cache without TTL
+
 # 0.1.1
 - upgrade hull-node to 0.11.12 -> hotfix batch extract timeout
 - added yarn.lock file
