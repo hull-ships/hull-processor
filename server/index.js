@@ -1,4 +1,5 @@
 import Hull from "hull";
+import { Cache } from "hull/lib/infra";
 
 import server from "./server";
 
@@ -26,6 +27,12 @@ if (process.env.LOGSTASH_HOST && process.env.LOGSTASH_HOST) {
 
 Hull.logger.debug("processor.boot");
 
+const cache = new Cache({
+  store: "memory",
+  max: process.env.SHIP_CACHE_MAX || 100,
+  ttl: process.env.SHIP_CACHE_TTL || 60
+});
+
 const options = {
   hostSecret: process.env.SECRET || "1234",
   devMode: process.env.NODE_ENV === "development",
@@ -33,7 +40,8 @@ const options = {
   Hull,
   clientConfig: {
     firehoseUrl: process.env.OVERRIDE_FIREHOSE_URL
-  }
+  },
+  cache
 };
 
 const connector = new Hull.Connector(options);
