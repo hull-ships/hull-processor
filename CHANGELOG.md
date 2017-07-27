@@ -1,3 +1,6 @@
+# 0.1.3
+- use redis caching for ship and segments cache
+
 # 0.1.2
 - make sure we don't store cache without TTL
 

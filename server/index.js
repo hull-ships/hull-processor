@@ -1,5 +1,6 @@
 import Hull from "hull";
 import { Cache } from "hull/lib/infra";
+import redisStore from "cache-manager-redis";
 
 import server from "./server";
 
@@ -27,11 +28,21 @@ if (process.env.LOGSTASH_HOST && process.env.LOGSTASH_HOST) {
 
 Hull.logger.debug("processor.boot");
 
-const cache = new Cache({
-  store: "memory",
-  max: process.env.SHIP_CACHE_MAX || 100,
-  ttl: process.env.SHIP_CACHE_TTL || 60
-});
+let cache;
+
+if (process.env.REDIS_URL) {
+  cache = new Cache({
+    store: redisStore,
+    url: process.env.REDIS_URL,
+    ttl: process.env.SHIP_CACHE_TTL || 60
+  });
+} else {
+  cache = new Cache({
+    store: "memory",
+    max: process.env.SHIP_CACHE_MAX || 100,
+    ttl: process.env.SHIP_CACHE_TTL || 60
+  });
+}
 
 const options = {
   hostSecret: process.env.SECRET || "1234",
