@@ -41,12 +41,17 @@ const TESTS = {
   withEmail: {
     payload_old: "traits({ name: 'Hello Friend', email: 'hello@friend.com' });",
     payload: "hull.traits({ name: 'Hello Friend', email: 'hello@friend.com' });",
-    result: { "email" : "hello@friend.com", "name" : "Hello Friend" }
+    result: { email: "hello@friend.com", name: "Hello Friend" }
   },
   console: {
     payload: "console.log('boom', 'bam')",
     result: {}
-  }
+  },
+  uppercase: {
+    payload_old: "traits({ 'Lead Source': 'user.traits['lead_source']' })",
+    payload: "hull.traits({ 'Lead Source': 'user.traits['lead_source']' })",
+    result: {},
+  },
 };
 
 function payload_old(p) {
@@ -72,6 +77,16 @@ describe("Compute Ship", () => {
     it("Should not call traits if no changes", (done) => {
       const spy = sinon.spy();
       const s = shipWithCode("traits({})");
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+        sinon.assert.neverCalledWithMatch(spy, "traits");
+        sinon.assert.neverCalledWithMatch(spy, "track");
+        done();
+      });
+    });
+
+    it("Should not call traits if no changes and ignore case in traits keys", (done) => {
+      const spy = sinon.spy();
+      const s = shipWithCode(payload_old("uppercase"));
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
         sinon.assert.neverCalledWithMatch(spy, "traits");
         sinon.assert.neverCalledWithMatch(spy, "track");
@@ -184,6 +199,16 @@ describe("Compute Ship", () => {
     it("Should not call traits if no changes", (done) => {
       const spy = sinon.spy();
       const s = shipWithCode("traits({})");
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+        sinon.assert.neverCalledWithMatch(spy, "traits");
+        sinon.assert.neverCalledWithMatch(spy, "track");
+        done();
+      });
+    });
+
+    it("Should not call traits if no changes and ignore case in traits keys", (done) => {
+      const spy = sinon.spy();
+      const s = shipWithCode(payload("uppercase"));
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
         sinon.assert.neverCalledWithMatch(spy, "traits");
         sinon.assert.neverCalledWithMatch(spy, "track");
