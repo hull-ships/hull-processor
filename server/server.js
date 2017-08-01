@@ -13,8 +13,12 @@ export default function Server(connector, options = {}) {
   if (options.devMode) app.use(devMode());
   connector.setupApp(app);
 
-  app.post("/batch", NotifyHandler);
-  app.post("/notify", NotifyHandler);
+  app.post("/batch", NotifyHandler());
+  app.post("/notify", NotifyHandler({
+    type: "next",
+    size: parseInt(process.env.FLOW_CONTROL_SIZE, 10) || 10,
+    in: parseInt(process.env.FLOW_CONTROL_IN, 10) || 1000
+  }));
 
   // Error Handler
   app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars

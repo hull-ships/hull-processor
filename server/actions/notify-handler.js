@@ -1,11 +1,13 @@
 import updateUser from "../user-update";
-import { notifHandler } from "hull/lib/utils";
+import { notifHandler, smartNotifierHandler } from "hull/lib/utils";
 
-const handler = notifHandler({
+const handler = (flowControl) => (flowControl ? smartNotifierHandler : notifHandler)({
   handlers: {
-    "user:update": ({ ship, client: hull }, messages = []) => {
+    "user:update": ({ ship, client: hull, smartNotifierResponse }, messages = []) => {
+      if (smartNotifierResponse && flowControl) {
+        smartNotifierResponse.setFlowControl(flowControl);
+      }
       return Promise.all(messages.map(message => {
-        // TODO: enable groupTraits option in the notifHandler
         message.user = hull.utils.groupTraits(message.user);
         return updateUser({ message }, { ship, hull });
       }));

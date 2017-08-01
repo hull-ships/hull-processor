@@ -1,12 +1,12 @@
 {
   "name": "Processor",
   "description": "Recompute custom properties and emit events with Javascript logic whenever a user is updated",
-  "tags": ["incoming", "outgoing", "batch", "oneColumn"],
+  "tags": ["incoming", "outgoing", "batch", "oneColumn", "smart-notifier"],
   "picture": "picture.png",
   "ui": false,
   "admin": "admin.html",
   "readme" : "readme.md",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "private_settings": [
     {
       "name" : "sentry_dsn",
