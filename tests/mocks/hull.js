@@ -1,4 +1,4 @@
-import { notifHandler, batchHandler } from "hull/lib/utils";
+import { notifHandler } from "hull/lib/utils";
 
 const hullSecret = "hullSecret";
 const config = {
@@ -67,7 +67,6 @@ export default function HullSpy(ship, spy) {
 
   Hull.log = noop;
   Hull.notifHandler = notifHandler.bind(undefined, Hull);
-  Hull.batchHandler = batchHandler.bind(undefined, Hull);
 
   return new Hull(config);
 }
