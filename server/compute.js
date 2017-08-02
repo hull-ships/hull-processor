@@ -124,20 +124,20 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
     if (eventName) tracks.push({ eventName, properties, context });
   };
   sandbox.traits = (properties = {}, context = {}) => {
-    userTraits.push({ properties, context });
+    userTraits.push({ properties: _.mapKeys(properties, (v, k) => k.toLowerCase()), context });
   };
   sandbox.hull = {
     account: (claims = null) => {
       if (claims) accountClaims = claims;
       return {
         traits: (properties = {}, context = {}) => {
-          accountTraits.push({ properties, context });
+          accountTraits.push({ properties: _.mapKeys(properties, (v, k) => k.toLowerCase()), context });
         },
         isInSegment: isInSegment.bind(null, account_segments)
       };
     },
     traits: (properties = {}, context = {}) => {
-      userTraits.push({ properties, context });
+      userTraits.push({ properties: _.mapKeys(properties, (v, k) => k.toLowerCase()), context });
     },
     track: (eventName, properties = {}, context = {}) => {
       if (eventName) tracks.push({ eventName, properties, context });
