@@ -1,7 +1,3 @@
-if (process.env.NEW_RELIC_LICENSE_KEY) {
-  require("newrelic"); // eslint-disable-line global-require
-}
-
 import Hull from "hull";
 import { Cache } from "hull/lib/infra";
 import redisStore from "cache-manager-redis";
