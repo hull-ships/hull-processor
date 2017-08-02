@@ -64,12 +64,11 @@ function payload(p) {
 
 describe("Compute Ship", () => {
   describe("User Update Handler", () => {
-    
     it("Should use email in the asUser method call", (done) => {
       const spy = sinon.spy();
       const s = shipWithCode(payload("withEmail"));
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
-        sinon.assert.calledWith(spy, "asUser", { "email" : "hello@friend.com", "id" : message.user.id });
+        sinon.assert.calledWith(spy, "asUser", { email: "hello@friend.com", id: message.user.id });
         done();
       });
     });

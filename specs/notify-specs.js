@@ -113,6 +113,7 @@ describe("computing users", () => {
 
         done();
       });
+      return true;
     });
 
     it("should have the same result than lengow production version", (done) => {
@@ -140,6 +141,7 @@ describe("computing users", () => {
 
         done();
       });
+      return true;
     });
 
     it("should have the same result than mention production version", (done) => {
@@ -167,6 +169,7 @@ describe("computing users", () => {
 
         done();
       });
+      return true;
     });
   });
 
