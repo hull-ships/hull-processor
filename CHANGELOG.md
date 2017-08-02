@@ -1,3 +1,6 @@
+# 0.1.4
+- fix traits update to make them case insensitive
+
 # 0.1.3
 - use redis caching for ship and segments cache
 
