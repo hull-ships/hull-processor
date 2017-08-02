@@ -48,8 +48,8 @@ const TESTS = {
     result: {}
   },
   uppercase: {
-    payload_old: "traits({ 'Last_Name': 'user.traits['last_name']' })",
-    payload: "hull.traits({ 'Last_Name': 'user.traits['last_name']' })",
+    payload_old: "hull.traits({ Last_Name: user.last_name })",
+    payload: "traits({ Last_Name: user.last_name })",
     result: {},
   },
 };
