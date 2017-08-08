@@ -63,7 +63,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
     }
 
     if (errors && errors.length > 0) {
-      hull.post(`/${ship.id}/notifications`, { status: "error", message: "Script error" });
+      asUser.post(`/${ship.id}/notifications`, { status: "error", message: "Script error" });
       asUser.logger.info("incoming.user.error", { errors, sandbox: true });
     }
 
