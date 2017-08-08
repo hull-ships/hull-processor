@@ -18,20 +18,25 @@ describe("computing users", () => {
   beforeEach((done) => {
     minihull = new Minihull();
     server = bootstrap();
-    setTimeout(() => {
-      minihull.listen(8081);
-      minihull.install("http://localhost:8000").then(() => {
-        done();
-      });
-    }, 100);
+    // setTimeout(() => {
+      minihull.listen(8081).then(done);
+      // minihull.install("http://localhost:8000").then(() => {
+      //   done();
+    //   // });
+    // }, 100);
   });
 
   describe("using the /notify endpoint", () => {
     it("should send traits to the firehose", (done) => {
       const code = "hull.traits({ foo: \"bar\" })";
-
-      minihull.mimicUpdateConnector({ code });
-      minihull.mimicSendNotification("user_report:update", { user });
+      const connector = {
+        id: "123456789012345678901234",
+        private_settings: {
+          code
+        }
+      };
+      minihull.smartNotifyConnector(connector, "http://localhost:8000/notify", "user:update", [{ user }]);
+      minihull.on("incoming.request", (req) => console.log(req.method, req.url));
       minihull.on("incoming.request@/api/v1/firehose", (req) => {
         // traits
         const body = req.body.batch[0].body;
@@ -48,9 +53,16 @@ describe("computing users", () => {
 
     it("should send an account link to the firehose", (done) => {
       const code = "hull.account({ domain: user.domain });";
+      const connector = {
+        id: "123456789012345678901234",
+        private_settings: {
+          code
+        }
+      };
+      minihull.smartNotifyConnector(connector, "http://localhost:8000/notify", "user:update", [{ user }]);
 
-      minihull.mimicUpdateConnector({ code });
-      minihull.mimicSendNotification("user_report:update", { user });
+      // minihull.mimicUpdateConnector({ code });
+      // minihull.mimicSendNotification("user_report:update", { user });
       minihull.on("incoming.request@/api/v1/firehose", (req) => {
         // traits
         const body = req.body.batch[0].body;
@@ -69,8 +81,13 @@ describe("computing users", () => {
     it("should send account traits to the firehose", (done) => {
       const code = "hull.account().traits({ name: \"Hull\"});";
 
-      minihull.mimicUpdateConnector({ code });
-      minihull.mimicSendNotification("user_report:update", { user });
+      const connector = {
+        id: "123456789012345678901234",
+        private_settings: {
+          code
+        }
+      };
+      minihull.smartNotifyConnector(connector, "http://localhost:8000/notify", "user:update", [{ user }]);
       minihull.on("incoming.request@/api/v1/firehose", (req) => {
         // traits
         const body = req.body.batch[0].body;
@@ -98,8 +115,13 @@ describe("computing users", () => {
       const message = JSON.parse(fs.readFileSync(`${path}/user.json`, "utf8"));
       const traits = JSON.parse(fs.readFileSync(`${path}/result.json`, "utf8")).traits;
 
-      minihull.mimicUpdateConnector({ code });
-      minihull.mimicSendNotification("user_report:update", message);
+      const connector = {
+        id: "123456789012345678901234",
+        private_settings: {
+          code
+        }
+      };
+      minihull.smartNotifyConnector(connector, "http://localhost:8000/notify", "user:update", [message]);
       minihull.on("incoming.request@/api/v1/firehose", (req) => {
         // traits
         const body = req.body.batch[0].body;
@@ -126,8 +148,13 @@ describe("computing users", () => {
       const message = JSON.parse(fs.readFileSync(`${path}/user.json`, "utf8"));
       const traits = JSON.parse(fs.readFileSync(`${path}/result.json`, "utf8")).traits;
 
-      minihull.mimicUpdateConnector({ code });
-      minihull.mimicSendNotification("user_report:update", message);
+      const connector = {
+        id: "123456789012345678901234",
+        private_settings: {
+          code
+        }
+      };
+      minihull.smartNotifyConnector(connector, "http://localhost:8000/notify", "user:update", [message]);
       minihull.on("incoming.request@/api/v1/firehose", (req) => {
         // traits
         const body = req.body.batch[0].body;
@@ -154,8 +181,13 @@ describe("computing users", () => {
       const message = JSON.parse(fs.readFileSync(`${path}/user.json`, "utf8"));
       const traits = JSON.parse(fs.readFileSync(`${path}/result.json`, "utf8")).traits;
 
-      minihull.mimicUpdateConnector({ code });
-      minihull.mimicSendNotification("user_report:update", message);
+      const connector = {
+        id: "123456789012345678901234",
+        private_settings: {
+          code
+        }
+      };
+      minihull.smartNotifyConnector(connector, "http://localhost:8000/notify", "user:update", [message]);
       minihull.on("incoming.request@/api/v1/firehose", (req) => {
         // traits
         const body = req.body.batch[0].body;
