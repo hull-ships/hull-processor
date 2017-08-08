@@ -8,7 +8,7 @@ const handler = notifHandler({
   handlers: {
     "ship:update": ({ ship, client }) => {
       if (!_.get(ship.private_settings, "code")) {
-        return client.post(`/connector/${ship.id}/notifications`, { status: "error", message: "Code empty" });
+        return client.post(`/${ship.id}/notifications`, { status: "error", message: "Code empty" });
       }
       return Promise.resolve();
     },
