@@ -1,4 +1,5 @@
 import express from "express";
+import _ from "lodash";
 
 import ComputeHandler from "./actions/compute-handler";
 import NotifyHandler from "./actions/notify-handler";
@@ -15,6 +16,16 @@ export default function Server(connector, options = {}) {
 
   app.post("/batch", NotifyHandler);
   app.post("/notify", NotifyHandler);
+  app.get("/status", (req, res) => {
+    const { ship } = req.hull;
+    const messages = [];
+    let status = "ok";
+    if (!_.get(ship.private_settings, "code")) {
+      status = "warning";
+      messages.push("No code defined");
+    }
+    return res.json({ messages, status });
+  });
 
   // Error Handler
   app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
