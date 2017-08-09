@@ -18,12 +18,7 @@ describe("computing users", () => {
   beforeEach((done) => {
     minihull = new Minihull();
     server = bootstrap();
-    // setTimeout(() => {
-      minihull.listen(8081).then(done);
-      // minihull.install("http://localhost:8000").then(() => {
-      //   done();
-    //   // });
-    // }, 100);
+    minihull.listen(8001).then(done);
   });
 
   describe("using the /notify endpoint", () => {
