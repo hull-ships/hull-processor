@@ -19,7 +19,7 @@ describe("computing users", () => {
     minihull = new Minihull();
     server = bootstrap();
     setTimeout(() => {
-      minihull.listen(8081);
+      minihull.listen(8001);
       minihull.install("http://localhost:8000").then(() => {
         done();
       });
