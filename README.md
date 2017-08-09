@@ -51,10 +51,7 @@ gulp
       * fetch.user.report.error - logged when encountered problems during search for user reports
       * fetch.user.error - logged when encountered error during user fetch
 
-### Notifications
-
-  * `Script error` - `error` - triggered when we come across error in sandboxed script
-
 ### Status
 
-  * `No code defined` - `warning` - returned when we have no script code saved in the settings
+  * `Settings are empty` - `error` - returned when we have no script code saved in the settings
+  * `Settings are referencing invalid values` - `error` - returned when we have a script with syntax error
