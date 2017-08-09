@@ -1,5 +1,6 @@
 import express from "express";
 import _ from "lodash";
+import check from "syntax-error";
 
 import ComputeHandler from "./actions/compute-handler";
 import NotifyHandler from "./actions/notify-handler";
@@ -21,9 +22,16 @@ export default function Server(connector, options = {}) {
     const messages = [];
     let status = "ok";
     if (!_.get(ship.private_settings, "code")) {
-      status = "warning";
-      messages.push("No code defined");
+      status = "error";
+      messages.push("Settings are empty");
     }
+
+    const err = check(ship.private_settings.code);
+    if (err) {
+      status = "error";
+      messages.push("Settings are referencing invalid values");
+    }
+
     return res.json({ messages, status });
   });
 
