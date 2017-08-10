@@ -2904,9 +2904,9 @@ hull-client@1.1.1:
     uuid "^3.0.1"
     winston "^2.2.0"
 
-hull@0.13.0-beta.8:
-  version "0.13.0-beta.8"
-  resolved "https://registry.yarnpkg.com/hull/-/hull-0.13.0-beta.8.tgz#9400245002954fe73608ed70d4006f4ca79290c3"
+hull@0.13.0-beta.9:
+  version "0.13.0-beta.9"
+  resolved "https://registry.yarnpkg.com/hull/-/hull-0.13.0-beta.9.tgz#a093912b7fbbd0197a574066dc200c8b18cf3ae6"
   dependencies:
     JSONStream "^1.1.2"
     aws-sdk "^2.81.0"
