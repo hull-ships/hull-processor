@@ -10,7 +10,7 @@ export default function statusCheck(req, res) {
     messages.push("Settings are empty");
   }
 
-  const err = check(ship.private_settings.code);
+  const err = check(_.get(ship.private_settings, "code"));
   if (err) {
     status = "error";
     messages.push("Settings are referencing invalid values");
