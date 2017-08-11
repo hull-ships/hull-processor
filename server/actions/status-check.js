@@ -17,5 +17,5 @@ export default function statusCheck(req, res) {
   }
 
   res.json({ messages, status });
-  return client.put(req.hull.ship.id, { status, status_messages: _.uniq(messages) });
+  return client.put(req.hull.ship.id, { status, status_messages: messages });
 }
