@@ -1,11 +1,11 @@
 /* global describe, it */
 import sinon from "sinon";
-import hullSpy from "./mocks/hull";
+import hullSpy from "./support/mocks/hull";
 
-const { events, segments, user, ship, changes } = require("./fixtures");
+const { events, segments, user, ship, changes } = require("./support/fixtures/index");
 const message = { changes, events, segments, user };
 
-import updateUser from "../server/user-update";
+import updateUser from "../../server/user-update";
 
 function shipWithCode(code = {}, s = ship) {
   return {
@@ -64,12 +64,11 @@ function payload(p) {
 
 describe("Compute Ship", () => {
   describe("User Update Handler", () => {
-    
     it("Should use email in the asUser method call", (done) => {
       const spy = sinon.spy();
       const s = shipWithCode(payload("withEmail"));
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
-        sinon.assert.calledWith(spy, "asUser", { "email" : "hello@friend.com", "id" : message.user.id });
+        sinon.assert.calledWith(spy, "asUser", { email: "hello@friend.com", id: message.user.id });
         done();
       });
     });
