@@ -63,6 +63,8 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
     }
 
     if (errors && errors.length > 0) {
+      // TODO: this call can be easily too high volume:
+      // asUser.post(`/${ship.id}/notifications`, { status: "error", message: "Script error" });
       asUser.logger.info("incoming.user.error", { errors, sandbox: true });
     }
 
@@ -71,7 +73,6 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
     }
   })
   .catch(err => {
-    console.log("error:", { err, message: err.message });
     asUser.logger.info("incoming.user.error", { err, user, segments, sandbox: false });
   });
 };

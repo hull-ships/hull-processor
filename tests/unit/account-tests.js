@@ -1,10 +1,10 @@
 import sinon from "sinon";
-import hullSpy from "./mocks/hull";
+import hullSpy from "./support/mocks/hull";
 
-const { events, segments, user, account, ship, changes } = require("./fixtures");
+const { events, segments, user, account, ship, changes } = require("./support/fixtures/index");
 const message = { changes, events, segments, user, account };
 
-import updateUser from "../server/user-update";
+import updateUser from "../../server/user-update";
 
 function shipWithCode(code = {}, s = ship) {
   return {

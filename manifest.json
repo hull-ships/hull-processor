@@ -25,5 +25,12 @@
     }
   ],
   "resources": [],
-  "subscriptions" : [ { "url" : "/notify" } ]
+  "subscriptions" : [{ "url" : "/notify" }],
+  "schedules": [
+    {
+      "url": "/status",
+      "type": "cron",
+      "value": "*/10 * * * *"
+    }
+  ]
 }
