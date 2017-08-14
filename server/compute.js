@@ -114,6 +114,7 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
   const accountTraits = [];
   let accountClaims = {};
   const logs = [];
+  const logsForLogger = [];
   const errors = [];
   let isAsync = false;
 
@@ -169,7 +170,12 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
   function logError(...args) {
     errors.push(args);
   }
-  sandbox.console = { log, warn: log, error: logError, debug };
+
+  function info(...args) {
+    logs.push(args);
+    logsForLogger.push(args);
+  }
+  sandbox.console = { log, warn: log, error: logError, debug, info };
 
   sandbox.captureException = function captureException(e) {
     if (sentryDsn) {
@@ -245,6 +251,7 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
 
     return {
       logs,
+      logsForLogger,
       errors,
       changes: changed,
       events: tracks,
