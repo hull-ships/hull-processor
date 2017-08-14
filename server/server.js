@@ -16,7 +16,7 @@ export default function Server(connector, options = {}) {
 
   app.post("/batch", notifyHandler);
   app.post("/notify", notifyHandler);
-  app.get("/status", statusCheck);
+  app.all("/status", statusCheck);
 
   // Error Handler
   app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
