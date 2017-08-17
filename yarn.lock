@@ -2887,9 +2887,20 @@ https-proxy-agent@^0.3.5:
     debug "2"
     extend "3"
 
-hull@0.11.12:
-  version "0.11.12"
-  resolved "https://registry.yarnpkg.com/hull/-/hull-0.11.12.tgz#614781d00cf36f3cea906812c63b8cc87d6375fc"
+hull-client@1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/hull-client/-/hull-client-1.1.2.tgz#e9347b78bc9dba058b5d75312d54b8f9038f03f3"
+  dependencies:
+    jwt-simple "^0.5.0"
+    lodash "^4.13.1"
+    restler "^3.4.0"
+    urijs "^1.18.7"
+    uuid "^3.0.1"
+    winston "^2.2.0"
+
+hull@0.12.3:
+  version "0.12.3"
+  resolved "https://registry.yarnpkg.com/hull/-/hull-0.12.3.tgz#4cb8b09fe3e88673dac29b4ebb49c9aff247c3bf"
   dependencies:
     JSONStream "^1.1.2"
     aws-sdk "^2.81.0"
@@ -2907,6 +2918,7 @@ hull@0.11.12:
     dogapi "^2.6.0"
     ejs "^2.5.6"
     express "^4.14.0"
+    hull-client "1.1.2"
     jwt-simple "^0.5.0"
     kue "^0.11.5"
     kue-ui "^0.1.0"
@@ -2922,8 +2934,6 @@ hull@0.11.12:
     sqs-consumer "^3.6.1"
     supply "0.0.4"
     urijs "^1.18.7"
-    uuid "^3.0.1"
-    winston "^2.2.0"
 
 iconv-lite@0.2.11:
   version "0.2.11"
