@@ -4,11 +4,6 @@ import redisStore from "cache-manager-redis";
 
 import server from "./server";
 
-if (process.env.NEW_RELIC_LICENSE_KEY) {
-  console.warn("Starting newrelic agent with key: ", process.env.NEW_RELIC_LICENSE_KEY);
-  require("newrelic"); // eslint-disable-line global-require
-}
-
 if (process.env.LOG_LEVEL) {
   Hull.logger.transports.console.level = process.env.LOG_LEVEL;
 }
