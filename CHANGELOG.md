@@ -1,3 +1,6 @@
+# 0.1.5
+- improve error handling and logging
+
 # 0.1.4
 - fix traits update to make them case insensitive
 - expose /status endpoint
