@@ -29,11 +29,20 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
       };
 
       if (_.size(flat)) {
-        asUser.logger.info("incoming.user.success", { changes: flat });
         if (flat.email) {
-          hull.asUser({ id: user.id, email: flat.email }).traits(flat);
+          hull.asUser({ id: user.id, email: flat.email }).traits(flat)
+            .then(() => {
+              asUser.logger.info("incoming.user.success", { changes: flat });
+            }, () => {
+              asUser.logger.info("incoming.user.error");
+            });
         } else {
-          asUser.traits(flat);
+          asUser.traits(flat)
+            .then(() => {
+              asUser.logger.info("incoming.user.success", { changes: flat });
+            }, () => {
+              asUser.logger.info("incoming.user.error");
+            });
         }
       }
     } else {
