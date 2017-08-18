@@ -33,15 +33,15 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
           hull.asUser({ id: user.id, email: flat.email }).traits(flat)
             .then(() => {
               asUser.logger.info("incoming.user.success", { changes: flat });
-            }, () => {
-              asUser.logger.info("incoming.user.error");
+            }, (error) => {
+              asUser.logger.info("incoming.user.error", { error });
             });
         } else {
           asUser.traits(flat)
             .then(() => {
               asUser.logger.info("incoming.user.success", { changes: flat });
-            }, () => {
-              asUser.logger.info("incoming.user.error");
+            }, (error) => {
+              asUser.logger.info("incoming.user.error", { error });
             });
         }
       }
