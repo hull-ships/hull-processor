@@ -35,7 +35,11 @@ const CODE = {
   array_to_string: "hull.traits({ testing_array: 'abcdef' })",
   string_to_array: "hull.traits({ foo: ['A', 'B'] })",
   console_log: "console.log('hello log')",
-  console_debug: "console.debug('hello debug')"
+  console_debug: "console.debug('hello debug')",
+  modify_lodash_library: "_.map = 'foo'",
+  use_lodash_library: "_.map(['foo'], (f) => f);",
+  modify_moment_library: "moment = 'foo'",
+  use_moment_library: "moment().format()"
 };
 
 function shipWithCode(s = {}, code = {}) {
@@ -253,5 +257,25 @@ describe("Compute Ship", () => {
         done();
       });
     });
+
+    it("should not allow to modify internal libraries - lodash", (done) => {
+      applyCompute(CODE.modify_lodash_library).then(result => {
+        expect(result.errors[0]).to.equal("TypeError: Cannot assign to read only property 'map' of object '[object Object]'");
+        return applyCompute(CODE.use_lodash_library);
+      }).then(result => {
+        expect(result.errors.length).to.equal(0);
+        done();
+      });
+    });
+
+    it("should not allow to modify internal libraries - momentjs", (done) => {
+      applyCompute(CODE.modify_moment_library).then(result => {
+        expect(result.errors[0]).to.equal("ReferenceError: moment is not defined");
+        return applyCompute(CODE.use_moment_library);
+      }).then(result => {
+        expect(result.errors.length).to.equal(0);
+        done();
+      });
+    })
   });
 });
