@@ -1,6 +1,6 @@
 /* global describe, it */
-const compute = require("../server/compute");
-const { events, segments, user, ship } = require("./fixtures");
+const compute = require("../../server/compute");
+const { events, segments, user, ship } = require("./support/fixtures/index");
 const { expect, should } = require("chai");
 should();
 

@@ -1,3 +1,5 @@
+import Promise from "bluebird";
+
 import updateUser from "../user-update";
 import { notifHandler, smartNotifierHandler } from "hull/lib/utils";
 

@@ -11,7 +11,8 @@
   },
   "engines": {
     "node": "6.x",
-    "npm": "3.x"
+    "npm": "3.x",
+    "yarn": "0.27.5"
   },
   "repository": {
     "type": "git",
@@ -23,18 +24,18 @@
   "scripts": {
     "ngrok": "ngrok http 8082 --region eu --subdomain hull-processor",
     "build": "npm run clean && npm run build:server && npm run build:client",
-    "build:client": "NODE_ENV=production ./node_modules/.bin/webpack --config ./webpack.config.js --progress --profile --colors",
-    "build:server": "./node_modules/.bin/babel server -d lib",
+    "build:client": "NODE_ENV=production webpack --config ./webpack.config.js --progress --profile --colors",
+    "build:server": "babel server -d lib",
     "start": "node -r newrelic ./lib",
     "start:dev": "NODE_ENV=development LOG_LEVEL=debug babel-watch -L server",
     "test": "npm run test:lint && npm run test:units && npm run test:specs",
-    "test:lint": "./node_modules/.bin/eslint server",
+    "test:lint": "eslint server",
     "test:modules": "npm outdated --depth=0",
-    "test:units": "NODE_ENV=test ./node_modules/.bin/mocha -R spec ./tests/index",
-    "test:specs": "NODE_ENV=test ./node_modules/.bin/mocha -r babel-register -R spec ./specs/*.js",
-    "clean": "./node_modules/.bin/rimraf dist; ./node_modules/.bin/rimraf lib",
-    "update": "./node_modules/.bin/updtr",
-    "watch": "./node_modules/.bin/watch 'clear && npm run test:lint -s && npm run test:units -s && npm run build:client -s' server src",
+    "test:units": "NODE_ENV=test mocha --require babel-register -R spec ./tests/unit/*.js",
+    "test:specs": "NODE_ENV=test mocha --require babel-register -R spec ./tests/integration/*.js",
+    "clean": "rimraf dist; rimraf lib",
+    "update": "updtr",
+    "watch": "watch 'clear && npm run test:lint -s && npm run test:units -s && npm run build:client -s' server src",
     "postinstall": "npm run build"
   },
   "keywords": [
@@ -62,7 +63,7 @@
     "deepmerge": "^1.3.2",
     "event-stream": "^3.3.3",
     "express": "^4.14.0",
-    "hull": "0.13.0-beta.10",
+    "hull": "0.13.0-beta.11",
     "json-stable-stringify": "^1.0.1",
     "lodash": "^4.13.1",
     "moment": "^2.13.0",
@@ -78,6 +79,7 @@
     "superagent": "^2.0.0",
     "svg-inline-loader": "^0.6.0",
     "svg-inline-react": "^1.0.1",
+    "syntax-error": "^1.3.0",
     "urijs": "^1.18.1",
     "webpack": "^1.13.1",
     "webpack-dev-middleware": "^1.6.1",
@@ -97,7 +99,7 @@
     "minihull": "^2.1.0",
     "mocha": "^2.5.3",
     "react-hot-loader": "^1.3.0",
-    "sinon": "^1.17.4",
+    "sinon": "^3.1.0",
     "supertest": "^1.2.0",
     "updtr": "^0.1.15",
     "watch": "^0.19.1",

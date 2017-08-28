@@ -20,7 +20,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
   const asUser = hull.asUser(user);
   asUser.logger.info("incoming.user.start");
   return compute(message, ship)
-  .then(({ changes, events, account, accountClaims, logs, errors }) => {
+  .then(({ changes, events, account, accountClaims, logsForLogger, errors }) => {
     // Update user traits
     if (_.size(changes.user)) {
       const flat = {
@@ -63,15 +63,16 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
     }
 
     if (errors && errors.length > 0) {
-      asUser.logger.info("incoming.user.error", { errors, sandbox: true });
+      // TODO: this call can be easily too high volume:
+      // asUser.post(`/${ship.id}/notifications`, { status: "error", message: "Script error" });
+      asUser.logger.info("incoming.user.error", { hull_summary: `Error Processing User: ${errors.join(", ")}`, errors, sandbox: true });
     }
 
-    if (logs && logs.length) {
-      logs.map(log => asUser.logger.info("compute.user.log", { log }));
+    if (logsForLogger && logsForLogger.length) {
+      logsForLogger.map(log => asUser.logger.info("compute.user.log", { log }));
     }
   })
   .catch(err => {
-    console.log("error:", { err, message: err.message });
-    asUser.logger.info("incoming.user.error", { err, user, segments, sandbox: false });
+    asUser.logger.info("incoming.user.error", { hull_summary: `Error Processing User: ${_.get(err, "message", "Unexpected Error")}`, err, user, segments, sandbox: false });
   });
 };

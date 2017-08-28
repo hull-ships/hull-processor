@@ -1,5 +1,5 @@
 const Hull = require("hull");
-const server = require("../server/server").default;
+const server = require("../../../server/server").default;
 
 module.exports = function bootstrap() {
   const hostSecret = "1234";

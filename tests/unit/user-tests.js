@@ -1,11 +1,11 @@
 /* global describe, it */
 import sinon from "sinon";
-import hullSpy from "./mocks/hull";
+import hullSpy from "./support/mocks/hull";
 
-const { events, segments, user, ship, changes } = require("./fixtures");
+const { events, segments, user, ship, changes } = require("./support/fixtures/index");
 const message = { changes, events, segments, user };
 
-import updateUser from "../server/user-update";
+import updateUser from "../../server/user-update";
 
 function shipWithCode(code = {}, s = ship) {
   return {
@@ -43,7 +43,11 @@ const TESTS = {
     payload: "hull.traits({ name: 'Hello Friend', email: 'hello@friend.com' });",
     result: { email: "hello@friend.com", name: "Hello Friend" }
   },
-  console: {
+  console_info: {
+    payload: "console.info('boom', 'bam')",
+    result: {}
+  },
+  console_log: {
     payload: "console.log('boom', 'bam')",
     result: {}
   },
@@ -186,9 +190,18 @@ describe("Compute Ship", () => {
 
     it("Should call hull logger", (done) => {
       const spy = sinon.spy();
-      const s = shipWithCode(payload("console"));
+      const s = shipWithCode(payload("console_info"));
       updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
         sinon.assert.calledWith(spy, "logger.info", "compute.user.log", { log: ["boom", "bam"] });
+        done();
+      });
+    });
+
+    it("Should not call hull logger", (done) => {
+      const spy = sinon.spy();
+      const s = shipWithCode(payload("console_log"));
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+        sinon.assert.neverCalledWith(spy, "logger.info", "compute.user.log", { log: ["boom", "bam"] });
         done();
       });
     });

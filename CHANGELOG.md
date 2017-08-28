@@ -1,5 +1,10 @@
 # 0.1.4
 - fix traits update to make them case insensitive
+- expose /status endpoint
+- change `console.log` function behavior - it is displayed in UI preview only, not put into stdout
+- introduce `console.info` which outputs it's data to both UI preview and the stdout
+- restructurize the tests directories
+- upgrade hull-node to 0.12.3
 
 # 0.1.3
 - use redis caching for ship and segments cache
