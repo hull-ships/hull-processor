@@ -25,5 +25,5 @@
     }
   ],
   "resources": [],
-  "subscriptions" : [{ "url" : "/notify" }]
+  "subscriptions" : [{ "url" : "/notify-smart-notifier" }]
 }
