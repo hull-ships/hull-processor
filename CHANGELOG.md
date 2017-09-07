@@ -1,3 +1,6 @@
+# 0.1.7
+- fix hull-node version to v0.12.0
+
 # 0.1.6
 - fix hull-node version to v0.12.2
 
