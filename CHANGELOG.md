@@ -1,3 +1,6 @@
+# 0.1.6
+- fix hull-node version to v0.12.2
+
 # 0.1.5
 - improve error handling and logging
 
