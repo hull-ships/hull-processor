@@ -243,7 +243,7 @@ describe("Compute Ship", () => {
     });
 
     it("ignore traits which differ in type but not in value", (done) => {
-      compute({user: {traits: {date_precision_test: '1000'}}}, shipWithCode(ship, "hull.traits({ date_precision_test: 1000 })")).then(
+      compute({user: {traits: {type_value_test: '1000'}}}, shipWithCode(ship, "hull.traits({ type_value_test: 1000 })")).then(
         result => {
           expect(result.changes.user).to.be.deep.equal({})
           done();
