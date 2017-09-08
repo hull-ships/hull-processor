@@ -75,7 +75,6 @@ const updateChanges = (payload) => {
       }
 
       // in case of date, we do a diff on seconds, in order to avoid ms precision
-
       if ([d.lhs, d.rhs].every(v => moment(v).isValid())) {
         if(moment(d.lhs).diff(d.rhs, 'seconds') == 0) {
           return memo;
