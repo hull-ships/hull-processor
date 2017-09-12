@@ -6,7 +6,7 @@
   "ui": false,
   "admin": "admin.html",
   "readme" : "readme.md",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "private_settings": [
     {
       "name" : "sentry_dsn",
