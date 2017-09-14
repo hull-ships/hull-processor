@@ -1,4 +1,7 @@
 {
-	"name": "Hull",
-	"domain": "hull.io"
+  "name": "Hull",
+  "domain": "hull.io",
+  "clearbit": {
+    "name": "Hull"
+  }
 }

@@ -9,6 +9,7 @@ const handler = notifHandler({
       return Promise.all(messages.map(message => {
         // TODO: enable groupTraits option in the notifHandler
         message.user = hull.utils.groupTraits(message.user);
+        message.user.account = hull.utils.groupTraits(message.user.account);
         return updateUser({ message }, { ship, hull });
       }));
     }
