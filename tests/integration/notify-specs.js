@@ -92,8 +92,70 @@ describe("computing users", () => {
         });
       });
     });
+
+    it("should group user traits", (done) => {
+      const code = `
+        if (user.clearbit_company) {
+          hull.account().traits(user.clearbit_company, { group: "clearbit" });
+        }`;
+
+      const user = {
+        id: "58b68d0f11111ef19e00df43",
+        email: "thomas@hull.io",
+        domain: "hull.io",
+        "clearbit_company/name": "Hull"
+      };
+
+      minihull.stubConnector({ id: "123456789012345678901235", private_settings: { code } });
+      minihull.notifyConnector("123456789012345678901235", "http://localhost:8000/notify", "user_report:update", { user }).then(() => {
+        minihull.on("incoming.request@/api/v1/firehose", (req) => {
+          // traits
+          const body = req.body.batch[0].body;
+          expect(body).to.eql({ name: "Hull" });
+
+          // claims
+          const access_token = jwtDecode(req.body.batch[0].headers["Hull-Access-Token"]);
+          expect(access_token["io.hull.subjectType"]).to.equal("account");
+
+          done();
+        });
+      });
+    });
+
+    it("should group account traits", (done) => {
+      const code = `
+        if (account.clearbit) {
+          hull.account().traits({ foo: \"bar\" });
+        }`;
+
+      const user = {
+        id: "58b68d0f11111ef19e00df43",
+        email: "thomas@hull.io",
+        domain: "hull.io",
+        account: {
+          id: "1234",
+          "clearbit/name": "Hull"
+        }
+      };
+
+      minihull.stubConnector({ id: "123456789012345678901235", private_settings: { code } });
+      minihull.notifyConnector("123456789012345678901235", "http://localhost:8000/notify", "user_report:update", { user }).then(() => {
+        minihull.on("incoming.request@/api/v1/firehose", (req) => {
+          // traits
+          const body = req.body.batch[0].body;
+          expect(body).to.eql({ foo: "bar" });
+
+          // claims
+          const access_token = jwtDecode(req.body.batch[0].headers["Hull-Access-Token"]);
+          expect(access_token["io.hull.subjectType"]).to.equal("account");
+
+          done();
+        });
+      });
+    });
   });
 
+  /*
   describe("regression tests on production code", () => {
     it("should have the same result than appcues production version", (done) => {
       const namespace = "appcues";
@@ -179,6 +241,7 @@ describe("computing users", () => {
       });
     });
   });
+  */
 });
 
 

@@ -11,6 +11,7 @@ const handler = (flowControl) => (flowControl ? smartNotifierHandler : notifHand
       }
       return Promise.all(messages.map(message => {
         message.user = hull.utils.groupTraits(message.user);
+        message.user.account = hull.utils.groupTraits(message.user.account);
         return updateUser({ message }, { ship, hull });
       }));
     }

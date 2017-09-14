@@ -25,12 +25,22 @@ const TESTS = {
     result: { test: "trait" }
   },
   complex: {
-    payload: "hull.account().traits({ test:10 }); hull.account().traits({ test:1 }, { source:'group' });",
+    payload: `
+      hull.account().traits({ test:10 });
+      hull.account().traits({ test:1 }, { source:'group' });`,
     result: { test: 10, "group/test": 1 }
   },
   conflict: {
-    payload: "hull.account().traits({ test: 4, 'group/test': 1}); hull.account().traits({ test: 2 }, { source: 'group' });",
+    payload: `
+      hull.account().traits({ test: 4, 'group/test': 1});
+      hull.account().traits({ test: 2 }, { source: 'group' });`,
     result: { test: 4, "group/test": 2 }
+  },
+  check_account_group_existence: {
+    payload: `
+      if (user.clearbit_company && (account && !account.clearbit)) {
+        hull.account().traits(user.clearbit_company);
+      }`
   },
 };
 
@@ -89,6 +99,17 @@ describe("Account Update Handler", () => {
       sinon.assert.calledWith(spy, "account");
       sinon.assert.calledWith(spy, "traits", TESTS.conflict.result);
       sinon.assert.neverCalledWithMatch(spy, "track");
+      done();
+    });
+  });
+
+  it("Should not validate the condition", (done) => {
+    const spy = sinon.spy();
+    const s = shipWithCode(payload("check_account_group_existence"));
+    updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+      sinon.assert.neverCalledWithMatch(spy, "traits");
+      sinon.assert.neverCalledWithMatch(spy, "track");
+      sinon.assert.neverCalledWithMatch(spy, "account");
       done();
     });
   });
