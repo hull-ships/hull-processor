@@ -59,25 +59,49 @@ describe("Account Update Handler", () => {
     });
   });
 
-  it("Should call account with claims", (done) => {
-    const spy = sinon.spy();
-    const s = shipWithCode(payload("claim"));
-    updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
-      sinon.assert.calledWith(spy, "account", { domain: "facebook.com" });
-      sinon.assert.calledWith(spy, "traits", {});
-      sinon.assert.neverCalledWithMatch(spy, "track");
-      done();
+  describe("Linking", () => {
+    it("Should link account", (done) => {
+      const spy = sinon.spy();
+      const s = shipWithCode("hull.account({ domain: 'facebook.com' })");
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+        sinon.assert.calledWith(spy, "account", { domain: "facebook.com" });
+        sinon.assert.calledWith(spy, "traits", {});
+        sinon.assert.neverCalledWithMatch(spy, "track");
+        done();
+      });
     });
-  });
 
-  it("Should not call link if already linked", (done) => {
-    const spy = sinon.spy();
-    const s = shipWithCode("hull.account({ domain: 'hull.io'})");
-    updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
-      sinon.assert.neverCalledWithMatch(spy, "account");
-      sinon.assert.neverCalledWithMatch(spy, "traits");
-      sinon.assert.neverCalledWithMatch(spy, "track");
-      done();
+    it("Should link account when at least one claim is different", (done) => {
+      const spy = sinon.spy();
+      const s = shipWithCode("hull.account({ domain: 'hull.io', external_id: '1234' })");
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+        sinon.assert.calledWith(spy, "account", { domain: "hull.io", external_id: "1234" });
+        sinon.assert.calledWith(spy, "traits");
+        sinon.assert.neverCalledWithMatch(spy, "track");
+        done();
+      });
+    });
+
+    it("Should not link if claim matches already linked account", (done) => {
+      const spy = sinon.spy();
+      const s = shipWithCode("hull.account({ domain: 'hull.io' })");
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+        sinon.assert.neverCalledWithMatch(spy, "account");
+        sinon.assert.neverCalledWithMatch(spy, "traits");
+        sinon.assert.neverCalledWithMatch(spy, "track");
+        done();
+      });
+    });
+
+    it("Should not link if all claims match already linked account", (done) => {
+      const spy = sinon.spy();
+      const s = shipWithCode("hull.account({ domain: 'hull.io', external_id: 'abcd' })");
+      updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+        sinon.assert.neverCalledWithMatch(spy, "account");
+        sinon.assert.neverCalledWithMatch(spy, "traits");
+        sinon.assert.neverCalledWithMatch(spy, "track");
+        done();
+      });
     });
   });
 

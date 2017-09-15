@@ -1,6 +1,7 @@
 {
   "name": "Hull",
   "domain": "hull.io",
+  "external_id": "abcd",
   "clearbit": {
     "name": "Hull"
   }
