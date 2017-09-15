@@ -70,6 +70,17 @@ describe("Account Update Handler", () => {
     });
   });
 
+  it("Should not call link if already linked", (done) => {
+    const spy = sinon.spy();
+    const s = shipWithCode("hull.account({ domain: 'hull.io'})");
+    updateUser({ message }, { hull: hullSpy(s, spy), ship: s }).then(() => {
+      sinon.assert.neverCalledWithMatch(spy, "account");
+      sinon.assert.neverCalledWithMatch(spy, "traits");
+      sinon.assert.neverCalledWithMatch(spy, "track");
+      done();
+    });
+  });
+
   it("Should call with a correct payload for a simple trait", (done) => {
     const spy = sinon.spy();
     const s = shipWithCode(payload("simple"));

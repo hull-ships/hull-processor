@@ -58,7 +58,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
         asAccount.traits(flat);
         asAccount.logger.info("incoming.account.success", { changes: flat });
       }
-    } else if (_.size(accountClaims) && (_.size(account) || !_.isMatch(account, accountClaims))) {
+    } else if (_.size(accountClaims) && (!_.size(account) || !_.isMatch(account, accountClaims))) {
       // Link account
       asUser.account(accountClaims).traits({});
       asUser.logger.info("incoming.account.link", { account: _.pick(account, "id"), accountClaims });
