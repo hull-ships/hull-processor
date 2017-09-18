@@ -2,6 +2,7 @@ import Hull from "hull";
 import { Cache } from "hull/lib/infra";
 import redisStore from "cache-manager-redis";
 import server from "./server";
+require('dotenv').config() // Loads .env
 
 if (process.env.LOG_LEVEL) {
   Hull.logger.transports.console.level = process.env.LOG_LEVEL;
