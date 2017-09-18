@@ -13,7 +13,7 @@ jobs:
           name: Build Docker Image
           command: |
             docker build -t hull/hull-processor:$CIRCLE_SHA1 .
-      - setup:
+      - deploy:
           name: Deploy to app engine
           command: |
             bash /usr/local/bin/setup-gcloud.sh
