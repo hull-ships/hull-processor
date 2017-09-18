@@ -6,9 +6,9 @@ if (dotEnvExists) {
   process.exit();
 }
 // On Google Cloud Platform authentication is handled for us
-const gcs = require('@google-cloud/storage')()
-
-const bucketName = `test-env-var-kms`
+const gcs = require('@google-cloud/storage')();
+const appName = require(__dirname + '/package.json').name;
+const bucketName = `hull-connector-${appName}-env-vars`
 console.log(`Downloading .env from bucket "${bucketName}"`)
 gcs
   .bucket(bucketName)
