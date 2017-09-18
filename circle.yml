@@ -20,4 +20,4 @@ jobs:
       - deploy:
           name: Deploy to app engine
           command: |
-            bash gcloud app deploy
+            bash gcloud -q app deploy app.yaml
