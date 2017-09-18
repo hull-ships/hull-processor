@@ -1,3 +1,19 @@
-machine:
-  node:
-    version: 6.2.0
+version: 2
+jobs:
+  build:
+    docker:
+      - image: hull/ci-builder:158.0.0
+    working_directory: /app
+    steps:
+      - checkout
+      - setup_remote_docker:
+          reusable: true
+          exclusive: true
+      - run:
+          name: Build Docker Image
+          command: |
+            docker build -t hull/hull-processor:$CIRCLE_SHA1 .
+      - deploy:
+          name: Deploy to app engine
+          command: |
+            bash /usr/local/bin/setup-gcloud.sh
