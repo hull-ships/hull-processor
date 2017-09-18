@@ -8,6 +8,8 @@ export default function Server(connector, options = {}) {
   const app = express();
   const { Hull, hostSecret } = options;
 
+  console.log("Server setup");
+
   app.post("/compute", ComputeHandler({ hostSecret, connector }));
 
   if (options.devMode) app.use(devMode());
