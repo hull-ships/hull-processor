@@ -9,10 +9,10 @@ jobs:
       - setup_remote_docker:
           reusable: true
           exclusive: true
-      - run:
-          name: Build Docker Image
-          command: |
-            docker build -t hull/hull-processor:$CIRCLE_SHA1 .
+      # - run:
+      #     name: Build Docker Image
+      #     command: |
+      #       docker build -t hull/hull-processor:$CIRCLE_SHA1 .
       - deploy:
           name: Deploy to app engine
           command: |
