@@ -1,3 +1,6 @@
+# 0.1.9
+- upgrade hull-node back to latest v0.12.6
+
 # 0.1.8
 - upgrade hull-node back to latest v0.12.5
 
