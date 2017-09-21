@@ -214,7 +214,9 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
 
   return Promise.all(sandbox.results)
   .catch((err) => {
-    errors.push(err.toString());
+    if (err && err.toString) {
+      errors.push(err.message || err.toString());
+    }
     sandbox.captureException(err);
   })
   .then(() => {
