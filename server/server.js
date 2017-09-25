@@ -18,6 +18,7 @@ export default function Server(connector, options = {}) {
   app.post("/notify", notifyHandler);
   app.all("/status", statusCheck);
 
+  app.use(connector.instrumentation.stopMiddleware());
   // Error Handler
   app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
     if (err) {

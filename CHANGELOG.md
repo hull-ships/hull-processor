@@ -1,3 +1,6 @@
+# 0.1.11
+- add explicitly instrumentation error handler
+
 # 0.1.10
 - improve diff to ignore miliseconds difference on timestamps and types when comparing string/numbers
 
