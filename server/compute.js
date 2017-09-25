@@ -63,6 +63,21 @@ const buildAccountPayload = (pld, traitsCall = {}) => {
 
 const updateChanges = (payload) => {
   return (memo, d) => {
+    if (d.kind === "E") {
+      // if this is an edit, we only apply the changes the value is different
+      // independently of the type
+      if (d.lhs.toString() === d.rhs.toString()) {
+        return memo;
+      }
+
+      // in case of date, we do a diff on seconds, in order to avoid ms precision
+      if ([d.lhs, d.rhs].every(v => moment(v).isValid())) {
+        if (moment(d.lhs).diff(d.rhs, "seconds") === 0) {
+          return memo;
+        }
+      }
+    }
+
     if (d.kind === "N" || d.kind === "E") {
       _.set(memo, d.path, d.rhs);
     }
