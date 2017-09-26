@@ -1190,9 +1190,9 @@ bytes@2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-2.4.0.tgz#7d97196f9d5baf7f6935e25985549edd2a6c2339"
 
-cache-manager-redis@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/cache-manager-redis/-/cache-manager-redis-0.4.0.tgz#ed39864c786341517cca38d67f615c725b9282ca"
+cache-manager-redis@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/cache-manager-redis/-/cache-manager-redis-0.5.0.tgz#9a902655e8a710da93563efd4ceda01f1e60758d"
   dependencies:
     cache-manager "^2.2.0"
     redis-url "^1.2.1"
