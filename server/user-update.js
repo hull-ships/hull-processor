@@ -1,7 +1,7 @@
+
 import compute from "./compute";
 import _ from "lodash";
 import isGroup from "./is-group-trait";
-// import _ from "lodash";
 
 function flatten(obj, key, group) {
   return _.reduce(group, (m, v, k) => {
@@ -17,36 +17,71 @@ function flatten(obj, key, group) {
 
 module.exports = function handle({ message = {} }, { ship, hull }) {
   const { user, segments } = message;
-  try {
-    const { changes, events, errors, logs } = compute(message, ship);
-    const asUser = hull.as(user.id);
-
-    hull.logger.debug("compute.user.debug", { id: user.id, email: user.email, changes });
-
-    if (_.size(changes)) {
+  const asUser = hull.asUser(user);
+  asUser.logger.info("incoming.user.start");
+  return compute(message, ship)
+  .then(({ changes, events, account, accountClaims, logsForLogger, errors }) => {
+    // Update user traits
+    if (_.size(changes.user)) {
       const flat = {
-        ...changes.traits,
-        ...flatten({}, "", _.omit(changes, "traits")),
+        ...changes.user.traits,
+        ...flatten({}, "", _.omit(changes.user, "traits")),
       };
 
       if (_.size(flat)) {
-        hull.logger.info("compute.user.computed", { id: user.id, email: user.email, changes: flat });
-        asUser.traits(flat);
+        if (flat.email) {
+          hull.asUser({ id: user.id, email: flat.email }).traits(flat)
+            .then(() => {
+              asUser.logger.info("incoming.user.success", { changes: flat });
+            }, (error) => {
+              asUser.logger.info("incoming.user.error", { error });
+            });
+        } else {
+          asUser.traits(flat)
+            .then(() => {
+              asUser.logger.info("incoming.user.success", { changes: flat });
+            }, (error) => {
+              asUser.logger.info("incoming.user.error", { error });
+            });
+        }
       }
+    } else {
+      asUser.logger.info("incoming.user.skip", { message: "No Changes" });
     }
 
-    if (errors && errors.length > 0) {
-      hull.logger.error("compute.user.error", { id: user.id, email: user.email, errors });
+    // Update account traits
+    if (_.size(changes.account)) {
+      const flat = flatten({}, "", changes.account);
+
+      if (_.size(flat)) {
+        const asAccount = asUser.account(accountClaims);
+        asAccount.traits(flat);
+        asAccount.logger.info("incoming.account.success", { changes: flat });
+      }
+    } else if (_.size(accountClaims) && (!_.size(account) || !_.isMatch(account, accountClaims))) {
+      // Link account
+      asUser.account(accountClaims).traits({});
+      asUser.logger.info("incoming.account.link", { account: _.pick(account, "id"), accountClaims });
     }
 
     if (events.length > 0) {
-      events.map(({ eventName, properties, context }) => asUser.track(eventName, properties, { ip: "0", source: "processor", ...context }));
+      events.map(({ eventName, properties, context }) => {
+        asUser.logger.info("incoming.event.track", { properties, eventName });
+        return asUser.track(eventName, properties, { ip: "0", source: "processor", ...context });
+      });
     }
 
-    if (logs && logs.length) {
-      logs.map(log => hull.logger.info("compute.console.log", { id: user.id, email: user.email, log }));
+    if (errors && errors.length > 0) {
+      // TODO: this call can be easily too high volume:
+      // asUser.post(`/${ship.id}/notifications`, { status: "error", message: "Script error" });
+      asUser.logger.info("incoming.user.error", { hull_summary: `Error Processing User: ${errors.join(", ")}`, errors, sandbox: true });
     }
-  } catch (err) {
-    hull.logger.error("compute.error", { err, user, segments });
-  }
+
+    if (logsForLogger && logsForLogger.length) {
+      logsForLogger.map(log => asUser.logger.info("compute.user.log", { log }));
+    }
+  })
+  .catch(err => {
+    asUser.logger.info("incoming.user.error", { hull_summary: `Error Processing User: ${_.get(err, "message", "Unexpected Error")}`, err, user, segments, sandbox: false });
+  });
 };

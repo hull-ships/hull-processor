@@ -106,6 +106,9 @@
     "utc_offset": 1,
     "utcoffset": 1
   },
+  "clearbit_company": {
+    "name": "Hull"
+  },
   "computed": {
     "custom": {
       "processed": true

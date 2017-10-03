@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Alert, Modal, Tooltip, Button, Popover, OverlayTrigger, Row, Col, Table} from "react-bootstrap";
-import Icon from './icon';
+import { Alert, Modal, Tooltip, Button, Popover, OverlayTrigger, Row, Col, Table } from "react-bootstrap";
+import Icon from "./icon";
 
 export default class Help extends Component {
 
@@ -20,17 +20,17 @@ export default class Help extends Component {
   render() {
     const sample = `
 console.log(\`Hello \$\{user.name}\`);
-traits({ coconuts: 12, swallows: 12 });
-traits({ coconuts: 13 });
-traits({ coconuts: 14 }, { source: 'clearbit' });
+hull.traits({ coconuts: 12, swallows: 12 });
+hull.traits({ coconuts: 13 });
+hull.traits({ coconuts: 14 }, { source: 'clearbit' });
 
 //BEWARE - if you apply a trait operation (such as 'inc')
 //without a if() condition, you trigger an infinite loop;
-traits({ swallows: { operation: 'inc', value: 2 } });
+hull.traits({ swallows: { operation: 'inc', value: 2 } });
 
-//BEWARE - if you track() without a if() condition
+//BEWARE - if you hull.track() without a if() condition
 //you trigger an infinite loop.
-if(false) { track("Viewed Monthy Python", { coconuts: 12 });}
+if(false) { hull.track("Viewed Monthy Python", { coconuts: 12 });}
     `;
     return (
       <div>
@@ -67,7 +67,7 @@ if(false) { track("Viewed Monthy Python", { coconuts: 12 });}
                 <Row>
                   <Col sm={8}>
                     <p><Icon name='compute' large/></p>
-                    <p>On the <strong>Sidebar</strong>, Write Javascript code to manipulate data, call <code>track()</code> and <code>traits()</code> to update User. ES6 is supported. You can't use asynchronous code and external libraries.</p>
+                    <p>On the <strong>Sidebar</strong>, Write Javascript code to manipulate data, call <code>hull.track()</code> and <code>hull.traits()</code> to update User. ES6 is supported. You can't use asynchronous code and external libraries.</p>
                     <h6>Example: </h6>
                     <pre>
                       <small>
@@ -82,7 +82,7 @@ if(false) { track("Viewed Monthy Python", { coconuts: 12 });}
                     </p>
                     <p>
                       <small>
-                        You can emit up to 10 events with <a target="_blank" href="http://www.hull.io/docs/references/hull_js#track">track()</a>.
+                        You can emit up to 10 events with <a target="_blank" href="http://www.hull.io/docs/references/hull_js#track">hull.track()</a>.
                         <Alert bsStyle="danger">Be careful to not generate events unconditionally otherwise you'll end up with an infinite loop of events and recomputations.</Alert>
                       </small>
                     </p>
@@ -90,7 +90,7 @@ if(false) { track("Viewed Monthy Python", { coconuts: 12 });}
                   <Col sm={4}>
                     <Col sm={12}>
                       <p><Icon name='rocker' large/></p>
-                      <p>On the <strong>left</strong>, is a sample user with all his/her properties, segments, latest events and changes since last recompute. You can search for a specific user. </p>
+                      <p>On the <strong>left</strong>, is a sample user with all his/her properties, segments, account, latest events and changes since last recompute. You can search for a specific user. </p>
                     </Col>
                     <Col sm={12}>
                       <p><Icon name='punker' large/></p>
@@ -121,6 +121,10 @@ if(false) { track("Viewed Monthy Python", { coconuts: 12 });}
                       <td><p><small>The User data (as seen on the left side)</small></p></td>
                     </tr>
                     <tr>
+                      <td><code>account</code></td>
+                      <td><p><small>The User Account data (as seen on the left column)</small></p></td>
+                    </tr>
+                    <tr>
                       <td><code>changes</code></td>
                       <td><p><small>An object of all the changed properties since last recompute</small></p></td>
                     </tr>
@@ -132,15 +136,34 @@ if(false) { track("Viewed Monthy Python", { coconuts: 12 });}
                       <td><code>segments</code></td>
                       <td><p><small>The segments the user belongs to. </small></p></td>
                     </tr>
+                    <tr>
+                      <td><code>account_segments</code></td>
+                      <td><p><small>An Array of the segments the user's account belongs to. </small></p></td>
+                    </tr>
 
                     <tr>
-                      <td><code>traits(properties, context)</code></td>
+                      <td><code>hull.traits(properties, context)</code></td>
                       <td><p><small><a href="http://www.hull.io/docs/references/hull_js#traits" target="_blank">Update User Traits</a>. Optionally define a context with a <code>source</code> key to save in a custom group</small></p></td>
                     </tr>
 
                     <tr>
-                      <td><code>track('Event Name', properties)</code></td>
+                      <td><code>hull.track('Event Name', properties)</code></td>
                       <td><p><small>Lets you <a href="http://www.hull.io/docs/references/hull_js#track" target="_blank">generate new Events</a> for the user.</small></p></td>
+                    </tr>
+
+                    <tr>
+                      <td><code>hull.account(claims)</code></td>
+                      <td><p><small>A method to link the Account claimed to this User. </small></p></td>
+                    </tr>
+
+                    <tr>
+                      <td><code>hull.account(claims).traits(properties, context)</code></td>
+                      <td><p><small>A method to Update Account Traits. If <code>claims</code> is defined, the claimed Account will be created/updated and linked to the User, else if <code>claims</code> is <code>null</code>, the Account belonging to this User will be updated. Optionally define a <code>context</code> with a <code>source</code> key to save in a custom group. </small></p></td>
+                    </tr>
+
+                    <tr>
+                      <td><code>hull.account(claims).track('Event Name', properties)</code></td>
+                      <td><p><small>A method to generate new Events for the Account. If <code>claims</code> is defined, the claimed Account will be created/updated and linked to the User, else if <code>claims</code> is <code>null</code>, the Account belonging to this User will be updated. Can be used at most 10 times in a single run of the processor. </small></p></td>
                     </tr>
 
                     <tr>
@@ -170,6 +193,6 @@ if(false) { track("Viewed Monthy Python", { coconuts: 12 });}
           </Modal.Footer>
         </Modal>
       </div>
-    )
+    );
   }
 }

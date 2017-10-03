@@ -6,9 +6,13 @@ stats.json
 npm-debug.log
 newrelic_agent.log
 .env*
+.idea
 
 dist
 lib
 
 package-lock.json
 .vscode
+
+# sensible fixture data
+tests/specs/fixtures
