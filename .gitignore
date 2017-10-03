@@ -9,3 +9,6 @@ newrelic_agent.log
 
 dist
 lib
+
+package-lock.json
+.vscode
