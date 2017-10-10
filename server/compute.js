@@ -71,6 +71,8 @@ function stringify(val) {
 
 const updateChanges = (payload) => {
   return (memo, d) => {
+    const traitName = (_.last(d.path) || "").toString();
+
     if (d.kind === "E") {
       // if this is an edit, we only apply the changes the value is different
       // independently of the type
@@ -79,9 +81,11 @@ const updateChanges = (payload) => {
       }
 
       // in case of date, we do a diff on seconds, in order to avoid ms precision
-      if ([d.lhs, d.rhs].every(v => moment(v).isValid())) {
-        if (moment(d.lhs).diff(d.rhs, "seconds") === 0) {
-          return memo;
+      if (traitName.match && traitName.match(/_at$|date$/) && _.isString(d.lhs)) {
+        if ([d.lhs, d.rhs].every(v => moment(v).isValid())) {
+          if (moment(d.lhs).diff(d.rhs, "seconds") === 0) {
+            return memo;
+          }
         }
       }
     }
