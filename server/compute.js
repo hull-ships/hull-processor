@@ -66,7 +66,7 @@ const buildAccountPayload = (pld, traitsCall = {}) => {
 };
 
 function stringify(val) {
-  if (val && val.toString) {
+  if (val != undefined && val.toString) {
     return val.toString();
   }
   return "";
