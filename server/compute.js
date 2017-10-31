@@ -65,9 +65,8 @@ const buildAccountPayload = (pld, traitsCall = {}) => {
   return pld;
 };
 
-
 function stringify(val) {
-  if (val && val.toString) {
+  if (val !== undefined && val.toString) {
     return val.toString();
   }
   return "";
@@ -247,7 +246,9 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
 
   return Promise.all(sandbox.results)
   .catch((err) => {
-    errors.push(err.toString());
+    if (err && err.toString) {
+      errors.push(err.message || err.toString());
+    }
     sandbox.captureException(err);
   })
   .then(() => {
