@@ -1,3 +1,18 @@
+# 0.1.10
+- improve diff to ignore miliseconds difference on timestamps and types when comparing string/numbers
+
+# 0.1.9
+- upgrade hull-node back to latest v0.12.6
+
+# 0.1.8
+- upgrade hull-node back to latest v0.12.5
+
+# 0.1.7
+- fix hull-node version to v0.12.0
+
+# 0.1.6
+- fix hull-node version to v0.12.2
+
 # 0.1.5
 - improve error handling and logging
 

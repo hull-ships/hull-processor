@@ -106,8 +106,8 @@ describe("computing users", () => {
         "clearbit_company/name": "Hull"
       };
 
-      minihull.stubConnector({ id: "123456789012345678901235", private_settings: { code } });
-      minihull.notifyConnector("123456789012345678901235", "http://localhost:8000/notify", "user_report:update", { user }).then(() => {
+      minihull.stubConnector({ id: "123456789012345678901237", private_settings: { code } });
+      minihull.notifyConnector("123456789012345678901237", "http://localhost:8000/notify", "user_report:update", { user }).then(() => {
         minihull.on("incoming.request@/api/v1/firehose", (req) => {
           // traits
           const body = req.body.batch[0].body;
@@ -138,8 +138,8 @@ describe("computing users", () => {
         }
       };
 
-      minihull.stubConnector({ id: "123456789012345678901235", private_settings: { code } });
-      minihull.notifyConnector("123456789012345678901235", "http://localhost:8000/notify", "user_report:update", { user }).then(() => {
+      minihull.stubConnector({ id: "123456789012345678901238", private_settings: { code } });
+      minihull.notifyConnector("123456789012345678901238", "http://localhost:8000/notify", "user_report:update", { user }).then(() => {
         minihull.on("incoming.request@/api/v1/firehose", (req) => {
           // traits
           const body = req.body.batch[0].body;

@@ -238,7 +238,7 @@ describe("Compute Ship", () => {
     });
 
     it("ignore traits whose time difference is in ms", (done) => {
-      compute({user: {traits: {date_precision_test: '2017-09-08T12:12:07.356Z'}}}, shipWithCode(ship, "hull.traits({ date_precision_test: '2017-09-08T12:12:07Z' })")).then(
+      compute({user: {traits: {date_precision_test_at: '2017-09-08T12:12:07.356Z'}}}, shipWithCode(ship, "hull.traits({ date_precision_test_at: '2017-09-08T12:12:07Z' })")).then(
         result => {
           expect(result.changes.user).to.be.deep.equal({})
           done();

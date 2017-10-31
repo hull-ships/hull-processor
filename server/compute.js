@@ -65,19 +65,31 @@ const buildAccountPayload = (pld, traitsCall = {}) => {
   return pld;
 };
 
+
+function stringify(val) {
+  if (val && val.toString) {
+    return val.toString();
+  }
+  return "";
+}
+
 const updateChanges = (payload) => {
   return (memo, d) => {
+    const traitName = (_.last(d.path) || "").toString();
+
     if (d.kind === "E") {
       // if this is an edit, we only apply the changes the value is different
       // independently of the type
-      if (d.lhs.toString() === d.rhs.toString()) {
+      if (stringify(d.lhs) === stringify(d.rhs)) {
         return memo;
       }
 
       // in case of date, we do a diff on seconds, in order to avoid ms precision
-      if ([d.lhs, d.rhs].every(v => moment(v).isValid())) {
-        if (moment(d.lhs).diff(d.rhs, "seconds") === 0) {
-          return memo;
+      if (traitName.match && traitName.match(/_at$|date$/) && _.isString(d.lhs)) {
+        if ([d.lhs, d.rhs].every(v => moment(v).isValid())) {
+          if (moment(d.lhs).diff(d.rhs, "seconds") === 0) {
+            return memo;
+          }
         }
       }
     }
