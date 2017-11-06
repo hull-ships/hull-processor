@@ -15,7 +15,7 @@ export default function Server(connector, options = {}) {
   connector.setupApp(app);
 
   app.post("/batch", notifyHandler());
-  app.post("/notify-smart-notifier", notifyHandler({
+  app.post("/smart-notifier", notifyHandler({
     type: "next",
     size: parseInt(process.env.FLOW_CONTROL_SIZE, 10) || 10,
     in: parseInt(process.env.FLOW_CONTROL_IN, 10) || 1000
