@@ -3,6 +3,9 @@
 ## 0.2.0
 
 - upgrade hull-node to 0.13.2
+- add smart-notifier support
+- prepare supporting libraries outside per message handler to optimize time spent there
+- improve error handling
 
 ## 0.1.10
 

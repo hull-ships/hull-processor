@@ -43,7 +43,6 @@ const options = {
   devMode: process.env.NODE_ENV === "development",
   port: process.env.PORT || 8082,
   Hull,
-  skipSignatureValidation: true,
   clientConfig: {
     firehoseUrl: process.env.OVERRIDE_FIREHOSE_URL
   },
