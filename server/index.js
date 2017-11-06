@@ -1,7 +1,6 @@
 import Hull from "hull";
 import { Cache } from "hull/lib/infra";
 import redisStore from "cache-manager-redis";
-
 import server from "./server";
 
 if (process.env.LOG_LEVEL) {

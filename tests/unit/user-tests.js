@@ -34,8 +34,8 @@ const TESTS = {
     result: { test: 4, "group/test": 2 }
   },
   nested: {
-    payload_old: "traits({ value: 'val0', group: { value: 'val1', group: { value: 'val2' } } } }, { source: 'group' });",
-    payload: "hull.traits({ value: 'val0', group: { value: 'val1', group: { value: 'val2' } } } }, { source: 'group' });",
+    payload_old: "traits({ value: 'val0', group: { value: 'val1', group: { value: 'val2' } } }, { source: 'group' });",
+    payload: "hull.traits({ value: 'val0', group: { value: 'val1', group: { value: 'val2' } } }, { source: 'group' });",
     result: { "traits_group/value": "val0", "traits_group/group/value": "val1", "traits_group/group/group/value": "val2" }
   },
   withEmail: {

@@ -1,4 +1,4 @@
-import { notifHandler, batchHandler } from "hull/lib/utils";
+import { notifHandler } from "hull/lib/utils";
 
 const hullSecret = "hullSecret";
 const config = {

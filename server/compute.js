@@ -11,15 +11,19 @@ import Promise from "bluebird";
 
 const TOP_LEVEL_FIELDS = ["tags", "name", "description", "extra", "picture", "settings", "username", "email", "contact_email", "image", "first_name", "last_name", "address", "created_at", "phone", "domain", "accepts_marketing"];
 
-function applyUtils(sandbox = {}) {
-  const lodash = _.functions(_).reduce((l, key) => {
-    l[key] = (...args) => _[key](...args);
-    return l;
-  }, {});
+const lodash = _.functions(_).reduce((l, key) => {
+  l[key] = (...args) => _[key](...args);
+  return l;
+}, {});
 
-  sandbox.moment = deepFreeze((...args) => { return moment(...args); });
-  sandbox.urijs = deepFreeze((...args) => { return urijs(...args); });
-  sandbox._ = deepFreeze(lodash);
+const frozenMoment = deepFreeze((...args) => { return moment(...args); });
+const frozenUrijs = deepFreeze((...args) => { return urijs(...args); });
+const frozenLodash = deepFreeze(lodash);
+
+function applyUtils(sandbox = {}) {
+  sandbox.moment = frozenMoment;
+  sandbox.urijs = frozenUrijs;
+  sandbox._ = frozenLodash;
 }
 
 const buildPayload = (pld, traitsCall = {}) => {
@@ -61,9 +65,8 @@ const buildAccountPayload = (pld, traitsCall = {}) => {
   return pld;
 };
 
-
 function stringify(val) {
-  if (val && val.toString) {
+  if (val !== undefined && val.toString) {
     return val.toString();
   }
   return "";
@@ -243,7 +246,9 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
 
   return Promise.all(sandbox.results)
   .catch((err) => {
-    errors.push(err.toString());
+    if (err && err.toString) {
+      errors.push(err.message || err.toString());
+    }
     sandbox.captureException(err);
   })
   .then(() => {
