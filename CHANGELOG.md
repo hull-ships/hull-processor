@@ -1,3 +1,8 @@
+# 0.1.11
+- remove global error handler and default to hull-node middleware
+- upgrade hull-node to v0.12.7
+- upgrade cache-manager-redis to ^0.5.0
+
 # 0.1.10
 - improve diff to ignore miliseconds difference on timestamps and types when comparing string/numbers
 
