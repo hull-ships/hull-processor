@@ -192,9 +192,11 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
       try {
         callback(error, response, body);
       } catch (err) {
-        const msg = err && err.toString && err.toString();
-        logger.info("outgoing.user.error", { error: msg });
-        errors.push(msg);
+        if (err && err.toString) {
+          const msg = err.toString();
+          errors.push(msg);
+          logger.info("outgoing.user.error", { error: msg });
+        }
       }
     });
   };
