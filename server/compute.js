@@ -9,6 +9,8 @@ import deepMerge from "deepmerge";
 import request from "request";
 import Promise from "bluebird";
 
+import emailDomains from "./email-domains";
+
 const TOP_LEVEL_FIELDS = ["tags", "name", "description", "extra", "picture", "settings", "username", "email", "contact_email", "image", "first_name", "last_name", "address", "created_at", "phone", "domain", "accepts_marketing"];
 
 const lodash = _.functions(_).reduce((l, key) => {
@@ -186,9 +188,19 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
     });
   };
 
+
   function log(...args) {
     logs.push(args);
   }
+
+  function isGenericEmail(email = "", additionalDomains = []) {
+    if (email.indexOf("@") === 1) {
+      log(`${email} doesn't seem to be an email`);
+      return false;
+    }
+    return _.includes([...emailDomains, ...additionalDomains], email.split("@")[1]);
+  }
+  sandbox.isGenericEmail = isGenericEmail;
 
   function debug(...args) {
     // Only show debug logs in preview mode
