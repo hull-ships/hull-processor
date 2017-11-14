@@ -1,12 +1,9 @@
 import React, { Component } from "react";
+import { Col } from "react-bootstrap";
 import Codemirror from "../ui/react-codemirror";
-import { Col, Button, Tabs, Tab, Well } from "react-bootstrap";
 import Header from "../ui/header";
-import Icon from "../ui/icon";
 
 require("codemirror/mode/javascript/javascript");
-
-const HelpText = "Mardown here ?";
 
 export default class Code extends Component {
 
