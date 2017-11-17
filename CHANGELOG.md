@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.2
+
+- Fix account traits grouping
+
 ## 0.2.0
 
 - upgrade hull-node to 0.13.2
