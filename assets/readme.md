@@ -296,6 +296,7 @@ The processor provides the following **utility methods**:
 | Function Name         | Description                                                                                                                           |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | `isInSegment(<name>)` | Returns `true` if the user is in the segment with the specified name; otherwise `false`. Please note that the name is case-sensitive. |
+| `isGenericEmail(<email>, <[additional-emails]>)` | Returns `true` if the user uses a generic email host. The list of email providers we check against is here: https://github.com/hull-ships/hull-processor/blob/develop/server/email-domains.js. `additional-emails` is an array of strings for additional domain names to check against|
 
 Now that you have a good overview of which variables you can access to obtain information, let’s move on to the functions that allow you to **manipulate data**.
 

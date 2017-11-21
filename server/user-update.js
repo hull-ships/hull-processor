@@ -19,7 +19,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
   const { user, segments } = message;
   const asUser = hull.asUser(user);
   asUser.logger.info("incoming.user.start");
-  return compute(message, ship)
+  return compute(message, ship, { logger: asUser.logger })
   .then(({ changes, events, account, accountClaims, logsForLogger, errors }) => {
     // Update user traits
     if (_.size(changes.user)) {

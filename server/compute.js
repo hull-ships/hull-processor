@@ -9,6 +9,8 @@ import deepMerge from "deepmerge";
 import request from "request";
 import Promise from "bluebird";
 
+import emailDomains from "./email-domains";
+
 const TOP_LEVEL_FIELDS = ["tags", "name", "description", "extra", "picture", "settings", "username", "email", "contact_email", "image", "first_name", "last_name", "address", "created_at", "phone", "domain", "accepts_marketing"];
 
 const lodash = _.functions(_).reduce((l, key) => {
@@ -117,7 +119,7 @@ function getSandbox(ship) {
 }
 
 module.exports = function compute({ changes = {}, user, account, segments, account_segments, events = [] }, ship = {}, options = {}) {
-  const { preview } = options;
+  const { preview, logger } = options;
   const { private_settings = {} } = ship;
   const { code = "", sentry_dsn: sentryDsn } = private_settings;
 
@@ -177,18 +179,43 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
 
   sandbox.request = (opts, callback) => {
     isAsync = true;
-    return request.defaults({ timeout: 3000 })(opts, (error, response, body) => {
+    const ts = new Date();
+    const requestId = _.uniqueId("request-");
+    const params = _.isString(opts) ? { url: opts } : opts;
+    logger.debug("ship.service_api.request", { ...params, requestId });
+    return request.defaults({ timeout: 5000 })(params, (error, response, body) => {
+      logger.debug("ship.service_api.response", {
+        requestId,
+        time: (new Date() - ts),
+        statusCode: _.get(response, "statusCode"),
+        uri: _.get(response, "request.uri.href"),
+        method: _.get(response, "request.method")
+      });
       try {
         callback(error, response, body);
       } catch (err) {
-        errors.push(err.toString());
+        if (err && err.toString) {
+          const msg = err.toString();
+          errors.push(msg);
+          logger.info("outgoing.user.error", { error: msg });
+        }
       }
     });
   };
 
+
   function log(...args) {
     logs.push(args);
   }
+
+  function isGenericEmail(email = "", additionalDomains = []) {
+    if (email.indexOf("@") === 1) {
+      log(`${email} doesn't seem to be an email`);
+      return false;
+    }
+    return _.includes([...emailDomains, ...additionalDomains], email.split("@")[1]);
+  }
+  sandbox.isGenericEmail = isGenericEmail;
 
   function debug(...args) {
     // Only show debug logs in preview mode
@@ -235,7 +262,11 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
       }`);
     script.runInContext(sandbox);
   } catch (err) {
-    errors.push(err.toString());
+    if (err && err.toString) {
+      const msg = err.toString();
+      errors.push(msg);
+      logger.info("outgoing.user.error", { error: msg });
+    }
     sandbox.captureException(err);
   }
 
@@ -244,10 +275,15 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
     errors.push("You need to return a 'new Promise' and 'resolve' or 'reject' it in you 'request' callback.");
   }
 
-  return Promise.all(sandbox.results)
+  // Forcing all promises to timeout at 5000ms
+  const promises = sandbox.results.map(p => Promise.resolve(p).timeout(5000));
+
+  return Promise.all(promises)
   .catch((err) => {
     if (err && err.toString) {
-      errors.push(err.message || err.toString());
+      const msg = err.message || err.toString();
+      errors.push(msg);
+      logger.info("outgoing.user.error", { error: msg });
     }
     sandbox.captureException(err);
   })

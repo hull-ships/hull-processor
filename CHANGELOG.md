@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.2.2
+
+- Fix account traits grouping
+- Properly handle timeout and error on request callbacks
+- Log service_api request and responses
+- add `isGenericEmail` helper with a default list of generic emails
+- replace help modal with link to readme
+
 ## 0.2.0
 
 - upgrade hull-node to 0.13.2

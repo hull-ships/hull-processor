@@ -17,7 +17,8 @@ function computeHandler(req, res) {
 
   if (client && ship && user) {
     const startTime = new Date();
-    compute(user, ship, { preview: true })
+
+    compute(user, ship, { preview: true, logger: req.hull.client.asUser(user.user).logger })
     .then(result => {
       const logsForLogger = result.logsForLogger;
       if (logsForLogger && logsForLogger.length) {
