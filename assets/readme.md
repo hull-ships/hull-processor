@@ -287,23 +287,24 @@ Please note that some of the input data shown on the left might be fake data tha
 
 In addition to the input, you can also access the **settings** of the processor:
 
-| Variable Name | Description                                                                                                                                                     |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ship`        | Provides access to processor settings, e.g. `ship.private_settings` gives you access to the settings specified in `manifest.json` as shown in the Advanced tab. |
+|**Variable Name**| **Description**                                                                                                                                                |
+|-----------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|`ship`           | Provides access to processor settings, e.g. `ship.private_settings` gives you access to the settings specified in `manifest.json` as shown in the Advanced tab.|
 
 The processor provides the following **utility methods**:
 
-| Function Name         | Description                                                                                                                           |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `isInSegment(<name>)` | Returns `true` if the user is in the segment with the specified name; otherwise `false`. Please note that the name is case-sensitive. |
-| `isGenericEmail(<email>, <[additional-emails]>)` | Returns `true` if the user uses a generic email host. The list of email providers we check against is here: https://github.com/hull-ships/hull-processor/blob/develop/server/email-domains.js. `additional-emails` is an array of strings for additional domain names to check against|
+| **Function Name**                                  | **Description**                                                                                                                                                                                                                                                                        |
+| ---------------------------------------------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `isInSegment(<name>)`                              | Returns `true` if the user is in the segment with the specified name; otherwise `false`. Please note that the name is case-sensitive.                                                                                                                                                  |
+| `isGenericEmail(<email>, <[additional-domains]>)`  | Returns `true` if the user uses a generic email host. The list of email providers we check against is here: https://github.com/hull-ships/hull-processor/blob/develop/server/email-domains.js. `additional-domains` is an array of strings for additional domain names to check against|
+| `isGenericDomain(<domain>, <[additional-domains]>)`| Returns `true` if the user uses a generic email host. The list of email providers we check against is here: https://github.com/hull-ships/hull-processor/blob/develop/server/email-domains.js. `additional-domains` is an array of strings for additional domain names to check against|
 
 Now that you have a good overview of which variables you can access to obtain information, let’s move on to the functions that allow you to **manipulate data**.
 
 Lets first explore how you can **change attributes for a user**. As you already know from the Input - User section above, there are three types of attributes, top-level, ungrouped and grouped attributes. ***Top-level and ungrouped attributes*** can be set with the not-overloaded function call
 
 ```javascript
-    hull.traits({ ATTRIBUTE_NAME: <value> })
+  hull.traits({ ATTRIBUTE_NAME: <value> })
 ```
 
 For naming conventions, see the Golden Rules section below.
@@ -311,14 +312,14 @@ For naming conventions, see the Golden Rules section below.
 Of course you can set multiple attributes at once by passing a more complex object like:
 
 ```javascript
-    hull.traits({ ATTRIBUTE_NAME: <value>, ATTRIBUTE2_NAME: <value> })
+  hull.traits({ ATTRIBUTE_NAME: <value>, ATTRIBUTE2_NAME: <value> })
 ```
 
 Using this function signature, these attributes are stored in the `traits` attributes group.
 If you want to make use of ***grouped attributes***, you can use the overloaded signature of the function, passing the group name as source in the second parameter:
 
 ```javascript
-    hull.traits({ ATTRIBUTE_NAME: <value> }, { source: <group_name> })
+  hull.traits({ ATTRIBUTE_NAME: <value> }, { source: <group_name> })
 ```
 
 If you want to “delete” an attribute, you can use the same function calls as described above and simply set `null`  as value.
@@ -331,7 +332,7 @@ You can use the `hull.track` function to emit events, but before we go into furt
 Here is how to use the function signature:
 
 ```javascript
-    hull.track( "<event_name>" , { PROPERTY_NAME: <value>, PROPERTY2_NAME: <value> })
+  hull.track( "<event_name>" , { PROPERTY_NAME: <value>, PROPERTY2_NAME: <value> })
 ```
 
 The first parameter is a string defining the name of the event while the second parameter is an object that defines the properties of the event.
@@ -341,7 +342,7 @@ Now that we know how to deal with users, let’s have a look how to handle accou
 You can **link an account to the current user** by calling the `hull.account` function with claims that identify the account. Supported claims are `domain`, `id` and `external_id`. To link an account that is identified by the domain, you would write
 
 ```javascript
-    hull.account({ domain: <value> })
+  hull.account({ domain: <value> })
 ```
 
 which would either create the account if it doesn’t exist or link the current user to the existing account.
@@ -350,7 +351,7 @@ To **change attributes for an account**, you can use the chained function call `
 In contrast to the user, accounts do only support top-level attributes. You can specify the attributes in the same way as for a user by passing an object into the chained `traits` function like
 
 ```javascript
-    hull.account().traits({ ATTRIBUTE_NAME: <value>, ATTRIBUTE2_NAME: <value> })
+  hull.account().traits({ ATTRIBUTE_NAME: <value>, ATTRIBUTE2_NAME: <value> })
 ```
 
 You can specify the properties of the event by passing them as object in the second parameter: `hull.account().track(<event_name>, {PROPERTY_NAME:<value>, PROPERTY2_NAME:<value>})`
@@ -360,11 +361,12 @@ Make sure to encapsulate the `track`  call in a conditional `if` statement, othe
 
 The processor exposes several external libraries that can be used:
 
-| `_`        | The lodash library. (https://lodash.com/)                          |
-| ---------- | ------------------------------------------------------------------ |
-| `moment()` | The Moment.js library(https://momentjs.com/)                       |
-| `urijs()`  | The URI.js library (https://github.com/medialize/URI.js/)          |
-| `request`  | The simplified request client (https://github.com/request/request) |
+|**Variable**| **Library name**                                                  |
+|------------| ------------------------------------------------------------------|
+|`_`         | The lodash library. (https://lodash.com/)                         |
+|`moment`    | The Moment.js library(https://momentjs.com/)                      |
+|`urijs`     | The URI.js library (https://github.com/medialize/URI.js/)         |
+|`request`   | The simplified request client (https://github.com/request/request)|
 
 Please visit the linked pages for documentation and further information about these third party libraries.
 
