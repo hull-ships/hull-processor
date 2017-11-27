@@ -275,7 +275,7 @@ You can access the **input data** as described above, here is the summary of ava
 | ---------------------------------- | ------------------------------------------------------------------------------ |
 | `account`                          | Provides access to the account’s attributes.                                   |
 | `changes`                          | Represents all changes in user attributes since the last re-computation.       |
-| `events`                           | Gives you access to all events since the last re-computation.                  |
+| `events`                           | Gives you access to all events **since the last re-computation.**                  |
 | `segments`
 or
 `account_segments` | Provides a list of all segments the user belongs to
@@ -291,15 +291,9 @@ In addition to the input, you can also access the **settings** of the processor:
 |-----------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |`ship`           | Provides access to processor settings, e.g. `ship.private_settings` gives you access to the settings specified in `manifest.json` as shown in the Advanced tab.|
 
-The processor provides the following **utility methods**:
-
-| **Function Name**                                  | **Description**                                                                                                                                                                                                                                                                        |
-| ---------------------------------------------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `isInSegment(<name>)`                              | Returns `true` if the user is in the segment with the specified name; otherwise `false`. Please note that the name is case-sensitive.                                                                                                                                                  |
-| `isGenericEmail(<email>, <[additional-domains]>)`  | Returns `true` if the user uses a generic email host. The list of email providers we check against is here: https://github.com/hull-ships/hull-processor/blob/develop/server/email-domains.js. `additional-domains` is an array of strings for additional domain names to check against|
-| `isGenericDomain(<domain>, <[additional-domains]>)`| Returns `true` if the user uses a generic email host. The list of email providers we check against is here: https://github.com/hull-ships/hull-processor/blob/develop/server/email-domains.js. `additional-domains` is an array of strings for additional domain names to check against|
-
 Now that you have a good overview of which variables you can access to obtain information, let’s move on to the functions that allow you to **manipulate data**.
+
+### Setting and updating User attributes
 
 Lets first explore how you can **change attributes for a user**. As you already know from the Input - User section above, there are three types of attributes, top-level, ungrouped and grouped attributes. ***Top-level and ungrouped attributes*** can be set with the not-overloaded function call
 
@@ -316,6 +310,9 @@ Of course you can set multiple attributes at once by passing a more complex obje
 ```
 
 Using this function signature, these attributes are stored in the `traits` attributes group.
+
+### Attribute Groups
+
 If you want to make use of ***grouped attributes***, you can use the overloaded signature of the function, passing the group name as source in the second parameter:
 
 ```javascript
@@ -324,14 +321,33 @@ If you want to make use of ***grouped attributes***, you can use the overloaded 
 
 If you want to “delete” an attribute, you can use the same function calls as described above and simply set `null`  as value.
 
-Now that we know how to handle attributes, let’s have a look at how to **emit events for a user**.
-You can use the `hull.track` function to emit events, but before we go into further details be aware of the following:
+### Incrementing and decrementing values (Atomic Operations)
 
-***The*** `***hull.track***` ***call needs to be always enclosed in an*** `***if***` ***statement and you cannot issue more than 10 track calls in one processor. If you do not follow these rules, you end up with a endless loop of events that counts towards your plan quota.***
+Given the distributed nature of computation, if you want to increment or decrement a counter, you need to take special care. Since the code might run multiple times in parallel, the following operation will not be reliable:
+
+```
+  hull.traits({ coconuts: user.coconuts+1 });
+```
+
+To get reliable results, you need to use `atomic operations`. Here's the correct way to do so:
+
+```
+ hull.traits({ coconuts: { operation: 'inc', value: 1 } })
+```
+
+Where:
+- Operation: `inc`, `dec`, `setIfNull`
+- Value: The value to either increment, decrement or set if nothing else was set before.
+
+## Tracking new events
+
+Now that we know how to handle attributes, let’s have a look at how to **emit events for a user**. You can use the `hull.track` function to emit events, but before we go into further details be aware of the following:
+
+_The `hull.track` call needs to be always enclosed in an `if` statement and we put a limit to maximum 10 tracking calls in one processor. If you do not follow these rules, you could end up with a endless loop of events that counts towards your plan quota._
 
 Here is how to use the function signature:
 
-```javascript
+```js
   hull.track( "<event_name>" , { PROPERTY_NAME: <value>, PROPERTY2_NAME: <value> })
 ```
 
@@ -341,7 +357,7 @@ Now that we know how to deal with users, let’s have a look how to handle accou
 
 You can **link an account to the current user** by calling the `hull.account` function with claims that identify the account. Supported claims are `domain`, `id` and `external_id`. To link an account that is identified by the domain, you would write
 
-```javascript
+```js
   hull.account({ domain: <value> })
 ```
 
@@ -350,12 +366,80 @@ which would either create the account if it doesn’t exist or link the current 
 To **change attributes for an account**, you can use the chained function call `hull.account().traits()`. If the user is already linked to an account, you can skip passing the claims object in the `hull.account()`  function and the attributes will be applied to the current linked account. By specifying the claims, you can explicitly address the account and if it is not linked to the current user, the account will be linked and attributes will be updated.
 In contrast to the user, accounts do only support top-level attributes. You can specify the attributes in the same way as for a user by passing an object into the chained `traits` function like
 
-```javascript
+```js
   hull.account().traits({ ATTRIBUTE_NAME: <value>, ATTRIBUTE2_NAME: <value> })
 ```
 
 You can specify the properties of the event by passing them as object in the second parameter: `hull.account().track(<event_name>, {PROPERTY_NAME:<value>, PROPERTY2_NAME:<value>})`
 Make sure to encapsulate the `track`  call in a conditional `if` statement, otherwise you end up with an infinite loop that counts towards your plan’s quota.
+
+### Limitations
+The Platform refuses to associate Users in accounts with a domain being a Generic Email Domain - See the list of email domains we refuse here: https://github.com/hull-ships/hull-processor/blob/develop/server/email-domains.js - This helps preventing accounts with thousands of users under domains like `gmail.com` because you'd have written the following code:
+
+```js
+ // Any user with a "gmail.com" account would be linked to this account
+ hull.account({ domain: user.domain })
+```
+
+### Understanding the logic behind Accounts, Preventing Infinite Loops
+Let's review a particularly critical part of Accounts:
+
+Here's a scenario that, although it seems intuitive, will **generate an infinite loop** (which is bad. You don't want that). Let's say you store the MRR of the account at the User level and want to use Hull to store it at account level. Intuitively, you'd do this:
+
+```js
+  hull
+    .account() //target the user's current account
+    .traits({
+      //set the value of the 'is_customer' attribute to the user's value
+      mrr: user.traits.mrr
+    })
+
+```
+
+Unfortunately, it's enough for 2 users in this account to have different data to have the account go into an infinite loop: 
+
+```
+User1 Update
+  → Set MRR=100
+    → Account Update
+      → User2 Update
+        → Set MRR=200
+          → Account Update
+            → User Update
+              → Set MRR=100 → Account Update 
+etc...
+```
+
+The way you solve this is by either doing a `setIfNull` operation on the account, so that the first user with a value defines the value for the account and it's not updated anymore, or you rely on the `changes` object to only change the Account when the value for the user changed:
+
+```js
+  const mrr = _.get(changes, 'user.traits.mrr')
+  //There was an MRR change on the User
+  if(mrr && mrr[1]) {
+    //report the new MRR on the Account
+    hull.account().traits({ mrr: mrr[1] });
+  }
+```
+
+Or you could rely on a User Event if you have such events"
+
+```js
+events.map(event => {
+  if (event.event === "MRR Changed") {
+    hull.account().traits({ mrr: event.properties.mrr });
+  }
+});
+```
+
+## Utility Methods
+The processor provides the following methods to help you:
+
+| **Function Name**                                  | **Description**                                                                                                                                                                                                                                                                        |
+| ---------------------------------------------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `isInSegment(<name>)`                              | Returns `true` if the user is in the segment with the specified name; otherwise `false`. Please note that the name is case-sensitive.                                                                                                                                                  |
+| `isGenericEmail(<email>, <[additional-domains]>)`  | Returns `true` if the user uses a generic email host. The list of email providers we check against is here: https://github.com/hull-ships/hull-processor/blob/develop/server/email-domains.js. `additional-domains` is an array of strings for additional domain names to check against|
+| `isGenericDomain(<domain>, <[additional-domains]>)`| Returns `true` if the user uses a generic email host. The list of email providers we check against is here: https://github.com/hull-ships/hull-processor/blob/develop/server/email-domains.js. `additional-domains` is an array of strings for additional domain names to check against|
+
 
 ## External Libraries
 
