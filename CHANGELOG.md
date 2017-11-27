@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.2.3
+
+- Expose new Helper methods to simplify Processor code
+  + isGenericEmail
+  + isGenericDomain
+
 ## 0.2.2
 
 - Fix account traits grouping

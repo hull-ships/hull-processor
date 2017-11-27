@@ -208,12 +208,17 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
     logs.push(args);
   }
 
+  function isGenericDomain(domain = "", additionalDomains = []) {
+    return _.includes([...emailDomains, ...additionalDomains], domain);
+  }
+  sandbox.isGenericDomain = isGenericDomain;
+
   function isGenericEmail(email = "", additionalDomains = []) {
     if (email.indexOf("@") === 1) {
       log(`${email} doesn't seem to be an email`);
       return false;
     }
-    return _.includes([...emailDomains, ...additionalDomains], email.split("@")[1]);
+    return isGenericDomain(email.split("@")[1], additionalDomains);
   }
   sandbox.isGenericEmail = isGenericEmail;
 

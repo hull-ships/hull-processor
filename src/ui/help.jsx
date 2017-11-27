@@ -7,10 +7,6 @@ export default class Help extends Component {
   }
 
   render() {
-    return (
-      <div>
-        <a href='/readme' target="_blank" bsStyle="warning" bsSize="sm" clasName='btn-pill btn-rounded'>Documentation</a>
-      </div>
-    );
+    return <a href='/readme' target="_blank" bsStyle="warning" bsSize="sm" clasName='btn-pill btn-rounded'>Documentation</a>;
   }
 }
