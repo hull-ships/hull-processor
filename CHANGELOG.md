@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.4
+
+- pass first `anonymous_id` to asUser ident object if user has any
+
 ## 0.2.3
 
 - Expose new Helper methods to simplify Processor code

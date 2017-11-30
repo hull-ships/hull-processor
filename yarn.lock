@@ -1364,6 +1364,10 @@ chokidar@^1.0.0, chokidar@^1.4.3, chokidar@^1.6.1:
   optionalDependencies:
     fsevents "^1.0.0"
 
+circle-github-bot@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/circle-github-bot/-/circle-github-bot-0.4.0.tgz#d1702cea19277db4333936647828cd433fbcafd9"
+
 circular-json@^0.3.1:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/circular-json/-/circular-json-0.3.3.tgz#815c99ea84f6809529d2f45791bdf82711352d66"
@@ -2981,6 +2985,12 @@ hull-client@1.1.3:
     urijs "^1.18.7"
     uuid "^3.0.1"
     winston "^2.2.0"
+
+hull-connector-tester@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/hull-connector-tester/-/hull-connector-tester-0.0.1.tgz#e745e08d1670f615b582f1774902c49401c5160c"
+  dependencies:
+    circle-github-bot "^0.4.0"
 
 hull@0.13.5:
   version "0.13.5"

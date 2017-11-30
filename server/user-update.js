@@ -15,9 +15,23 @@ function flatten(obj, key, group) {
   }, obj);
 }
 
+function getIdent(user) {
+  const ident = {
+    id: user.id
+  };
+  if (_.has(user, "email")) {
+    ident.email = _.get(user, "email", null);
+  }
+  if (_.has(user, "anonymous_id")) {
+    ident.anonymous_id = _.head(_.get(user, "anonymous_id", []));
+  }
+  return ident;
+}
+
 module.exports = function handle({ message = {} }, { ship, hull }) {
   const { user, segments } = message;
-  const asUser = hull.asUser(user);
+  const ident = getIdent(user);
+  const asUser = hull.asUser(ident);
   asUser.logger.info("incoming.user.start");
   return compute(message, ship, { logger: asUser.logger })
   .then(({ changes, events, account, accountClaims, logsForLogger, errors }) => {
@@ -30,7 +44,8 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
 
       if (_.size(flat)) {
         if (flat.email) {
-          hull.asUser({ id: user.id, email: flat.email }).traits(flat)
+          _.set(ident, "email", flat.email);
+          hull.asUser(ident).traits(flat)
             .then(() => {
               asUser.logger.info("incoming.user.success", { changes: flat });
             }, (error) => {
