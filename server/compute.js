@@ -67,12 +67,6 @@ const buildAccountPayload = (pld, traitsCall = {}) => {
   return pld;
 };
 
-function stringify(val) {
-  if (val !== undefined && val.toString) {
-    return val.toString();
-  }
-  return "";
-}
 
 const updateChanges = (payload) => {
   return (memo, d) => {
@@ -81,7 +75,7 @@ const updateChanges = (payload) => {
     if (d.kind === "E") {
       // if this is an edit, we only apply the changes the value is different
       // independently of the type
-      if (stringify(d.lhs) === stringify(d.rhs)) {
+      if (_.toString(d.lhs) === _.toString(d.rhs)) {
         return memo;
       }
 
