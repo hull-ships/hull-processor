@@ -34,6 +34,7 @@ const CODE = {
   delete_array_element: "hull.traits({ testing_array: ['A', 'B'] })",
   array_to_string: "hull.traits({ testing_array: 'abcdef' })",
   string_to_array: "hull.traits({ foo: ['A', 'B'] })",
+  nullify_trait: "hull.traits({ foo: null })",
   console_log: "console.log('hello log')",
   console_debug: "console.debug('hello debug')",
   modify_lodash_library: "_.map = 'foo'",
@@ -233,6 +234,14 @@ describe("Compute Ship", () => {
       applyCompute(CODE.string_to_array).then(result => {
         expect(result.account).to.be.eql({});
         expect(result.changes.user.traits.foo).to.deep.equal(["A", "B"]);
+        done();
+      });
+    });
+
+    it("Should change a string to null value", (done) => {
+      applyCompute(CODE.nullify_trait).then(result => {
+        expect(result.account).to.be.eql({});
+        expect(result.changes.user.traits.foo).to.equal(null);
         done();
       });
     });
