@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.5
+
+- use `_.toString` instead of custom `stringify` method in updateChanges
+
 ## 0.2.4
 
 - pass first `anonymous_id` to asUser ident object if user has any
