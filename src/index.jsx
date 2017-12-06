@@ -12,7 +12,8 @@ import Engine from "./engine";
 
   Hull.init({
     appId: ship,
-    orgUrl: `https://${organization}`
+    orgUrl: `https://${organization}`,
+    embed: false
   });
 
   Hull.ready((hull, currentUser, app) => {
