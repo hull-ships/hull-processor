@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.2.6
+
+- update hull-node to v0.13.9
+- adjust ci configuration
+- improve user feedback on any error during search
+
 ## 0.2.5
 
 - use `_.toString` instead of custom `stringify` method in updateChanges
