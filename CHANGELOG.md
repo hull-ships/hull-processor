@@ -3,7 +3,8 @@
 ## 0.2.6
 
 - update hull-node to v0.13.9
-- adjust ci configuration and metrics
+- adjust ci configuration
+- improve user feedback on any error during search
 
 ## 0.2.5
 
