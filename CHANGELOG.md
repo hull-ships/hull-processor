@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.2.7
+
+- upgrade docs
+- add `enteredSegment` and `leftSegment` methods
+
 ## 0.2.6
 
 - update hull-node to v0.13.9
