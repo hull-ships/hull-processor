@@ -105,6 +105,14 @@ function isInSegment(segments = [], segmentName) {
   return _.includes(_.map(segments, "name"), segmentName);
 }
 
+function enteredSegment(changes = {}, name) {
+  return _.find(_.get(changes, "segments.entered"), s => s.name === name);
+}
+
+function leftSegment(changes = {}, name) {
+  return _.find(_.get(changes, "segments.entered"), s => s.name === name);
+}
+
 const sandboxes = {};
 function getSandbox(ship) {
   const s = sandboxes[ship.id];
@@ -132,6 +140,8 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
   sandbox.ship = ship;
   sandbox.payload = {};
   sandbox.isInSegment = isInSegment.bind(null, segments);
+  sandbox.enteredSegment = enteredSegment.bind(null, changes);
+  sandbox.leftSegment = leftSegment.bind(null, changes);
 
   applyUtils(sandbox);
 
