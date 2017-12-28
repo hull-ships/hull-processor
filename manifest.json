@@ -2,6 +2,8 @@
   "name": "Processor",
   "description": "Recompute custom properties and emit events with Javascript logic whenever a user is updated",
   "tags": ["incoming", "outgoing", "batch", "oneColumn", "smart-notifier"],
+  "source": "processor",
+  "logo": "logo.png",
   "picture": "picture.png",
   "ui": false,
   "admin": "admin.html",
