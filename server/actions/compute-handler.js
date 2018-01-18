@@ -3,30 +3,34 @@ import compute from "../compute";
 import bodyParser from "body-parser";
 import timeout from "connect-timeout";
 import fetchUser from "../middlewares/fetch-user";
+import check from "syntax-error";
+import _ from "lodash";
 
 function computeHandler(req, res) {
   const { client, timings } = req.hull;
-  let { ship = {}, user } = req.body;
+  let { ship = {}, payload } = req.body;
   // This condition ensures boot request does work:
   // When loading the page, the ship is client-side so what's passed to remote
   // doesn't have private_settings embedded
   ship = (ship.private_settings) ? ship : req.hull.ship;
-  user = user || req.hull.user;
+  payload = payload || req.hull.user;
 
   res.type("application/json");
 
-  if (client && ship && user) {
+  if (client && ship && payload) {
     const startTime = new Date();
-
-    compute(user, ship, { preview: true, logger: req.hull.client.asUser(user.user).logger })
+    compute(payload, ship, { preview: true, logger: req.hull.client.asUser(payload.user).logger })
     .then(result => {
-      const logsForLogger = result.logsForLogger;
+      const { logsForLogger } = result;
       if (logsForLogger && logsForLogger.length) {
         logsForLogger.map(line => req.hull.client.logger.debug("preview.console.log", line));
       }
       const took = new Date() - startTime;
+      const err = check(ship.private_settings.code);
+      if (err) result.errors.push(err.annotated);
       timings.compute = took;
-      res.send({ ship, user, took, timings, result })
+      res
+        .send({ ship, payload, took, timings, result: _.omit(result, "user", "account") })
         .end();
     }).catch(error => res.status(500).json({ error }));
   } else {

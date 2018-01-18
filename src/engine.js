@@ -43,7 +43,7 @@ export default class Engine extends EventEmitter {
   }
 
   updateShip(ship) {
-    this.compute({ ship, user: this.state.user });
+    this.compute({ ship, payload: this.state.payload });
   }
 
   updateParent(code) {
@@ -69,7 +69,7 @@ export default class Engine extends EventEmitter {
     this.setState({ ship: newShip });
     this.compute({
       ship: newShip,
-      user: this.state.user
+      payload: this.state.payload
     });
   }
 
@@ -94,7 +94,7 @@ export default class Engine extends EventEmitter {
               initialized: true
             });
           } else {
-            const { ship, user, took, result } = body || {};
+            const { ship, payload, took, result } = body || {};
 
             // Don't kill user code
             if (this && this.state && this.state.ship && this.state.ship.private_settings) {
@@ -105,7 +105,7 @@ export default class Engine extends EventEmitter {
               loading: false,
               initialized: true,
               error: null,
-              ship, user, result, took
+              ship, payload, result, took
             });
           }
         } catch (err) {

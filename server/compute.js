@@ -281,7 +281,7 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
 
   if (isAsync && !_.some(_.compact(sandbox.results), (r) => _.isFunction(r.then))) {
     errors.push("It seems you’re using 'request' which is asynchronous.");
-    errors.push("You need to return a 'new Promise' and 'resolve' or 'reject' it in you 'request' callback.");
+    errors.push("You need to return a 'new Promise' and 'resolve' or 'reject' it in your 'request' callback.");
   }
 
   // Forcing all promises to timeout at 5000ms
@@ -330,9 +330,9 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
       logs,
       logsForLogger,
       errors,
+      payload,
       changes: changed,
       events: tracks,
-      payload: sandbox.payload,
       ...updated,
       accountClaims
     };

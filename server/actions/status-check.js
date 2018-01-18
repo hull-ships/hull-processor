@@ -6,14 +6,15 @@ export default function statusCheck(req, res) {
   const messages = [];
   let status = "ok";
   if (!_.get(ship.private_settings, "code")) {
-    status = "error";
-    messages.push("Settings are empty");
+    status = "warning";
+    messages.push("There is no code in this processor");
   }
 
   const err = check(_.get(ship.private_settings, "code"));
   if (err) {
     status = "error";
-    messages.push("Settings are referencing invalid values");
+    messages.push("There are errors in the code");
+    messages.push(err);
   }
 
   res.json({ messages, status });

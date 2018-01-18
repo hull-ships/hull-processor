@@ -18,11 +18,11 @@ export default class Results extends Component {
   render() {
     const {
       changes = {},
+      payload = {},
       errors = [],
       events = [],
       accountClaims = {},
       logs = [],
-      payload,
       code,
       className,
       sm, md
@@ -37,28 +37,22 @@ export default class Results extends Component {
       }).join(", ");
     }).join("\n");
 
-    let output = "";
-    if (_.size(changes)) {
-      const traits = JSON.stringify(changes, null, 2);
-      output = `/* TRAITS */
-${traits}
-`;
+    const output = [];
+    if (_.size(payload)) {
+      output.push("/* Touched Attributes (The one your code touches) */");
+      output.push(JSON.stringify(payload, null, 2));
     }
-    if (_.size(accountClaims)) {
-      const claims = JSON.stringify(accountClaims, null, 2);
-      output = `${output}
-/* Account Lookup Identifiers */
-${claims}
-`;
+    if (_.size(changes)) {
+      output.push("\n/* Changed Attributes (What actually changed) */");
+      output.push(JSON.stringify(changes, null, 2));
     }
     if (events.length) {
-      const eventString = _.map(events, e => {
-        const props = JSON.stringify(e.properties, null, 2);
-        return `track("${e.eventName}", ${props})
-`; });
-      output = `${output}
-/* EVENTS */
-${eventString}`;
+      output.push("\n/* Emitted Events */");
+      _.map(events, e => output.push(`track("${e.eventName}", ${JSON.stringify(e.properties, null, 2)})`));
+    }
+    if (_.size(accountClaims)) {
+      output.push("\n/* Account Claims (Lookup strategy) */");
+      output.push(JSON.stringify(accountClaims, null, 2));
     }
     return (<Col className={className} md={md} sm={sm}>
       <Header title="Results Preview">
@@ -66,10 +60,9 @@ ${eventString}`;
       </Header>
       <hr/>
       <ActivePane
-        changes={output}
+        changes={output.join("\n")}
         logs={logOutput}
-        errors={errors}
-        payload={payload}
+        errors={errors.join("\n\n")}
         highlight={highlight} />
     </Col>);
   }
