@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.2.8
+
+- add Linter, cleanup error messages
+- add status checks
+- update dependencies
+
 ## 0.2.7
 
 - upgrade docs
