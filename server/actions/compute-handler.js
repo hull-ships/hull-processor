@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import timeout from "connect-timeout";
 import fetchUser from "../middlewares/fetch-user";
 import check from "syntax-error";
+import lint from "../lint-code";
 import _ from "lodash";
 
 function computeHandler(req, res) {
@@ -27,7 +28,12 @@ function computeHandler(req, res) {
       }
       const took = new Date() - startTime;
       const err = check(ship.private_settings.code);
-      if (err) result.errors.push(err.annotated);
+      if (err) {
+        result.errors.push(err.annotated);
+      } else {
+        const linter = lint(ship.private_settings.code);
+        if (linter.length) result.errors.push(...linter);
+      }
       timings.compute = took;
       res
         .send({ ship, payload, took, timings, result: _.omit(result, "user", "account") })
