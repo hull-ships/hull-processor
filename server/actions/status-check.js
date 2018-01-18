@@ -14,7 +14,7 @@ export default function statusCheck(req, res) {
   if (err) {
     status = "error";
     messages.push("There are errors in the code");
-    messages.push(err);
+    messages.push(err.annotated);
   }
 
   res.json({ messages, status });
