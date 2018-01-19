@@ -1,7 +1,10 @@
 /* global describe, it */
 const compute = require("../../server/compute");
-const { events, segments, user, ship } = require("./support/fixtures/index");
+const {
+  events, segments, user, ship
+} = require("./support/fixtures/index");
 const { expect, should } = require("chai");
+
 should();
 
 const payload = { events, segments, user };
@@ -12,7 +15,8 @@ const OLD_CODE = {
   one: "traits({ domain: 'test', boom: 'bam' })",
   new_boolean: "traits({ new_boolean: true });",
   group: "traits({ line: 'test'}, { source: 'group' });",
-  utils: "traits({ keys: _.keys({ a: 1, b: 2 }).join(','), host: urijs('http://hull.io/hello').host(), hello_at: moment('2016-12-01').startOf('year').format('YYYYMMDD') })",
+  utils:
+    "traits({ keys: _.keys({ a: 1, b: 2 }).join(','), host: urijs('http://hull.io/hello').host(), hello_at: moment('2016-12-01').startOf('year').format('YYYYMMDD') })",
   add_array_element: "traits({ testing_array: ['A', 'B', 'C', 'E'] })",
   modify_array_element: "traits({ testing_array: ['F', 'B', 'C', 'E'] })",
   delete_array_element: "traits({ testing_array: ['A', 'B'] })",
@@ -28,7 +32,8 @@ const CODE = {
   one: "hull.traits({ domain: 'test', boom: 'bam' })",
   new_boolean: "hull.traits({ new_boolean: true });",
   group: "hull.traits({ line: 'test'}, { source: 'group' });",
-  utils: "hull.traits({ keys: _.keys({ a: 1, b: 2 }).join(','), host: urijs('http://hull.io/hello').host(), hello_at: moment('2016-12-01').startOf('year').format('YYYYMMDD') })",
+  utils:
+    "hull.traits({ keys: _.keys({ a: 1, b: 2 }).join(','), host: urijs('http://hull.io/hello').host(), hello_at: moment('2016-12-01').startOf('year').format('YYYYMMDD') })",
   add_array_element: "hull.traits({ testing_array: ['A', 'B', 'C', 'E'] })",
   modify_array_element: "hull.traits({ testing_array: ['F', 'B', 'C', 'E'] })",
   delete_array_element: "hull.traits({ testing_array: ['A', 'B'] })",
@@ -60,7 +65,7 @@ function applyCompute(c, options) {
 describe("Compute Ship", () => {
   describe("Compute method with old code", () => {
     it("Should not change content if code does not change content", (done) => {
-      applyCompute(OLD_CODE.identity).then(result => {
+      applyCompute(OLD_CODE.identity).then((result) => {
         expect(result.user).to.be.eql(user);
         expect(result.account).to.be.eql({});
         expect(result.changes).to.be.eql({ user: {}, account: {} });
@@ -69,67 +74,92 @@ describe("Compute Ship", () => {
     });
 
     it("Should only add the correct number of entries and nothing else", (done) => {
-      applyCompute(OLD_CODE.one).then(result => {
+      applyCompute(OLD_CODE.one).then((result) => {
         expect(result.account).to.be.eql({});
-        expect(result.changes.user).to.deep.equal({ traits: { boom: "bam" }, domain: "test" });
+        expect(result.changes.user).to.deep.equal({
+          traits: { boom: "bam" },
+          domain: "test"
+        });
         expect(result.changes.account).to.be.eql({});
         done();
       });
     });
 
     it("Should add trait when code adds a trait", (done) => {
-      applyCompute(OLD_CODE.new_boolean).then(result => {
-        expect(result).to.have.deep.property("user.traits.new_boolean", true);
+      applyCompute(OLD_CODE.new_boolean).then((result) => {
+        expect(result).to.have.nested.property("user.traits.new_boolean", true);
         done();
       });
     });
 
     it("Should return grouped objects when groups are passed", (done) => {
-      applyCompute(OLD_CODE.group).then(result => {
-        expect(result).to.have.deep.property("user.group.line", "test");
+      applyCompute(OLD_CODE.group).then((result) => {
+        expect(result).to.have.nested.property("user.group.line", "test");
         done();
       });
     });
 
     it("Should return grouped objects when groups are passed", (done) => {
-      applyCompute(OLD_CODE.utils).then(result => {
-        expect(result).to.have.deep.property("changes.user.traits.hello_at", "20160101");
-        expect(result).to.have.deep.property("changes.user.traits.host", "hull.io");
-        expect(result).to.have.deep.property("changes.user.traits.keys", "a,b");
+      applyCompute(OLD_CODE.utils).then((result) => {
+        expect(result).to.have.nested.property(
+          "changes.user.traits.hello_at",
+          "20160101"
+        );
+        expect(result).to.have.nested.property(
+          "changes.user.traits.host",
+          "hull.io"
+        );
+        expect(result).to.have.nested.property(
+          "changes.user.traits.keys",
+          "a,b"
+        );
         done();
       });
     });
 
     it("Should add an array element", (done) => {
-      applyCompute(OLD_CODE.add_array_element).then(result => {
-        expect(result.changes.user.traits.testing_array).to.deep.equal(["A", "B", "C", "E"]);
+      applyCompute(OLD_CODE.add_array_element).then((result) => {
+        expect(result.changes.user.traits.testing_array).to.deep.equal([
+          "A",
+          "B",
+          "C",
+          "E"
+        ]);
         done();
       });
     });
 
     it("Should modify an array element", (done) => {
-      applyCompute(OLD_CODE.modify_array_element).then(result => {
-        expect(result.changes.user.traits.testing_array).to.deep.equal(["F", "B", "C", "E"]);
+      applyCompute(OLD_CODE.modify_array_element).then((result) => {
+        expect(result.changes.user.traits.testing_array).to.deep.equal([
+          "F",
+          "B",
+          "C",
+          "E"
+        ]);
         done();
       });
     });
 
     it("Should delete an array element", (done) => {
-      applyCompute(OLD_CODE.delete_array_element).then(result => {
-        expect(result.changes.user.traits.testing_array).to.deep.equal(["A", "B"]);
+      applyCompute(OLD_CODE.delete_array_element).then((result) => {
+        expect(result.changes.user.traits.testing_array).to.deep.equal([
+          "A",
+          "B"
+        ]);
         done();
       });
     });
 
     it("Should change an array to string", (done) => {
-      applyCompute(OLD_CODE.array_to_string).then(result => {
+      applyCompute(OLD_CODE.array_to_string).then((result) => {
         expect(result.changes.user.traits.testing_array).to.equal("abcdef");
         done();
       });
     });
 
     it("Should change a string to an array", (done) => {
-      applyCompute(OLD_CODE.string_to_array).then(result => {
+      applyCompute(OLD_CODE.string_to_array).then((result) => {
         expect(result.changes.user.traits.foo).to.deep.equal(["A", "B"]);
         done();
       });
@@ -138,7 +168,7 @@ describe("Compute Ship", () => {
 
   describe("Compute method using hull scoped object", () => {
     it("Should not change content if code does not return", (done) => {
-      applyCompute(CODE.empty).then(result => {
+      applyCompute(CODE.empty).then((result) => {
         expect(result.user).to.be.eql(user);
         expect(result.account).to.be.eql({});
         expect(result.changes).to.be.eql({ user: {}, account: {} });
@@ -147,7 +177,7 @@ describe("Compute Ship", () => {
     });
 
     it("Should not change content if code returns invalid ", (done) => {
-      applyCompute(CODE.invalid).then(result => {
+      applyCompute(CODE.invalid).then((result) => {
         expect(result.user).to.be.eql(user);
         expect(result.account).to.be.eql({});
         expect(result.changes).to.be.eql({ user: {}, account: {} });
@@ -156,7 +186,7 @@ describe("Compute Ship", () => {
     });
 
     it("Should not change content if code does not change content", (done) => {
-      applyCompute(CODE.identity).then(result => {
+      applyCompute(CODE.identity).then((result) => {
         expect(result.user).to.be.eql(user);
         expect(result.account).to.be.eql({});
         expect(result.changes).to.be.eql({ user: {}, account: {} });
@@ -165,65 +195,90 @@ describe("Compute Ship", () => {
     });
 
     it("Should only add the correct number of entries and nothing else", (done) => {
-      applyCompute(CODE.one).then(result => {
+      applyCompute(CODE.one).then((result) => {
         expect(result.account).to.be.eql({});
-        expect(result.changes.user).to.deep.equal({ traits: { boom: "bam" }, domain: "test" });
+        expect(result.changes.user).to.deep.equal({
+          traits: { boom: "bam" },
+          domain: "test"
+        });
         done();
       });
     });
 
     it("Should add trait when code adds a trait", (done) => {
-      applyCompute(CODE.new_boolean).then(result => {
+      applyCompute(CODE.new_boolean).then((result) => {
         expect(result.account).to.be.eql({});
-        expect(result).to.have.deep.property("user.traits.new_boolean", true);
+        expect(result).to.have.nested.property("user.traits.new_boolean", true);
         done();
       });
     });
 
     it("Should return grouped objects when groups are passed", (done) => {
-      applyCompute(CODE.group).then(result => {
+      applyCompute(CODE.group).then((result) => {
         expect(result.account).to.be.eql({});
-        expect(result).to.have.deep.property("user.group.line", "test");
+        expect(result).to.have.nested.property("user.group.line", "test");
         done();
       });
     });
 
     it("Should return grouped objects when groups are passed", (done) => {
-      applyCompute(CODE.utils).then(result => {
+      applyCompute(CODE.utils).then((result) => {
         expect(result.account).to.be.eql({});
-        expect(result).to.have.deep.property("changes.user.traits.hello_at", "20160101");
-        expect(result).to.have.deep.property("changes.user.traits.host", "hull.io");
-        expect(result).to.have.deep.property("changes.user.traits.keys", "a,b");
+        expect(result).to.have.nested.property(
+          "changes.user.traits.hello_at",
+          "20160101"
+        );
+        expect(result).to.have.nested.property(
+          "changes.user.traits.host",
+          "hull.io"
+        );
+        expect(result).to.have.nested.property(
+          "changes.user.traits.keys",
+          "a,b"
+        );
         done();
       });
     });
 
     it("Should add an array element", (done) => {
-      applyCompute(CODE.add_array_element).then(result => {
+      applyCompute(CODE.add_array_element).then((result) => {
         expect(result.account).to.be.eql({});
-        expect(result.changes.user.traits.testing_array).to.deep.equal(["A", "B", "C", "E"]);
+        expect(result.changes.user.traits.testing_array).to.deep.equal([
+          "A",
+          "B",
+          "C",
+          "E"
+        ]);
         done();
       });
     });
 
     it("Should modify an array element", (done) => {
-      applyCompute(CODE.modify_array_element).then(result => {
+      applyCompute(CODE.modify_array_element).then((result) => {
         expect(result.account).to.be.eql({});
-        expect(result.changes.user.traits.testing_array).to.deep.equal(["F", "B", "C", "E"]);
+        expect(result.changes.user.traits.testing_array).to.deep.equal([
+          "F",
+          "B",
+          "C",
+          "E"
+        ]);
         done();
       });
     });
 
     it("Should delete an array element", (done) => {
-      applyCompute(CODE.delete_array_element).then(result => {
+      applyCompute(CODE.delete_array_element).then((result) => {
         expect(result.account).to.be.eql({});
-        expect(result.changes.user.traits.testing_array).to.deep.equal(["A", "B"]);
+        expect(result.changes.user.traits.testing_array).to.deep.equal([
+          "A",
+          "B"
+        ]);
         done();
       });
     });
 
     it("Should change an array to string", (done) => {
-      applyCompute(CODE.array_to_string).then(result => {
+      applyCompute(CODE.array_to_string).then((result) => {
         expect(result.account).to.be.eql({});
         expect(result.changes.user.traits.testing_array).to.equal("abcdef");
         done();
@@ -231,7 +286,7 @@ describe("Compute Ship", () => {
     });
 
     it("Should change a string to an array", (done) => {
-      applyCompute(CODE.string_to_array).then(result => {
+      applyCompute(CODE.string_to_array).then((result) => {
         expect(result.account).to.be.eql({});
         expect(result.changes.user.traits.foo).to.deep.equal(["A", "B"]);
         done();
@@ -239,7 +294,7 @@ describe("Compute Ship", () => {
     });
 
     it("Should change a string to null value", (done) => {
-      applyCompute(CODE.nullify_trait).then(result => {
+      applyCompute(CODE.nullify_trait).then((result) => {
         expect(result.account).to.be.eql({});
         expect(result.changes.user.traits.foo).to.equal(null);
         done();
@@ -247,62 +302,75 @@ describe("Compute Ship", () => {
     });
 
     it("ignore traits whose time difference is in ms", (done) => {
-      compute({user: {traits: {date_precision_test_at: '2017-09-08T12:12:07.356Z'}}}, shipWithCode(ship, "hull.traits({ date_precision_test_at: '2017-09-08T12:12:07Z' })")).then(
-        result => {
-          expect(result.changes.user).to.be.deep.equal({})
-          done();
-        }
-      );
+      compute(
+        {
+          user: {
+            traits: { date_precision_test_at: "2017-09-08T12:12:07.356Z" }
+          }
+        },
+        shipWithCode(
+          ship,
+          "hull.traits({ date_precision_test_at: '2017-09-08T12:12:07Z' })"
+        )
+      ).then((result) => {
+        expect(result.changes.user).to.be.deep.equal({});
+        done();
+      });
     });
 
     it("ignore traits which differ in type but not in value", (done) => {
-      compute({user: {traits: {type_value_test: '1000'}}}, shipWithCode(ship, "hull.traits({ type_value_test: 1000 })")).then(
-        result => {
-          expect(result.changes.user).to.be.deep.equal({})
-          done();
-        }
-      );
+      compute(
+        { user: { traits: { type_value_test: "1000" } } },
+        shipWithCode(ship, "hull.traits({ type_value_test: 1000 })")
+      ).then((result) => {
+        expect(result.changes.user).to.be.deep.equal({});
+        done();
+      });
     });
 
     it("return logs", (done) => {
-      applyCompute(CODE.console_log).then(result => {
+      applyCompute(CODE.console_log).then((result) => {
         expect(result.logs).to.deep.equal([["hello log"]]);
         done();
       });
     });
 
     it("return debug logs in preview mode", (done) => {
-      applyCompute(CODE.console_debug, { preview: true }).then(result => {
+      applyCompute(CODE.console_debug, { preview: true }).then((result) => {
         expect(result.logs).to.deep.equal([["hello debug"]]);
         done();
       });
     });
 
     it("ignore debug logs in normal mode", (done) => {
-      applyCompute(CODE.console_debug).then(result => {
+      applyCompute(CODE.console_debug).then((result) => {
         expect(result.logs.length).to.eql(0);
         done();
       });
     });
 
     it("should not allow to modify internal libraries - lodash", (done) => {
-      applyCompute(CODE.modify_lodash_library).then(result => {
-        expect(result.errors[0]).to.equal("TypeError: Cannot assign to read only property 'map' of object '[object Object]'");
-        return applyCompute(CODE.use_lodash_library);
-      }).then(result => {
-        expect(result.errors.length).to.equal(0);
-        done();
-      });
+      applyCompute(CODE.modify_lodash_library)
+        .then((result) => {
+          expect(result.errors[0]).to.equal("TypeError: Cannot assign to read only property 'map' of object '[object Object]'");
+          return applyCompute(CODE.use_lodash_library);
+        })
+        .then((result) => {
+          expect(result.errors.length).to.equal(0);
+          done();
+        });
     });
 
     it("should not allow to modify internal libraries - momentjs", (done) => {
-      applyCompute(CODE.modify_moment_library).then(result => {
-        expect(result.errors[0]).to.equal("ReferenceError: moment is not defined");
-        return applyCompute(CODE.use_moment_library);
-      }).then(result => {
-        expect(result.errors.length).to.equal(0);
-        done();
-      });
-    })
+      applyCompute(CODE.modify_moment_library)
+        .then((result) => {
+          expect(result.errors[0]).to.equal("ReferenceError: moment is not defined");
+          return applyCompute(CODE.use_moment_library);
+        })
+        .then((result) => {
+          expect(result.errors.length).to.equal(0);
+          done();
+        });
+    });
   });
 });

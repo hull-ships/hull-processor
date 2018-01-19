@@ -11,15 +11,37 @@ import Promise from "bluebird";
 
 import emailDomains from "./email-domains";
 
-const TOP_LEVEL_FIELDS = ["tags", "name", "description", "extra", "picture", "settings", "username", "email", "contact_email", "image", "first_name", "last_name", "address", "created_at", "phone", "domain", "accepts_marketing"];
+const TOP_LEVEL_FIELDS = [
+  "tags",
+  "name",
+  "description",
+  "extra",
+  "picture",
+  "settings",
+  "username",
+  "email",
+  "contact_email",
+  "image",
+  "first_name",
+  "last_name",
+  "address",
+  "created_at",
+  "phone",
+  "domain",
+  "accepts_marketing"
+];
 
 const lodash = _.functions(_).reduce((l, key) => {
   l[key] = (...args) => _[key](...args);
   return l;
 }, {});
 
-const frozenMoment = deepFreeze((...args) => { return moment(...args); });
-const frozenUrijs = deepFreeze((...args) => { return urijs(...args); });
+const frozenMoment = deepFreeze((...args) => {
+  return moment(...args);
+});
+const frozenUrijs = deepFreeze((...args) => {
+  return urijs(...args);
+});
 const frozenLodash = deepFreeze(lodash);
 
 function applyUtils(sandbox = {}) {
@@ -47,7 +69,6 @@ const buildPayload = (pld, traitsCall = {}) => {
             [k]: v
           };
         }
-        return;
       });
     }
   }
@@ -61,12 +82,13 @@ const buildAccountPayload = (pld, traitsCall = {}) => {
     if (source) {
       pld[source] = { ...pld[source], ...properties };
     } else {
-      _.map(properties, function applyTraits(v, k) { pld[k] = v; });
+      _.map(properties, function applyTraits(v, k) {
+        pld[k] = v;
+      });
     }
   }
   return pld;
 };
-
 
 const updateChanges = (payload) => {
   return (memo, d) => {
@@ -80,7 +102,11 @@ const updateChanges = (payload) => {
       }
 
       // in case of date, we do a diff on seconds, in order to avoid ms precision
-      if (traitName.match && traitName.match(/_at$|date$/) && _.isString(d.lhs)) {
+      if (
+        traitName.match &&
+        traitName.match(/_at$|date$/) &&
+        _.isString(d.lhs)
+      ) {
         if ([d.lhs, d.rhs].every(v => moment(v).isValid())) {
           if (moment(d.lhs).diff(d.rhs, "seconds") === 0) {
             return memo;
@@ -120,7 +146,13 @@ function getSandbox(ship) {
   return sandboxes[ship.id];
 }
 
-module.exports = function compute({ changes = {}, user, account, segments, account_segments, events = [] }, ship = {}, options = {}) {
+module.exports = function compute(
+  {
+    changes = {}, user, account, segments, account_segments, events = []
+  },
+  ship = {},
+  options = {}
+) {
   const { preview, logger } = options;
   const { private_settings = {} } = ship;
   const { code = "", sentry_dsn: sentryDsn } = private_settings;
@@ -161,20 +193,29 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
     if (eventName) tracks.push({ eventName, properties, context });
   };
   sandbox.traits = (properties = {}, context = {}) => {
-    userTraits.push({ properties: _.mapKeys(properties, (v, k) => k.toLowerCase()), context });
+    userTraits.push({
+      properties: _.mapKeys(properties, (v, k) => k.toLowerCase()),
+      context
+    });
   };
   sandbox.hull = {
     account: (claims = null) => {
       if (claims) accountClaims = claims;
       return {
         traits: (properties = {}, context = {}) => {
-          accountTraits.push({ properties: _.mapKeys(properties, (v, k) => k.toLowerCase()), context });
+          accountTraits.push({
+            properties: _.mapKeys(properties, (v, k) => k.toLowerCase()),
+            context
+          });
         },
         isInSegment: isInSegment.bind(null, account_segments)
       };
     },
     traits: (properties = {}, context = {}) => {
-      userTraits.push({ properties: _.mapKeys(properties, (v, k) => k.toLowerCase()), context });
+      userTraits.push({
+        properties: _.mapKeys(properties, (v, k) => k.toLowerCase()),
+        context
+      });
     },
     track: (eventName, properties = {}, context = {}) => {
       if (eventName) tracks.push({ eventName, properties, context });
@@ -187,26 +228,28 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
     const requestId = _.uniqueId("request-");
     const params = _.isString(opts) ? { url: opts } : opts;
     logger.debug("ship.service_api.request", { ...params, requestId });
-    return request.defaults({ timeout: 5000 })(params, (error, response, body) => {
-      logger.debug("ship.service_api.response", {
-        requestId,
-        time: (new Date() - ts),
-        statusCode: _.get(response, "statusCode"),
-        uri: _.get(response, "request.uri.href"),
-        method: _.get(response, "request.method")
-      });
-      try {
-        callback(error, response, body);
-      } catch (err) {
-        if (err && err.toString) {
-          const msg = err.toString();
-          errors.push(msg);
-          logger.info("outgoing.user.error", { error: msg });
+    return request.defaults({ timeout: 5000 })(
+      params,
+      (error, response, body) => {
+        logger.debug("ship.service_api.response", {
+          requestId,
+          time: new Date() - ts,
+          statusCode: _.get(response, "statusCode"),
+          uri: _.get(response, "request.uri.href"),
+          method: _.get(response, "request.method")
+        });
+        try {
+          callback(error, response, body);
+        } catch (err) {
+          if (err && err.toString) {
+            const msg = err.toString();
+            errors.push(msg);
+            logger.info("outgoing.user.error", { error: msg });
+          }
         }
       }
-    });
+    );
   };
-
 
   function log(...args) {
     logs.push(args);
@@ -241,7 +284,9 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
     logs.push(args);
     logsForLogger.push(args);
   }
-  sandbox.console = { log, warn: log, error: logError, debug, info };
+  sandbox.console = {
+    log, warn: log, error: logError, debug, info
+  };
 
   sandbox.captureException = function captureException(e) {
     if (sentryDsn) {
@@ -279,7 +324,10 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
     sandbox.captureException(err);
   }
 
-  if (isAsync && !_.some(_.compact(sandbox.results), (r) => _.isFunction(r.then))) {
+  if (
+    isAsync &&
+    !_.some(_.compact(sandbox.results), r => _.isFunction(r.then))
+  ) {
     errors.push("It seems you’re using 'request' which is asynchronous.");
     errors.push("You need to return a 'new Promise' and 'resolve' or 'reject' it in your 'request' callback.");
   }
@@ -288,53 +336,59 @@ module.exports = function compute({ changes = {}, user, account, segments, accou
   const promises = sandbox.results.map(p => Promise.resolve(p).timeout(5000));
 
   return Promise.all(promises)
-  .catch((err) => {
-    if (err && err.toString) {
-      const msg = err.message || err.toString();
-      errors.push(msg);
-      logger.info("outgoing.user.error", { error: msg });
-    }
-    sandbox.captureException(err);
-  })
-  .then(() => {
-    if (preview && tracks.length > 10) {
-      logs.unshift([tracks]);
-      logs.unshift([`You're trying to send ${tracks.length} calls at a time. We will only process the first 10`]);
-      logs.unshift(["You can't send more than 10 tracking calls in one batch."]);
-      tracks = _.slice(tracks, 0, 10);
-    }
+    .catch((err) => {
+      if (err && err.toString) {
+        const msg = err.message || err.toString();
+        errors.push(msg);
+        logger.info("outgoing.user.error", { error: msg });
+      }
+      sandbox.captureException(err);
+    })
+    .then(() => {
+      if (preview && tracks.length > 10) {
+        logs.unshift([tracks]);
+        logs.unshift([
+          `You're trying to send ${
+            tracks.length
+          } calls at a time. We will only process the first 10`
+        ]);
+        logs.unshift([
+          "You can't send more than 10 tracking calls in one batch."
+        ]);
+        tracks = _.slice(tracks, 0, 10);
+      }
 
-    const payload = {
-      user: _.reduce(userTraits, buildPayload, {}),
-      account: _.reduce(accountTraits, buildAccountPayload, {}),
-    };
+      const payload = {
+        user: _.reduce(userTraits, buildPayload, {}),
+        account: _.reduce(accountTraits, buildAccountPayload, {})
+      };
 
-    // we don't concatenate arrays, we use only new values:
-    const arrayMerge = (destinationArray, sourceArray) => sourceArray;
-    const updated = {
-      user: deepMerge(user, payload.user, { arrayMerge }),
-      account: deepMerge(account, payload.account, { arrayMerge }),
-    };
+      // we don't concatenate arrays, we use only new values:
+      const arrayMerge = (destinationArray, sourceArray) => sourceArray;
+      const updated = {
+        user: deepMerge(user, payload.user, { arrayMerge }),
+        account: deepMerge(account, payload.account, { arrayMerge })
+      };
 
-    const diff = {
-      user: deepDiff(user, updated.user) || [],
-      account: deepDiff(account, updated.account) || [],
-    };
+      const diff = {
+        user: deepDiff(user, updated.user) || [],
+        account: deepDiff(account, updated.account) || []
+      };
 
-    const changed = {
-      user: _.reduce(diff.user, updateChanges(payload.user), {}),
-      account: _.reduce(diff.account, updateChanges(payload.account), {}),
-    };
+      const changed = {
+        user: _.reduce(diff.user, updateChanges(payload.user), {}),
+        account: _.reduce(diff.account, updateChanges(payload.account), {})
+      };
 
-    return {
-      logs,
-      logsForLogger,
-      errors,
-      payload,
-      changes: changed,
-      events: tracks,
-      ...updated,
-      accountClaims
-    };
-  });
+      return {
+        logs,
+        logsForLogger,
+        errors,
+        payload,
+        changes: changed,
+        events: tracks,
+        ...updated,
+        accountClaims
+      };
+    });
 };
