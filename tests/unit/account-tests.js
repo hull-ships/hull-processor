@@ -1,10 +1,20 @@
 import sinon from "sinon";
 import hullSpy from "./support/mocks/hull";
-
-const { events, segments, user, account, ship, changes } = require("./support/fixtures/index");
-const message = { changes, events, segments, user, account };
-
 import updateUser from "../../server/user-update";
+
+const {
+  events,
+  segments,
+  user,
+  account,
+  ship,
+  changes
+} = require("./support/fixtures/index");
+
+const message = {
+  changes, events, segments, user, account
+};
+
 
 function shipWithCode(code = {}, s = ship) {
   return {
@@ -18,7 +28,7 @@ function shipWithCode(code = {}, s = ship) {
 
 const TESTS = {
   claim: {
-    payload: "hull.account({ domain: 'facebook.com' })",
+    payload: "hull.account({ domain: 'facebook.com' })"
   },
   simple: {
     payload: "hull.account().traits({ test: 'trait' });",
@@ -41,7 +51,7 @@ const TESTS = {
       if (user.clearbit_company && (account && !account.clearbit)) {
         hull.account().traits(user.clearbit_company);
       }`
-  },
+  }
 };
 
 function payload(p) {
