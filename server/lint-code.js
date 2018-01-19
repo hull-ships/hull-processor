@@ -1,4 +1,5 @@
 import { linter } from "eslint";
+
 function formatLinterError(l) {
   console.log(l);
   return `Error at line ${l.line}, column ${l.column}
@@ -34,7 +35,7 @@ const CONFIG = {
     isGenericDomain: false,
     isInSegment: false,
     enteredSegment: false,
-    leftSegment: false,
+    leftSegment: false
   },
   rules: {
     "no-undef": [2]
