@@ -14,6 +14,9 @@ const CONFIG = {
   },
   globals: {
     changes: false,
+    _: false,
+    moment: false,
+    urijs: false,
     user: false,
     account: false,
     events: false,

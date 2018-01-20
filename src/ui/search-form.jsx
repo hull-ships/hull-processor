@@ -58,7 +58,7 @@ export default class SearchForm extends Component {
         <input type="text" placeholder="Name or Email" value={this.state.userSearch} onChange={this.handleEmailChange.bind(this)} className="form-control form-control-sm" />
         <div style={{ position: "absolute", right: 0, top: -10, zIndex: 2 }}>
           <div style={{ position: "relative" }} ref='container'>
-            <Button bsStyle={ loading ? "warning" : "default" } bsSize="sm" clasName='btn-pill btn-rounded' onClick={this.handleSubmit.bind(this)} ref='target'>
+            <Button bsStyle={ loading ? "warning" : "default" } bsSize="sm" className='btn-pill btn-rounded' onClick={this.handleSubmit.bind(this)} ref='target'>
               <Icon name={this.getIcon()} />
               { loading ? "Loading" : "Search" }
             </Button>
