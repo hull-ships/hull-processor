@@ -5,6 +5,7 @@
 - add Linter, cleanup error messages
 - add status checks
 - update dependencies
+- now also shows unchanged but touched traits
 
 ## 0.2.7
 
