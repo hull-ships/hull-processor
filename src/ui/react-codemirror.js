@@ -1,28 +1,18 @@
+import PropTypes from 'prop-types';
 import React from "react";
 import className from "classnames";
 
 
 const CodeMirror = React.createClass({
   propTypes: {
-    onChange: React.PropTypes.func,
-    onFocusChange: React.PropTypes.func,
-    onScroll: React.PropTypes.func,
-    options: React.PropTypes.object,
-    path: React.PropTypes.string,
-    value: React.PropTypes.string,
-    className: React.PropTypes.any,
-    codeMirrorInstance: React.PropTypes.object,
-  },
-  getCodeMirrorInstance() {
-    if (this.props.codeMirrorInstance) return this.props.codeMirrorInstance;
-    const cm = require("codemirror");
-    require("codemirror/addon/fold/foldcode");
-    require("codemirror/addon/fold/foldgutter");
-    require("codemirror/addon/fold/foldgutter.css");
-    require("codemirror/addon/fold/brace-fold");
-    require("codemirror/addon/fold/indent-fold");
-    require("codemirror/addon/fold/comment-fold");
-    return cm;
+    onChange: PropTypes.func,
+    onFocusChange: PropTypes.func,
+    onScroll: PropTypes.func,
+    options: PropTypes.object,
+    path: PropTypes.string,
+    value: PropTypes.string,
+    className: PropTypes.any,
+    codeMirrorInstance: PropTypes.object,
   },
   getInitialState() {
     return {
@@ -39,13 +29,6 @@ const CodeMirror = React.createClass({
     this.codeMirror.on("scroll", this.scrollChanged);
     this.codeMirror.setValue(this.props.defaultValue || this.props.value || "");
   },
-  componentWillUnmount() {
-    // is there a lighter-weight way to remove the cm instance?
-    if (this.codeMirror) {
-      this.codeMirror.toTextArea();
-    }
-  },
-
   componentWillReceiveProps(nextProps) {
     if (this.codeMirror && nextProps.value !== undefined && this.codeMirror.getValue() != nextProps.value) {
       this.codeMirror.setValue(nextProps.value);
@@ -58,9 +41,32 @@ const CodeMirror = React.createClass({
       }
     }
   },
+  componentWillUnmount() {
+    // is there a lighter-weight way to remove the cm instance?
+    if (this.codeMirror) {
+      this.codeMirror.toTextArea();
+    }
+  },
 
   getCodeMirror() {
     return this.codeMirror;
+  },
+
+  getCodeMirrorInstance() {
+    if (this.props.codeMirrorInstance) return this.props.codeMirrorInstance;
+    const cm = require("codemirror");
+    require("codemirror/addon/fold/foldcode");
+    require("codemirror/addon/fold/foldgutter");
+    require("codemirror/addon/fold/foldgutter.css");
+    require("codemirror/addon/fold/brace-fold");
+    require("codemirror/addon/fold/indent-fold");
+    require("codemirror/addon/fold/comment-fold");
+    return cm;
+  },
+  codemirrorValueChanged(doc, change) {
+    if (this.props.onChange && change.origin != "setValue") {
+      this.props.onChange(doc.getValue());
+    }
   },
   focus() {
     if (this.codeMirror) {
@@ -75,11 +81,6 @@ const CodeMirror = React.createClass({
   },
   scrollChanged(cm) {
     this.props.onScroll && this.props.onScroll(cm.getScrollInfo());
-  },
-  codemirrorValueChanged(doc, change) {
-    if (this.props.onChange && change.origin != "setValue") {
-      this.props.onChange(doc.getValue());
-    }
   },
   render() {
     const editorClassName = className(
