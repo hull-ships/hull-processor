@@ -3,8 +3,8 @@ import React from "react";
 import className from "classnames";
 
 
-const CodeMirror = React.createClass({
-  propTypes: {
+class CodeMirror extends React.Component {
+  static propTypes = {
     onChange: PropTypes.func,
     onFocusChange: PropTypes.func,
     onScroll: PropTypes.func,
@@ -13,12 +13,12 @@ const CodeMirror = React.createClass({
     value: PropTypes.string,
     className: PropTypes.any,
     codeMirrorInstance: PropTypes.object,
-  },
-  getInitialState() {
-    return {
-      isFocused: false,
-    };
-  },
+  };
+
+  state = {
+    isFocused: false,
+  };
+
   componentDidMount() {
     const textareaNode = this.refs.textarea;
     const codeMirrorInstance = this.getCodeMirrorInstance();
@@ -28,7 +28,8 @@ const CodeMirror = React.createClass({
     this.codeMirror.on("blur", this.focusChanged.bind(this, false));
     this.codeMirror.on("scroll", this.scrollChanged);
     this.codeMirror.setValue(this.props.defaultValue || this.props.value || "");
-  },
+  }
+
   componentWillReceiveProps(nextProps) {
     if (this.codeMirror && nextProps.value !== undefined && this.codeMirror.getValue() != nextProps.value) {
       this.codeMirror.setValue(nextProps.value);
@@ -40,19 +41,20 @@ const CodeMirror = React.createClass({
         }
       }
     }
-  },
+  }
+
   componentWillUnmount() {
     // is there a lighter-weight way to remove the cm instance?
     if (this.codeMirror) {
       this.codeMirror.toTextArea();
     }
-  },
+  }
 
-  getCodeMirror() {
+  getCodeMirror = () => {
     return this.codeMirror;
-  },
+  };
 
-  getCodeMirrorInstance() {
+  getCodeMirrorInstance = () => {
     if (this.props.codeMirrorInstance) return this.props.codeMirrorInstance;
     const cm = require("codemirror");
     require("codemirror/addon/fold/foldcode");
@@ -62,26 +64,31 @@ const CodeMirror = React.createClass({
     require("codemirror/addon/fold/indent-fold");
     require("codemirror/addon/fold/comment-fold");
     return cm;
-  },
-  codemirrorValueChanged(doc, change) {
+  };
+
+  codemirrorValueChanged = (doc, change) => {
     if (this.props.onChange && change.origin != "setValue") {
       this.props.onChange(doc.getValue());
     }
-  },
-  focus() {
+  };
+
+  focus = () => {
     if (this.codeMirror) {
       this.codeMirror.focus();
     }
-  },
-  focusChanged(focused) {
+  };
+
+  focusChanged = (focused) => {
     this.setState({
       isFocused: focused,
     });
     this.props.onFocusChange && this.props.onFocusChange(focused);
-  },
-  scrollChanged(cm) {
+  };
+
+  scrollChanged = (cm) => {
     this.props.onScroll && this.props.onScroll(cm.getScrollInfo());
-  },
+  };
+
   render() {
     const editorClassName = className(
       "ReactCodeMirror",
@@ -93,7 +100,7 @@ const CodeMirror = React.createClass({
         <textarea ref="textarea" name={this.props.path} defaultValue={this.props.value} autoComplete="off" />
       </div>
     );
-  },
-});
+  }
+}
 
 module.exports = CodeMirror;
