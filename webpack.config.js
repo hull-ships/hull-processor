@@ -27,22 +27,28 @@ module.exports = {
     publicPath: '/'
   },
   plugins: plugins,
-  resolve: { extensions: ['', '.js', '.jsx'] },
+  resolve: { extensions: ['.js', '.jsx'] },
   module: {
-    loaders: [
-      { test: /\.(css|scss)$/, loaders: ['style?singleton=true', 'css?modules&importLoaders=1'] },
-      { test: /\.svg$/, loader: 'svg-inline' },
+    rules: [
+      {
+        test: /\.(css|scss)$/,
+        use: [
+          { loader: "style-loader", options: { singleton: true } },
+          { loader: "css-loader", options: { modules: true, importLoaders: 1 } },
+        ]
+      },
+      { test: /\.svg$/, loader: 'svg-inline-loader' },
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: "babel",
+        loader: "babel-loader",
         query: {
           presets: ['es2015', 'stage-0']
         }
       },
       {
         test: /.jsx?$/,
-        loader: 'babel',
+        loader: 'babel-loader',
         exclude: /node_modules/,
         query: {
           presets: ['es2015', 'react', 'stage-0']

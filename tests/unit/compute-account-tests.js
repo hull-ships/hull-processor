@@ -1,10 +1,20 @@
 /* global describe, it */
 const compute = require("../../server/compute");
-const { events, segments, user, account, account_segments, ship } = require("./support/fixtures/index");
+const {
+  events,
+  segments,
+  user,
+  account,
+  account_segments,
+  ship
+} = require("./support/fixtures/index");
 const { expect, should } = require("chai");
+
 should();
 
-const payload = { events, segments, user, account, account_segments };
+const payload = {
+  events, segments, user, account, account_segments
+};
 
 const CODE = {
   identity: "hull.account().traits({})",
@@ -12,13 +22,17 @@ const CODE = {
   one: "hull.account().traits({ domain: 'test', boom: 'bam' });",
   new_boolean: "hull.account().traits({ new_boolean: true });",
   group: "hull.account().traits({ line: 'test'}, { source: 'group' });",
-  utils: "hull.account().traits({ keys: _.keys({ a: 1, b: 2 }).join(','), host: urijs('http://hull.io/hello').host(), hello_at: moment('2016-12-01').startOf('year').format('YYYYMMDD') })",
-  add_array_element: "hull.account().traits({ testing_array: ['A', 'B', 'C', 'E'] })",
-  modify_array_element: "hull.account().traits({ testing_array: ['F', 'B', 'C', 'E'] })",
+  utils:
+    "hull.account().traits({ keys: _.keys({ a: 1, b: 2 }).join(','), host: urijs('http://hull.io/hello').host(), hello_at: moment('2016-12-01').startOf('year').format('YYYYMMDD') })",
+  add_array_element:
+    "hull.account().traits({ testing_array: ['A', 'B', 'C', 'E'] })",
+  modify_array_element:
+    "hull.account().traits({ testing_array: ['F', 'B', 'C', 'E'] })",
   delete_array_element: "hull.account().traits({ testing_array: ['A', 'B'] })",
   array_to_string: "hull.account().traits({ testing_array: 'abcdef' })",
   string_to_array: "hull.account().traits({ foo: ['A', 'B'] })",
-  user_and_account_traits: "hull.traits({ age: 24 }); hull.account({ domain: 'facebook.com' }).traits({ country_code: 'us' });"
+  user_and_account_traits:
+    "hull.traits({ age: 24 }); hull.account({ domain: 'facebook.com' }).traits({ country_code: 'us' });"
 };
 
 function shipWithCode(s = {}, code = {}) {
@@ -38,7 +52,7 @@ function applyCompute(c) {
 describe("Compute Ship for accounts", () => {
   describe("Compute method with accounts", () => {
     it("Should not change content if code does not change content", (done) => {
-      applyCompute(CODE.identity).then(result => {
+      applyCompute(CODE.identity).then((result) => {
         expect(result.user).to.be.eql(user);
         expect(result.account).to.be.eql(account);
         expect(result.accountClaims).to.be.eql({});
@@ -47,7 +61,7 @@ describe("Compute Ship for accounts", () => {
     });
 
     it("Should set account claims", (done) => {
-      applyCompute(CODE.domain_claim).then(result => {
+      applyCompute(CODE.domain_claim).then((result) => {
         expect(result.user).to.be.eql(user);
         expect(result.changes).to.be.eql({ account: {}, user: {} });
         expect(result.accountClaims).to.be.eql({ domain: "google.com" });
@@ -56,58 +70,74 @@ describe("Compute Ship for accounts", () => {
     });
 
     it("Should only add the correct number of entries and nothing else", (done) => {
-      applyCompute(CODE.one).then(result => {
+      applyCompute(CODE.one).then((result) => {
         expect(result.user).to.be.eql(user);
         expect(result.changes.user).to.be.eql({});
-        expect(result.changes.account).to.deep.equal({ boom: "bam", domain: "test" });
+        expect(result.changes.account).to.deep.equal({
+          boom: "bam",
+          domain: "test"
+        });
         done();
       });
     });
 
     it("Should add trait when code adds a trait", (done) => {
-      applyCompute(CODE.new_boolean).then(result => {
+      applyCompute(CODE.new_boolean).then((result) => {
         expect(result.user).to.be.eql(user);
-        expect(result).to.have.deep.property("account.new_boolean", true);
+        expect(result).to.have.nested.property("account.new_boolean", true);
         done();
       });
     });
 
     it("Should return grouped objects when groups are passed", (done) => {
-      applyCompute(CODE.group).then(result => {
+      applyCompute(CODE.group).then((result) => {
         expect(result.user).to.be.eql(user);
-        expect(result).to.have.deep.property("account.group.line", "test");
+        expect(result).to.have.nested.property("account.group.line", "test");
         done();
       });
     });
 
     it("Should return grouped objects when groups are passed", (done) => {
-      applyCompute(CODE.utils).then(result => {
+      applyCompute(CODE.utils).then((result) => {
         expect(result.user).to.be.eql(user);
-        expect(result).to.have.deep.property("changes.account.hello_at", "20160101");
-        expect(result).to.have.deep.property("changes.account.host", "hull.io");
-        expect(result).to.have.deep.property("changes.account.keys", "a,b");
+        expect(result).to.have.nested.property(
+          "changes.account.hello_at",
+          "20160101"
+        );
+        expect(result).to.have.nested.property("changes.account.host", "hull.io");
+        expect(result).to.have.nested.property("changes.account.keys", "a,b");
         done();
       });
     });
 
     it("Should add an array element", (done) => {
-      applyCompute(CODE.add_array_element).then(result => {
+      applyCompute(CODE.add_array_element).then((result) => {
         expect(result.user).to.be.eql(user);
-        expect(result.changes.account.testing_array).to.deep.equal(["A", "B", "C", "E"]);
+        expect(result.changes.account.testing_array).to.deep.equal([
+          "A",
+          "B",
+          "C",
+          "E"
+        ]);
         done();
       });
     });
 
     it("Should modify an array element", (done) => {
-      applyCompute(CODE.modify_array_element).then(result => {
+      applyCompute(CODE.modify_array_element).then((result) => {
         expect(result.user).to.be.eql(user);
-        expect(result.changes.account.testing_array).to.deep.equal(["F", "B", "C", "E"]);
+        expect(result.changes.account.testing_array).to.deep.equal([
+          "F",
+          "B",
+          "C",
+          "E"
+        ]);
         done();
       });
     });
 
     it("Should delete an array element", (done) => {
-      applyCompute(CODE.delete_array_element).then(result => {
+      applyCompute(CODE.delete_array_element).then((result) => {
         expect(result.user).to.be.eql(user);
         expect(result.changes.account.testing_array).to.deep.equal(["A", "B"]);
         done();
@@ -115,7 +145,7 @@ describe("Compute Ship for accounts", () => {
     });
 
     it("Should change an array to string", (done) => {
-      applyCompute(CODE.array_to_string).then(result => {
+      applyCompute(CODE.array_to_string).then((result) => {
         expect(result.user).to.be.eql(user);
         expect(result.changes.account.testing_array).to.equal("abcdef");
         done();
@@ -123,7 +153,7 @@ describe("Compute Ship for accounts", () => {
     });
 
     it("Should change a string to an array", (done) => {
-      applyCompute(CODE.string_to_array).then(result => {
+      applyCompute(CODE.string_to_array).then((result) => {
         expect(result.user).to.be.eql(user);
         expect(result.changes.account.foo).to.deep.equal(["A", "B"]);
         done();
@@ -131,7 +161,7 @@ describe("Compute Ship for accounts", () => {
     });
 
     it("Should change both user and account", (done) => {
-      applyCompute(CODE.user_and_account_traits).then(result => {
+      applyCompute(CODE.user_and_account_traits).then((result) => {
         expect(result.accountClaims).to.eql({ domain: "facebook.com" });
         expect(result.changes.user).to.deep.equal({ traits: { age: 24 } });
         expect(result.changes.account).to.deep.equal({ country_code: "us" });
