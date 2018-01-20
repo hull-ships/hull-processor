@@ -25,7 +25,7 @@ const CONFIG = {
     ship: false,
     payload: false,
     results: false,
-    // errors: false,
+    errors: false,
     logs: false,
     track: false,
     traits: false,
@@ -45,7 +45,14 @@ const CONFIG = {
   }
 };
 export default function lint(code) {
-  const messages = linter.verify(code, CONFIG, {
+  const messages = linter.verify(`try {
+    results.push(function() {
+      "use strict";
+      ${code}
+    }());
+  } catch (err) {
+    errors.push(err.toString());
+  }`, CONFIG, {
     filename: "Processor Code"
   });
   return messages.map(formatLinterError);
