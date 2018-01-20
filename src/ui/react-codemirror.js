@@ -1,9 +1,8 @@
-import PropTypes from 'prop-types';
-import React from "react";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
 import className from "classnames";
 
-
-class CodeMirror extends React.Component {
+class CodeMirror extends Component {
   static propTypes = {
     onChange: PropTypes.func,
     onFocusChange: PropTypes.func,
@@ -12,17 +11,20 @@ class CodeMirror extends React.Component {
     path: PropTypes.string,
     value: PropTypes.string,
     className: PropTypes.any,
-    codeMirrorInstance: PropTypes.object,
+    codeMirrorInstance: PropTypes.object
   };
 
   state = {
-    isFocused: false,
+    isFocused: false
   };
 
   componentDidMount() {
     const textareaNode = this.refs.textarea;
     const codeMirrorInstance = this.getCodeMirrorInstance();
-    this.codeMirror = codeMirrorInstance.fromTextArea(textareaNode, this.props.options);
+    this.codeMirror = codeMirrorInstance.fromTextArea(
+      textareaNode,
+      this.props.options
+    );
     this.codeMirror.on("change", this.codemirrorValueChanged);
     this.codeMirror.on("focus", this.focusChanged.bind(this, true));
     this.codeMirror.on("blur", this.focusChanged.bind(this, false));
@@ -31,11 +33,15 @@ class CodeMirror extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.codeMirror && nextProps.value !== undefined && this.codeMirror.getValue() != nextProps.value) {
+    if (
+      this.codeMirror &&
+      nextProps.value !== undefined &&
+      this.codeMirror.getValue() != nextProps.value
+    ) {
       this.codeMirror.setValue(nextProps.value);
     }
     if (typeof nextProps.options === "object") {
-      for (let optionName in nextProps.options) {
+      for (const optionName in nextProps.options) {
         if (nextProps.options.hasOwnProperty(optionName)) {
           this.codeMirror.setOption(optionName, nextProps.options[optionName]);
         }
@@ -80,7 +86,7 @@ class CodeMirror extends React.Component {
 
   focusChanged = (focused) => {
     this.setState({
-      isFocused: focused,
+      isFocused: focused
     });
     this.props.onFocusChange && this.props.onFocusChange(focused);
   };
@@ -97,7 +103,12 @@ class CodeMirror extends React.Component {
     );
     return (
       <div className={editorClassName}>
-        <textarea ref="textarea" name={this.props.path} defaultValue={this.props.value} autoComplete="off" />
+        <textarea
+          ref="textarea"
+          name={this.props.path}
+          defaultValue={this.props.value}
+          autoComplete="off"
+        />
       </div>
     );
   }
