@@ -1,4 +1,5 @@
 import express from "express";
+import compression from "compression";
 
 import computeHandler from "./actions/compute-handler";
 import notifyHandler from "./actions/notify-handler";
@@ -7,6 +8,7 @@ import devMode from "./dev-mode";
 
 export default function Server(connector, options = {}) {
   const app = express();
+  app.use(compression());
   const { hostSecret } = options;
 
   app.post("/compute", computeHandler({ hostSecret, connector }));

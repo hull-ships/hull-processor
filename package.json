@@ -1,7 +1,7 @@
 {
   "name": "hull-processor",
   "description": "Run code to update User Properties and generate Events",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "homepage": "https://github.com/hull-ships/hull-processor",
   "license": "MIT",
   "author": {
@@ -75,6 +75,7 @@
     "cache-manager-redis": "^0.5.0",
     "classnames": "^2.2.5",
     "codemirror": "^5.33.0",
+    "compression": "^1.7.1",
     "connect": "^3.4.1",
     "connect-timeout": "^1.7.0",
     "css-loader": "^0.28.9",

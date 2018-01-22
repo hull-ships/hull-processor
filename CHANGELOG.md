@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.9
+
+- Enable compression for outgoing data
+
 ## 0.2.8
 
 - add Linter, cleanup error messages
