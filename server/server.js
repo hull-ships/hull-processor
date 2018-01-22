@@ -4,6 +4,7 @@ import computeHandler from "./actions/compute-handler";
 import notifyHandler from "./actions/notify-handler";
 import statusCheck from "./actions/status-check";
 import devMode from "./dev-mode";
+import compression from "compression";
 
 export default function Server(connector, options = {}) {
   const app = express();
@@ -14,6 +15,7 @@ export default function Server(connector, options = {}) {
   if (options.devMode) app.use(devMode());
   connector.setupApp(app);
 
+  app.use(compression);
   app.post("/batch", notifyHandler());
   app.post("/smart-notifier", notifyHandler({
     type: "next",
