@@ -41,6 +41,7 @@ if (process.env.REDIS_URL) {
 const options = {
   hostSecret: process.env.SECRET || "1234",
   devMode: process.env.NODE_ENV === "development",
+  debug: process.env.DEBUG,
   port: process.env.PORT || 8082,
   Hull,
   clientConfig: {
