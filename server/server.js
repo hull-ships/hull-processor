@@ -1,5 +1,4 @@
 import express from "express";
-import bodyParser from "body-parser";
 import compression from "compression";
 
 import computeHandler from "./actions/compute-handler";
@@ -12,17 +11,6 @@ export default function Server(connector, options = {}) {
   const app = express();
   app.use(compression());
   const { hostSecret } = options;
-
-  if (options.debug === "verbose") {
-    app.use(bodyParser.json({ limit: "10mb" }), (req, res, next) => {
-      try {
-        console.log("[smart-notifier-payload]", JSON.stringify({ path: req.path, body: req.body }));
-      } catch (err) {
-        console.log("[smart-notifier-payload] error: ", err);
-      }
-      next();
-    });
-  }
 
   app.post("/compute", computeHandler({ hostSecret, connector }));
 
