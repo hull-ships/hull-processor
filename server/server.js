@@ -15,12 +15,10 @@ export default function Server(connector, options = {}) {
 
   if (options.debug === "verbose") {
     app.use(bodyParser.json({ limit: "10mb" }), (req, res, next) => {
-      if (req.path === "/smart-notifier") {
-        try {
-          console.log("[smart-notifier-payload]", JSON.stringify(req.body));
-        } catch (err) {
-          console.log("[smart-notifier-payload] error: ", err);
-        }
+      try {
+        console.log("[smart-notifier-payload]", JSON.stringify(req.body));
+      } catch (err) {
+        console.log("[smart-notifier-payload] error: ", err);
       }
       next();
     });
