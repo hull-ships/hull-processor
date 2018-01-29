@@ -100,7 +100,8 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
         asUser.logger.info("incoming.account.link", {
           account: _.pick(account, "id"),
           accountClaims,
-          accountClaimsSize: _.size(accountClaims)
+          accountClaimsSize: _.size(accountClaims),
+          accountClaimsKeys: Object.keys(accountClaims)
         });
       }
 
