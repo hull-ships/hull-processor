@@ -144,7 +144,11 @@ export default function fetchUser(req, res, next) {
   req.hull.timings = req.hull.timings || {};
 
   const { client } = req.hull;
-  const { userId, userSearch, user } = req.body || {};
+
+  const body = req.body || {};
+  const { userId, userSearch } = body;
+
+  const user = _.get(body, "payload.user");
 
   let userPromise = Promise.resolve(user);
 
