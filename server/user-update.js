@@ -88,7 +88,8 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
           const asAccount = asUser.account(accountClaims);
           asAccount.traits(flat);
           asAccount.logger.info("incoming.account.success", {
-            changes: flat
+            changes: flat,
+            changedKeys: Object.keys(flat)
           });
         }
       } else if (
