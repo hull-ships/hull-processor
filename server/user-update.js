@@ -99,7 +99,8 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
         asUser.account(accountClaims).traits({});
         asUser.logger.info("incoming.account.link", {
           account: _.pick(account, "id"),
-          accountClaims
+          accountClaims,
+          accountClaimsSize: _.size(accountClaims)
         });
       }
 
