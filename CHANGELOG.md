@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.11
+
+- Fine grained changes detection on empty object values for new keys
+
 ## 0.2.10
 
 - Fine grained changes detection on nil values for new keys
