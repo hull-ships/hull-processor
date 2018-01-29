@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.2.10
+
+- Fine grained changes detection on nil values for new keys
+- Fix fetchUser by id in preview mode
+
 ## 0.2.9
 
 - Enable compression for outgoing data

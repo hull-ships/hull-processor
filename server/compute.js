@@ -115,9 +115,14 @@ const updateChanges = (payload) => {
       }
     }
 
-    if (d.kind === "N" || d.kind === "E") {
+    if (d.kind === "E") {
       _.set(memo, d.path, d.rhs);
     }
+
+    if (d.kind === "N" && !_.isNil(d.rhs)) {
+      _.set(memo, d.path, d.rhs);
+    }
+
     // when we have an array updated we set the whole
     // array in `changed` constant
     if (d.kind === "A") {
