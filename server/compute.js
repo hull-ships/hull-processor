@@ -120,7 +120,13 @@ const updateChanges = (payload) => {
     }
 
     if (d.kind === "N" && !_.isNil(d.rhs)) {
-      _.set(memo, d.path, d.rhs);
+      if (_.isObject(d.rhs)) {
+        if (!_.isEmpty(_.omitBy(d.rhs, _.isNil))) {
+          _.set(memo, d.path, d.rhs);
+        }
+      } else {
+        _.set(memo, d.path, d.rhs);
+      }
     }
 
     // when we have an array updated we set the whole
