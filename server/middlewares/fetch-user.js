@@ -8,6 +8,9 @@ const PROP_TYPE_DETECT_ORDER = [
   "text_value"
 ];
 
+const EXCLUDED_EVENTS = ["Attributes changed", "Entered segment", "Left segment", "Segments changed"];
+const isVisible = e => !_.includes(EXCLUDED_EVENTS, e.event);
+
 function getEventsForUserId(client, user_id) {
   if (!user_id || !client) return Promise.reject();
   const params = {
@@ -29,7 +32,7 @@ function getEventsForUserId(client, user_id) {
       try {
         const esEvents = res.data;
         if (esEvents.length) {
-          return _.map(esEvents, (e) => {
+          return _.map(_.filter(esEvents, isVisible), (e) => {
             const {
               context = {},
               props = {},
