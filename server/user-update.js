@@ -35,11 +35,11 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
   const { user, segments } = message;
   const ident = getIdent(user);
   const asUser = hull.asUser(ident);
-  asUser.logger.info("incoming.user.start");
   return compute(message, ship, { logger: asUser.logger })
     .then(({
       changes, events, account, accountClaims, logsForLogger, errors
     }) => {
+      let response;
       // Update user traits
       if (_.size(changes.user)) {
         const flat = {
@@ -55,29 +55,34 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
               .traits(flat)
               .then(
                 () => {
+                  response = { status: "success", changes: flat };
                   asUser.logger.info("incoming.user.success", {
                     changes: flat
                   });
                 },
                 (error) => {
+                  response = { status: "error", error };
                   asUser.logger.info("incoming.user.error", { error });
                 }
               );
           } else {
             asUser.traits(flat).then(
               () => {
+                response = { status: "success", changes: flat };
                 asUser.logger.info("incoming.user.success", {
                   changes: flat
                 });
               },
               (error) => {
+                response = { status: "error", error };
                 asUser.logger.info("incoming.user.error", { error });
               }
             );
           }
         }
       } else {
-        asUser.logger.info("incoming.user.skip", { message: "No Changes" });
+        // response = { status: "skip", message: "No Changes" };
+        asUser.logger.debug("incoming.user.skip", { message: "No Changes" });
       }
 
       // Update account traits
@@ -134,6 +139,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
         logsForLogger.map(log =>
           asUser.logger.info("compute.user.log", { log }));
       }
+      return { response, message };
     })
     .catch((err) => {
       asUser.logger.info("incoming.user.error", {
