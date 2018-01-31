@@ -81,7 +81,7 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
           }
         }
       } else {
-        // response = { status: "skip", message: "No Changes" };
+        response = { status: "skip", message: "No Changes" };
         asUser.logger.debug("incoming.user.skip", { message: "No Changes" });
       }
 

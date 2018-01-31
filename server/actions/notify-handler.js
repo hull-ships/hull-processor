@@ -31,7 +31,9 @@ const handler = flowControl =>
         })).then((responses) => {
           const skipped = _.filter(responses, r => _.get(r, "response.status") === "skip");
           const skippedIds = _.map(skipped, "message.user.id");
-          hull.logger.info("incoming.user.skip", { message: "No Changes", ids: _.uniq(_.compact(skippedIds)) });
+          if (skippedIds.length > 0) {
+            hull.logger.info("incoming.user.skip", { message: "No Changes", ids: _.uniq(_.compact(skippedIds)) });
+          }
         });
       }
     }
