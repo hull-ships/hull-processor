@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.12
+
+- Group `incoming.user.start` and `incoming.user.skip` logs
+
 ## 0.2.11
 
 - Fine grained changes detection on empty object values for new keys

@@ -1,7 +1,7 @@
 {
   "name": "hull-processor",
   "description": "Run code to update User Properties and generate Events",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "homepage": "https://github.com/hull-ships/hull-processor",
   "license": "MIT",
   "author": {
