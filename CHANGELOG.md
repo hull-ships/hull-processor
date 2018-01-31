@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.13
+
+- Don't display Attributes changed, Segments changed, Entered & Left segments events in the preview UI
+
 ## 0.2.12
 
 - Group `incoming.user.start` and `incoming.user.skip` logs
