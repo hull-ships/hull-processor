@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.2.14
+
+- Filter out attribute changes, segment changes, entered & left in the actual processing
+- Use the new `tabs` array in manifest to expose a better UI name
+
 ## 0.2.13
 
 - Don't display Attributes changed, Segments changed, Entered & Left segments events in the preview UI

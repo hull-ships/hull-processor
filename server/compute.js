@@ -50,6 +50,15 @@ function applyUtils(sandbox = {}) {
   sandbox._ = frozenLodash;
 }
 
+const EXCLUDED_EVENTS = [
+  "Attributes changed",
+  "Entered segment",
+  "Left segment",
+  "Segments changed"
+];
+
+const isProcessable = ({ event }) => !_.includes(EXCLUDED_EVENTS, event);
+
 const buildPayload = (pld, traitsCall = {}) => {
   const { properties, context = {} } = traitsCall;
   if (properties) {
@@ -177,7 +186,7 @@ module.exports = function compute(
   sandbox.changes = changes;
   sandbox.user = user;
   sandbox.account = account;
-  sandbox.events = events;
+  sandbox.events = _.filter(events, isProcessable);
   sandbox.segments = segments;
   sandbox.account_segments = account_segments || [];
   sandbox.ship = ship;
@@ -296,7 +305,11 @@ module.exports = function compute(
     logsForLogger.push(args);
   }
   sandbox.console = {
-    log, warn: log, error: logError, debug, info
+    log,
+    warn: log,
+    error: logError,
+    debug,
+    info
   };
 
   sandbox.captureException = function captureException(e) {
