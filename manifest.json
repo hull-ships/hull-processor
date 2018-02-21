@@ -7,8 +7,16 @@
   "picture": "picture.png",
   "ui": false,
   "admin": "admin.html",
+  "tabs": [
+    {
+      "title": "Edit Code",
+      "url": "admin.html",
+      "size": "large",
+      "editable": true
+    }
+  ],
   "readme" : "readme.md",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "private_settings": [
     {
       "name" : "sentry_dsn",
