@@ -1,11 +1,12 @@
-import connect from "connect";
-import bodyParser from "body-parser";
-import timeout from "connect-timeout";
-import check from "syntax-error";
-import _ from "lodash";
-import compute from "../compute";
-import fetchUser from "../middlewares/fetch-user";
-import lint from "../lint-code";
+const connect = require("connect");
+const bodyParser = require("body-parser");
+const timeout = require("connect-timeout");
+const _ = require("lodash");
+
+const compute = require("../lib/compute");
+const lint = require("../lib/utils/lint-code");
+const syntaxCheck = require("../lib/utils/syntax-check");
+const fetchUser = require("../middlewares/fetch-user");
 
 function computeHandler(req, res) {
   const { client, timings } = req.hull;
@@ -31,7 +32,7 @@ function computeHandler(req, res) {
             req.hull.client.logger.debug("preview.console.log", line));
         }
         const took = new Date() - startTime;
-        const err = check(ship.private_settings.code);
+        const err = syntaxCheck(ship.private_settings.code);
         if (err) {
           result.errors.push(err.annotated);
         } else {
@@ -61,7 +62,7 @@ function haltOnTimedout(req, res, next) {
   if (!req.timedout) next();
 }
 
-export default function ComputeHandler(options) {
+module.exports = function ComputeHandler(options) {
   const app = connect();
   const { connector, hostSecret = "" } = options;
 
@@ -81,4 +82,4 @@ export default function ComputeHandler(options) {
   return function c(req, res) {
     return app.handle(req, res);
   };
-}
+};

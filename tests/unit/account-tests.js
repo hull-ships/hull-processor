@@ -1,6 +1,6 @@
 import sinon from "sinon";
 import hullSpy from "./support/mocks/hull";
-import updateUser from "../../server/user-update";
+import updateUser from "../../server/lib/user-update";
 
 const {
   events,

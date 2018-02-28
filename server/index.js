@@ -1,7 +1,9 @@
-import Hull from "hull";
-import { Cache } from "hull/lib/infra";
-import redisStore from "cache-manager-redis";
-import server from "./server";
+const redisStore = require("cache-manager-redis");
+
+const Hull = require("hull");
+const { Cache } = require("hull/lib/infra");
+
+const server = require("./server");
 
 if (process.env.LOG_LEVEL) {
   Hull.logger.transports.console.level = process.env.LOG_LEVEL;

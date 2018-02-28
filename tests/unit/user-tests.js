@@ -1,11 +1,18 @@
 /* global describe, it */
-import sinon from "sinon";
-import hullSpy from "./support/mocks/hull";
+const sinon = require("sinon");
+const hullSpy = require("./support/mocks/hull");
+const {
+  events,
+  segments,
+  user,
+  ship,
+  changes
+} = require("./support/fixtures/index");
+const updateUser = require("../../server/lib/user-update");
 
-const { events, segments, user, ship, changes } = require("./support/fixtures/index");
-const message = { changes, events, segments, user };
-
-import updateUser from "../../server/user-update";
+const message = {
+  changes, events, segments, user
+};
 
 function shipWithCode(code = {}, s = ship) {
   return {

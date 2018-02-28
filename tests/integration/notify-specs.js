@@ -1,5 +1,4 @@
 const { expect } = require("chai");
-const fs = require("fs");
 const jwtDecode = require("jwt-decode");
 const Minihull = require("minihull");
 
@@ -99,7 +98,7 @@ describe("computing users", () => {
           hull.account().traits(user.clearbit_company, { group: "clearbit" });
         }`;
 
-      const user = {
+      const user2 = {
         id: "58b68d0f11111ef19e00df43",
         email: "thomas@hull.io",
         domain: "hull.io",
@@ -107,7 +106,7 @@ describe("computing users", () => {
       };
 
       minihull.stubConnector({ id: "123456789012345678901237", private_settings: { code } });
-      minihull.notifyConnector("123456789012345678901237", "http://localhost:8000/notify", "user_report:update", { user }).then(() => {
+      minihull.notifyConnector("123456789012345678901237", "http://localhost:8000/notify", "user_report:update", { user: user2 }).then(() => {
         minihull.on("incoming.request@/api/v1/firehose", (req) => {
           // traits
           const body = req.body.batch[0].body;
@@ -125,10 +124,10 @@ describe("computing users", () => {
     it("should group account traits", (done) => {
       const code = `
         if (account.clearbit) {
-          hull.account().traits({ foo: \"bar\" });
+          hull.account().traits({ foo: "bar" });
         }`;
 
-      const user = {
+      const user1 = {
         id: "58b68d0f11111ef19e00df43",
         email: "thomas@hull.io",
         domain: "hull.io",
@@ -139,7 +138,7 @@ describe("computing users", () => {
       };
 
       minihull.stubConnector({ id: "123456789012345678901238", private_settings: { code } });
-      minihull.notifyConnector("123456789012345678901238", "http://localhost:8000/notify", "user_report:update", { user }).then(() => {
+      minihull.notifyConnector("123456789012345678901238", "http://localhost:8000/notify", "user_report:update", { user: user1 }).then(() => {
         minihull.on("incoming.request@/api/v1/firehose", (req) => {
           // traits
           const body = req.body.batch[0].body;
@@ -243,52 +242,3 @@ describe("computing users", () => {
   });
   */
 });
-
-
-// notification object model
-const message = {
-  account: {
-    id: "59367d6ff3829c7dfd000001",
-    domain: "hull.io",
-    name: "Hull",
-    created_at: "2017-06-06T10:01:39Z",
-    updated_at: "2017-06-15T13:48:57Z",
-    "clearbit/foo": "bar"
-  },
-  account_segments: [],
-  changes: {
-    account: {},
-    account_segments: [],
-    is_new: false,
-    segments: [],
-    user: {
-      last_seen_at: [
-        "2017-06-16T10:24:34Z",
-        "2017-06-16T10:29:30Z"
-      ]
-    }
-  },
-  events: [],
-  segments: [
-    {
-      created_at: "2016-07-27T16:49:25Z",
-      id: "5798e61503777df344000559",
-      name: "Sync with Mailchimp",
-      type: "users_segment",
-      updated_at: "2017-04-28T10:21:07Z"
-    },
-    {
-      created_at: "2016-02-03T10:47:07Z",
-      id: "56b1daab5580c06798000051",
-      name: "Recent users",
-      type: "users_segment",
-      updated_at: "2016-12-01T10:57:30Z"
-    }
-  ],
-  user: {
-    id: "58b68d0f11111ef19e00df43",
-    email: "thomas@hull.io",
-    first_name: "Thomas",
-    last_name: "Kgaevski",
-  }
-};

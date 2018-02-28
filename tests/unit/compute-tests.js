@@ -1,5 +1,5 @@
 /* global describe, it */
-const compute = require("../../server/compute");
+const compute = require("../../server/lib/compute");
 const {
   events, segments, user, ship
 } = require("./support/fixtures/index");
@@ -44,7 +44,7 @@ const CODE = {
   console_debug: "console.debug('hello debug')",
   modify_lodash_library: "_.map = 'foo'",
   use_lodash_library: "_.map(['foo'], (f) => f);",
-  modify_moment_library: "moment = 'foo'",
+  modify_moment_library: "moment() = 'foo'",
   use_moment_library: "moment().format()"
 };
 
@@ -364,7 +364,7 @@ describe("Compute Ship", () => {
     it("should not allow to modify internal libraries - momentjs", (done) => {
       applyCompute(CODE.modify_moment_library)
         .then((result) => {
-          expect(result.errors[0]).to.equal("ReferenceError: moment is not defined");
+          expect(result.errors[0]).to.equal("ReferenceError: Invalid left-hand side in assignment");
           return applyCompute(CODE.use_moment_library);
         })
         .then((result) => {
