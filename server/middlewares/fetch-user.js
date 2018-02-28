@@ -1,5 +1,7 @@
-import _ from "lodash";
-import Promise from "bluebird";
+const _ = require("lodash");
+const Promise = require("bluebird");
+
+const { EXCLUDED_EVENTS } = require("../lib/shared");
 
 const PROP_TYPE_DETECT_ORDER = [
   "bool_value",
@@ -8,7 +10,6 @@ const PROP_TYPE_DETECT_ORDER = [
   "text_value"
 ];
 
-const EXCLUDED_EVENTS = ["Attributes changed", "Entered segment", "Left segment", "Segments changed"];
 const isVisible = e => !_.includes(EXCLUDED_EVENTS, e.event);
 
 function getEventsForUserId(client, user_id) {
@@ -140,7 +141,7 @@ function searchUser(client, query) {
   });
 }
 
-export default function fetchUser(req, res, next) {
+module.exports = function fetchUser(req, res, next) {
   const startAt = new Date();
 
   req.hull = req.hull || { timings: {} };
@@ -203,4 +204,4 @@ export default function fetchUser(req, res, next) {
       res.send({ reason: "user_not_found", message: err.message });
       return res.end();
     });
-}
+};
