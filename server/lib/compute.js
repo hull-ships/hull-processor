@@ -9,7 +9,7 @@ const Promise = require("bluebird");
 
 const { buildUserPayload, buildAccountPayload } = require("./utils/payload-builder");
 const { frozenLodash, frozenMoment, frozenUrijs } = require("./utils/frozen-utils");
-const { EMAIL_DOMAINS } = require("./shared");
+const { EMAIL_DOMAINS, EXCLUDED_EVENTS } = require("./shared");
 
 function applyUtils(sandbox = {}) {
   sandbox.moment = frozenMoment;
@@ -117,7 +117,9 @@ function compute(
   sandbox.changes = changes;
   sandbox.user = user;
   sandbox.account = account;
-  sandbox.events = events;
+  sandbox.events = _.filter(events, (evt) => {
+    return !_.includes(_.get(evt, "event", ""), EXCLUDED_EVENTS);
+  });
   sandbox.segments = segments;
   sandbox.account_segments = account_segments || [];
   sandbox.ship = ship;

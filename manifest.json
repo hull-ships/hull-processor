@@ -7,6 +7,14 @@
   "picture": "picture.png",
   "ui": false,
   "admin": "admin.html",
+  "tabs": [
+    {
+      "title": "Code Editor",
+      "url": "admin.html",
+      "size": "large",
+      "editable": true
+    }
+  ],
   "readme" : "readme.md",
   "version": "0.2.13",
   "private_settings": [

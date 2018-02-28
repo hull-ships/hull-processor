@@ -63,7 +63,15 @@ const EMAIL_DOMAINS = [
   "yahoo.com.br", "hotmail.com.br", "outlook.com.br", "uol.com.br", "bol.com.br", "terra.com.br", "ig.com.br", "itelefonica.com.br", "r7.com", "zipmail.com.br", "globo.com", "globomail.com", "oi.com.br"
 ];
 
+const EXCLUDED_EVENTS = [
+  "Attributes changed",
+  "Entered segment",
+  "Left segment",
+  "Segments changed"
+];
+
 module.exports = {
   TOP_LEVEL_ATTRIBUTES,
-  EMAIL_DOMAINS
+  EMAIL_DOMAINS,
+  EXCLUDED_EVENTS
 };
