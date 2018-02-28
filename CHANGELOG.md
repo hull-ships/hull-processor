@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.2.14
+
+- [improvement] Upgrade code to node v8.9.x LTS release
+- [bugfix] Fix failing code syntax check
+- [bugfix] Fix failing initial user load
+- [maintenance] Re-factoring of code base for better readibility and maintainability
+- [maintenance] Additional tests for linting and syntax checking of more complex code
+
 ## 0.2.13
 
 - Don't display Attributes changed, Segments changed, Entered & Left segments events in the preview UI
