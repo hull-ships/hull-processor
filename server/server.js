@@ -1,30 +1,29 @@
-import express from "express";
-import compression from "compression";
+const express = require("express");
+const compression = require("compression");
 
-import computeHandler from "./actions/compute-handler";
-import notifyHandler from "./actions/notify-handler";
-import statusCheck from "./actions/status-check";
+const actions = require("./actions");
+const devModeMiddleware = require("./lib/utils/dev-mode");
 
-import devMode from "./dev-mode";
-
-export default function Server(connector, options = {}) {
+function server(connector, options = {}) {
   const app = express();
   app.use(compression());
   const { hostSecret } = options;
 
-  app.post("/compute", computeHandler({ hostSecret, connector }));
+  app.post("/compute", actions.compute({ hostSecret, connector }));
 
-  if (options.devMode) app.use(devMode());
+  if (options.devMode) app.use(devModeMiddleware());
   connector.setupApp(app);
 
-  app.post("/batch", notifyHandler());
-  app.post("/smart-notifier", notifyHandler({
+  app.post("/batch", actions.notify());
+  app.post("/smart-notifier", actions.notify({
     type: "next",
     size: parseInt(process.env.FLOW_CONTROL_SIZE, 10) || 100,
     in: parseInt(process.env.FLOW_CONTROL_IN, 10) || 10
   }));
-  app.post("/notify", notifyHandler());
-  app.all("/status", statusCheck);
+  app.post("/notify", actions.notify());
+  app.all("/status", actions.statusCheck);
 
   return app;
 }
+
+module.exports = server;

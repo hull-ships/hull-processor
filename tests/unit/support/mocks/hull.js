@@ -1,4 +1,4 @@
-import { notifHandler } from "hull/lib/utils";
+const { notifHandler } = require("hull/lib/utils");
 
 const hullSecret = "hullSecret";
 const config = {
@@ -9,7 +9,7 @@ const config = {
 
 function noop() {}
 
-export default function HullSpy(ship, spy) {
+function HullSpy(ship, spy) {
   const Hull = function Hull() {
     this.get = (...args) => {
       if (spy) spy("get", ...args);
@@ -70,3 +70,5 @@ export default function HullSpy(ship, spy) {
 
   return new Hull(config);
 }
+
+module.exports = HullSpy;

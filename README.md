@@ -32,6 +32,7 @@ gulp
     traits({ custom_ids: ["A", "B"] });
     // processor ignores removing that array element
     ```
+2. We are in the transition to switch from using `changes` parameter in `user:update` notifications to explicit events like `Attribute Changes` or `Segment Changes`, which bring cleaner data model. Since some of the events are not emitted by the platform, during migration phase those events will be **excluded** from `events` array in the processor script to prevent unexpected behavior change.
 
 ### Logs
 

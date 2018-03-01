@@ -1,9 +1,10 @@
 /* global describe, it */
-const compute = require("../../server/compute");
+const compute = require("../../server/lib/compute");
 const {
   events, segments, user, ship
 } = require("./support/fixtures/index");
 const { expect, should } = require("chai");
+const moment = require("moment");
 
 should();
 
@@ -44,8 +45,9 @@ const CODE = {
   console_debug: "console.debug('hello debug')",
   modify_lodash_library: "_.map = 'foo'",
   use_lodash_library: "_.map(['foo'], (f) => f);",
-  modify_moment_library: "moment = 'foo'",
-  use_moment_library: "moment().format()"
+  modify_moment_library: "moment = 'foo';",
+  use_moment_library: "console.log(moment(1519894734, 'X').format())",
+  invalid_assignment: "moment() = 'foo'"
 };
 
 function shipWithCode(s = {}, code = {}) {
@@ -361,14 +363,30 @@ describe("Compute Ship", () => {
         });
     });
 
+    /**
+     * We run the applyCompute twice here, first to modify the `moment` variable,
+     * then second one to use it and see if the overwrite from first one
+     * is populated in the second one.
+     * Expected behavior is that no script can modify the globals in a way
+     * which will be leaked to other script runs.
+     */
     it("should not allow to modify internal libraries - momentjs", (done) => {
       applyCompute(CODE.modify_moment_library)
         .then((result) => {
-          expect(result.errors[0]).to.equal("ReferenceError: moment is not defined");
+          expect(result.errors.length).to.equal(0);
           return applyCompute(CODE.use_moment_library);
         })
         .then((result) => {
           expect(result.errors.length).to.equal(0);
+          expect(result.logs[0][0]).to.equal(moment(1519894734, "X").format());
+          done();
+        });
+    });
+
+    it("should not allow to do an invalid assignment", (done) => {
+      applyCompute(CODE.invalid_assignment)
+        .then((result) => {
+          expect(result.errors[0]).to.equal("ReferenceError: Invalid left-hand side in assignment");
           done();
         });
     });

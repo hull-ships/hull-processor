@@ -1,5 +1,5 @@
 /* global describe, it */
-const compute = require("../../server/compute");
+const compute = require("../../server/lib/compute");
 const {
   events,
   segments,

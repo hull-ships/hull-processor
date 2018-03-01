@@ -1,94 +1,21 @@
-import vm from "vm";
-import _ from "lodash";
-import moment from "moment";
-import urijs from "urijs";
-import raven from "raven";
-import deepDiff from "deep-diff";
-import deepFreeze from "deep-freeze";
-import deepMerge from "deepmerge";
-import request from "request";
-import Promise from "bluebird";
+const vm = require("vm");
+const _ = require("lodash");
+const moment = require("moment");
+const raven = require("raven");
+const deepDiff = require("deep-diff");
+const deepMerge = require("deepmerge");
+const request = require("request");
+const Promise = require("bluebird");
 
-import emailDomains from "./email-domains";
-
-const TOP_LEVEL_FIELDS = [
-  "tags",
-  "name",
-  "description",
-  "extra",
-  "picture",
-  "settings",
-  "username",
-  "email",
-  "contact_email",
-  "image",
-  "first_name",
-  "last_name",
-  "address",
-  "created_at",
-  "phone",
-  "domain",
-  "accepts_marketing"
-];
-
-const lodash = _.functions(_).reduce((l, key) => {
-  l[key] = (...args) => _[key](...args);
-  return l;
-}, {});
-
-const frozenMoment = deepFreeze((...args) => {
-  return moment(...args);
-});
-const frozenUrijs = deepFreeze((...args) => {
-  return urijs(...args);
-});
-const frozenLodash = deepFreeze(lodash);
+const { buildUserPayload, buildAccountPayload } = require("./utils/payload-builder");
+const { frozenLodash, frozenMoment, frozenUrijs } = require("./utils/frozen-utils");
+const { EMAIL_DOMAINS, EXCLUDED_EVENTS } = require("./shared");
 
 function applyUtils(sandbox = {}) {
   sandbox.moment = frozenMoment;
   sandbox.urijs = frozenUrijs;
   sandbox._ = frozenLodash;
 }
-
-const buildPayload = (pld, traitsCall = {}) => {
-  const { properties, context = {} } = traitsCall;
-  if (properties) {
-    const { source } = context;
-    if (source) {
-      pld[source] = { ...pld[source], ...properties };
-    } else {
-      _.map(properties, (v, k) => {
-        const path = k.replace("/", ".");
-        if (path.indexOf(".") > -1) {
-          _.setWith(pld, path, v, Object);
-        } else if (_.includes(TOP_LEVEL_FIELDS, k)) {
-          pld[k] = v;
-        } else {
-          pld.traits = {
-            ...pld.traits,
-            [k]: v
-          };
-        }
-      });
-    }
-  }
-  return pld;
-};
-
-const buildAccountPayload = (pld, traitsCall = {}) => {
-  const { properties, context = {} } = traitsCall;
-  if (properties) {
-    const { source } = context;
-    if (source) {
-      pld[source] = { ...pld[source], ...properties };
-    } else {
-      _.map(properties, function applyTraits(v, k) {
-        pld[k] = v;
-      });
-    }
-  }
-  return pld;
-};
 
 const updateChanges = (payload) => {
   return (memo, d) => {
@@ -151,22 +78,35 @@ function leftSegment(changes = {}, name) {
 }
 
 const sandboxes = {};
+
 function getSandbox(ship) {
   const s = sandboxes[ship.id];
   if (!s) sandboxes[ship.id] = vm.createContext({});
   return sandboxes[ship.id];
 }
 
-module.exports = function compute(
+function compute(
   {
-    changes = {}, user, account, segments, account_segments, events = []
+    changes = {},
+    user,
+    account,
+    segments,
+    account_segments,
+    events = []
   },
   ship = {},
   options = {}
 ) {
-  const { preview, logger } = options;
-  const { private_settings = {} } = ship;
-  const { code = "", sentry_dsn: sentryDsn } = private_settings;
+  const {
+    preview,
+    logger
+  } = options;
+  const {
+    private_settings = {}
+  } = ship;
+  const {
+    code = "", sentry_dsn: sentryDsn
+  } = private_settings;
 
   // Manually add traits hash if not already there
   user.traits = user.traits || {};
@@ -177,7 +117,12 @@ module.exports = function compute(
   sandbox.changes = changes;
   sandbox.user = user;
   sandbox.account = account;
-  sandbox.events = events;
+  /**
+   * See README.md Notes section for details behind events filtering
+   */
+  sandbox.events = _.filter(events, (evt) => {
+    return !_.includes(_.get(evt, "event", ""), EXCLUDED_EVENTS);
+  });
   sandbox.segments = segments;
   sandbox.account_segments = account_segments || [];
   sandbox.ship = ship;
@@ -201,7 +146,13 @@ module.exports = function compute(
   sandbox.errors = errors;
   sandbox.logs = logs;
   sandbox.track = (eventName, properties = {}, context = {}) => {
-    if (eventName) tracks.push({ eventName, properties, context });
+    if (eventName) {
+      tracks.push({
+        eventName,
+        properties,
+        context
+      });
+    }
   };
   sandbox.traits = (properties = {}, context = {}) => {
     userTraits.push({
@@ -229,7 +180,13 @@ module.exports = function compute(
       });
     },
     track: (eventName, properties = {}, context = {}) => {
-      if (eventName) tracks.push({ eventName, properties, context });
+      if (eventName) {
+        tracks.push({
+          eventName,
+          properties,
+          context
+        });
+      }
     }
   };
 
@@ -237,9 +194,16 @@ module.exports = function compute(
     isAsync = true;
     const ts = new Date();
     const requestId = _.uniqueId("request-");
-    const params = _.isString(opts) ? { url: opts } : opts;
-    logger.debug("ship.service_api.request", { ...params, requestId });
-    return request.defaults({ timeout: 5000 })(
+    const params = _.isString(opts) ? {
+      url: opts
+    } : opts;
+    logger.debug("ship.service_api.request", {
+      ...params,
+      requestId
+    });
+    return request.defaults({
+      timeout: 5000
+    })(
       params,
       (error, response, body) => {
         logger.debug("ship.service_api.response", {
@@ -255,7 +219,9 @@ module.exports = function compute(
           if (err && err.toString) {
             const msg = err.toString();
             errors.push(msg);
-            logger.info("outgoing.user.error", { error: msg });
+            logger.info("outgoing.user.error", {
+              error: msg
+            });
           }
         }
       }
@@ -267,7 +233,7 @@ module.exports = function compute(
   }
 
   function isGenericDomain(domain = "", additionalDomains = []) {
-    return _.includes([...emailDomains, ...additionalDomains], domain);
+    return _.includes([...EMAIL_DOMAINS, ...additionalDomains], domain);
   }
   sandbox.isGenericDomain = isGenericDomain;
 
@@ -296,13 +262,21 @@ module.exports = function compute(
     logsForLogger.push(args);
   }
   sandbox.console = {
-    log, warn: log, error: logError, debug, info
+    log,
+    warn: log,
+    error: logError,
+    debug,
+    info
   };
 
   sandbox.captureException = function captureException(e) {
     if (sentryDsn) {
       const client = new raven.Client(sentryDsn);
-      client.setExtraContext({ user, segments, events });
+      client.setExtraContext({
+        user,
+        segments,
+        events
+      });
       client.captureException(e);
     }
   };
@@ -330,7 +304,9 @@ module.exports = function compute(
     if (err && err.toString) {
       const msg = err.toString();
       errors.push(msg);
-      logger.info("outgoing.user.error", { error: msg });
+      logger.info("outgoing.user.error", {
+        error: msg
+      });
     }
     sandbox.captureException(err);
   }
@@ -351,7 +327,9 @@ module.exports = function compute(
       if (err && err.toString) {
         const msg = err.message || err.toString();
         errors.push(msg);
-        logger.info("outgoing.user.error", { error: msg });
+        logger.info("outgoing.user.error", {
+          error: msg
+        });
       }
       sandbox.captureException(err);
     })
@@ -370,15 +348,19 @@ module.exports = function compute(
       }
 
       const payload = {
-        user: _.reduce(userTraits, buildPayload, {}),
+        user: _.reduce(userTraits, buildUserPayload, {}),
         account: _.reduce(accountTraits, buildAccountPayload, {})
       };
 
       // we don't concatenate arrays, we use only new values:
       const arrayMerge = (destinationArray, sourceArray) => sourceArray;
       const updated = {
-        user: deepMerge(user, payload.user, { arrayMerge }),
-        account: deepMerge(account, payload.account, { arrayMerge })
+        user: deepMerge(user, payload.user, {
+          arrayMerge
+        }),
+        account: deepMerge(account, payload.account, {
+          arrayMerge
+        })
       };
 
       const diff = {
@@ -402,4 +384,6 @@ module.exports = function compute(
         accountClaims
       };
     });
-};
+}
+
+module.exports = compute;

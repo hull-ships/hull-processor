@@ -1,8 +1,8 @@
-import webpack from "webpack";
-import webpackDevMiddleware from "webpack-dev-middleware";
-import webpackConfig from "../webpack.config";
+const webpack = require("webpack");
+const webpackDevMiddleware = require("webpack-dev-middleware");
+const webpackConfig = require("../../../webpack.config");
 
-export default function devMode() {
+function devModeMiddleware() {
   const compiler = webpack(webpackConfig);
   return webpackDevMiddleware(compiler, {
     publicPath: webpackConfig.output.publicPath,
@@ -17,3 +17,5 @@ export default function devMode() {
     }
   });
 }
+
+module.exports = devModeMiddleware;

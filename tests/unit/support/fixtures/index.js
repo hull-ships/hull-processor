@@ -1,3 +1,5 @@
+/* eslint global-require: 0 */
+
 module.exports = {
   events: require("./events.json"),
   segments: require("./segments.json"),

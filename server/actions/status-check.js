@@ -1,40 +1,34 @@
-import check from "syntax-error";
-import _ from "lodash";
-import lint from "../lint-code";
+const _ = require("lodash");
+const lint = require("../lib/utils/lint-code");
+const syntaxCheck = require("../lib/utils/syntax-check");
 
-export default function statusCheck(req, res) {
+module.exports = function statusCheck(req, res) {
   const { ship, client } = req.hull;
-  // const messages = [];
-  // let status = "ok";
-
-  function send({ status = "ok", messages = [] }) {
-    res.json({ messages, status });
-    return client.put(`${req.hull.ship.id}/status`, { status, messages });
-  }
-
-  const code = _.get(ship.private_settings, "code");
-  if (!code) {
-    return send({
-      status: "warning",
-      messages: ["There is no code in this processor"]
-    });
-  }
-
-  let status = "ok";
   const messages = [];
-  const err = check(code);
+  let status = "ok";
 
-  if (err) {
-    status = "error";
-    messages.push("There are errors in the code");
-    messages.push(err.annotated);
+  const code = _.get(ship.private_settings, "code", "n/a");
+  if (code === "n/a") {
+    status = "warning";
+    messages.push("This processor doesn't contain code. It is recommended for performance reasons to remove empty processors from your organization.");
   }
 
-  const linter = lint(code);
-  if (linter.length) {
-    status = "error";
-    messages.push(...linter);
+  if (status === "ok") {
+    const syntaxCheckResult = syntaxCheck(code);
+
+    if (syntaxCheckResult) {
+      status = "error";
+      messages.push("The code didn't pass the syntax check. Please review the detected problems and apply fixes where indicated.");
+      messages.push(syntaxCheckResult.annotated);
+    }
+
+    const linterResult = lint(code);
+    if (linterResult.length) {
+      status = "error";
+      messages.push(...linterResult);
+    }
   }
 
-  return send({ status, messages });
-}
+  res.json({ messages, status });
+  return client.put(`${req.hull.ship.id}/status`, { status, messages });
+};

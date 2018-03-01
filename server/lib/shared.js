@@ -1,4 +1,24 @@
-const domains = [
+const TOP_LEVEL_ATTRIBUTES = [
+  "tags",
+  "name",
+  "description",
+  "extra",
+  "picture",
+  "settings",
+  "username",
+  "email",
+  "contact_email",
+  "image",
+  "first_name",
+  "last_name",
+  "address",
+  "created_at",
+  "phone",
+  "domain",
+  "accepts_marketing"
+];
+
+const EMAIL_DOMAINS = [
   /* Default domains included */
   "aol.com", "att.net", "comcast.net", "facebook.com", "gmail.com", "gmx.com", "googlemail.com",
   "google.com", "hotmail.com", "hotmail.co.uk", "mac.com", "me.com", "mail.com", "msn.com",
@@ -43,4 +63,18 @@ const domains = [
   "yahoo.com.br", "hotmail.com.br", "outlook.com.br", "uol.com.br", "bol.com.br", "terra.com.br", "ig.com.br", "itelefonica.com.br", "r7.com", "zipmail.com.br", "globo.com", "globomail.com", "oi.com.br"
 ];
 
-export default domains;
+/**
+ * See README.md Notes section for details behind events filtering
+ */
+const EXCLUDED_EVENTS = [
+  "Attributes changed",
+  "Entered segment",
+  "Left segment",
+  "Segments changed"
+];
+
+module.exports = {
+  TOP_LEVEL_ATTRIBUTES,
+  EMAIL_DOMAINS,
+  EXCLUDED_EVENTS
+};

@@ -1,7 +1,9 @@
-import Promise from "bluebird";
-import { notifHandler, smartNotifierHandler } from "hull/lib/utils";
-import _ from "lodash";
-import updateUser from "../user-update";
+const _ = require("lodash");
+const Promise = require("bluebird");
+const { notifHandler, smartNotifierHandler } = require("hull/lib/utils");
+
+const updateUser = require("../lib/user-update");
+
 
 const handler = flowControl =>
   (flowControl ? smartNotifierHandler : notifHandler)({
@@ -39,4 +41,4 @@ const handler = flowControl =>
     }
   });
 
-export default handler;
+module.exports = handler;

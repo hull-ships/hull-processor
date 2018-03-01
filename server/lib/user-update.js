@@ -1,6 +1,6 @@
-import _ from "lodash";
-import compute from "./compute";
-import isGroup from "./is-group-trait";
+const _ = require("lodash");
+const compute = require("./compute");
+const isGroup = require("./utils/is-group-trait");
 
 function flatten(obj, key, group) {
   return _.reduce(
@@ -31,7 +31,7 @@ function getIdent(user) {
   return ident;
 }
 
-module.exports = function handle({ message = {} }, { ship, hull }) {
+function userUpdate({ message = {} }, { ship, hull }) {
   const { user, segments } = message;
   const ident = getIdent(user);
   const asUser = hull.asUser(ident);
@@ -154,4 +154,6 @@ module.exports = function handle({ message = {} }, { ship, hull }) {
         sandbox: false
       });
     });
-};
+}
+
+module.exports = userUpdate;

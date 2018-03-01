@@ -1,4 +1,6 @@
-import { linter } from "eslint";
+const Linter = require("eslint").Linter;
+
+const linter = new Linter();
 
 function formatLinterError(l) {
   console.log(l);
@@ -44,7 +46,8 @@ const CONFIG = {
     "no-undef": [2]
   }
 };
-export default function lint(code) {
+
+function lintCode(code) {
   const messages = linter.verify(`try {
     results.push(function() {
       "use strict";
@@ -57,3 +60,5 @@ export default function lint(code) {
   });
   return messages.map(formatLinterError);
 }
+
+module.exports = lintCode;
