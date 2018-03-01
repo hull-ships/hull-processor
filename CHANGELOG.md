@@ -8,6 +8,7 @@
 - [bugfix] Fix failing initial user load
 - [maintenance] Re-factoring of code base for better readibility and maintainability
 - [maintenance] Additional tests for linting and syntax checking of more complex code
+- [maintenance] Exclude selected events from `events` array (see README.md Notes section for details)
 
 ## 0.2.13
 

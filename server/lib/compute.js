@@ -117,6 +117,9 @@ function compute(
   sandbox.changes = changes;
   sandbox.user = user;
   sandbox.account = account;
+  /**
+   * See README.md Notes section for details behind events filtering
+   */
   sandbox.events = _.filter(events, (evt) => {
     return !_.includes(_.get(evt, "event", ""), EXCLUDED_EVENTS);
   });
