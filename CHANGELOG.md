@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.2.15
+- upgrade to node v8.10.0
+
 ## 0.2.14
 
 - [improvement] Upgrade code to node v8.9.x LTS release
