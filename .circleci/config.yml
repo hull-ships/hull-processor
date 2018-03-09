@@ -28,4 +28,5 @@ jobs:
 
       # run tests!
       - run: yarn test
+      # temporary disable till next release
       # - run: ./node_modules/.bin/hull-connector-tester
