@@ -3264,9 +3264,9 @@ hull-client@1.1.5:
     uuid "^3.0.1"
     winston "^2.2.0"
 
-hull-connector-tester@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/hull-connector-tester/-/hull-connector-tester-0.0.5.tgz#e65d67eb83d3bb70f5bdb3f1d126fd6d7baa9afd"
+hull-connector-tester@0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/hull-connector-tester/-/hull-connector-tester-0.0.6.tgz#d5c3c2b1c81020f4004fe410cfb2af5cf91e8ab9"
   dependencies:
     circle-github-bot "^0.4.0"
 

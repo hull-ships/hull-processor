@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.2.16
+- add memory optimization node runtime flags and upgrade hull-connector-tester
+
 ## 0.2.15
 - upgrade to node v8.10.0
 
