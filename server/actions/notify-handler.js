@@ -9,7 +9,12 @@ const handler = flowControl =>
   (flowControl ? smartNotifierHandler : notifHandler)({
     handlers: {
       "user:update": (
-        { ship, client: hull, smartNotifierResponse },
+        {
+          ship,
+          client: hull,
+          smartNotifierResponse,
+          metric
+        },
         messages = []
       ) => {
         if (smartNotifierResponse && flowControl) {
@@ -29,7 +34,7 @@ const handler = flowControl =>
             message.user.account = account;
           }
 
-          return updateUser({ message }, { ship, hull });
+          return updateUser({ message }, { ship, hull, metric });
         })).then((responses) => {
           const skipped = _.filter(responses, r => _.get(r, "response.status") === "skip");
           const skippedIds = _.map(skipped, "message.user.id");
