@@ -31,11 +31,11 @@ function getIdent(user) {
   return ident;
 }
 
-function userUpdate({ message = {} }, { ship, hull }) {
+function userUpdate({ message = {} }, { ship, hull, metric }) {
   const { user, segments } = message;
   const ident = getIdent(user);
   const asUser = hull.asUser(ident);
-  return compute(message, ship, { logger: asUser.logger })
+  return compute(message, ship, { logger: asUser.logger, metric })
     .then(({
       changes, events, account, accountClaims, logsForLogger, errors
     }) => {

@@ -99,7 +99,8 @@ function compute(
 ) {
   const {
     preview,
-    logger
+    logger,
+    metric
   } = options;
   const {
     private_settings = {}
@@ -197,6 +198,8 @@ function compute(
     const params = _.isString(opts) ? {
       url: opts
     } : opts;
+    const method = params.method || "GET";
+    const url = params.url;
     logger.debug("ship.service_api.request", {
       ...params,
       requestId
@@ -206,6 +209,8 @@ function compute(
     })(
       params,
       (error, response, body) => {
+        const status = _.get(response, "statusCode");
+        const statusGroup = `${(status).toString().substring(0, 1)}xx`;
         logger.debug("ship.service_api.response", {
           requestId,
           time: new Date() - ts,
@@ -213,6 +218,13 @@ function compute(
           uri: _.get(response, "request.uri.href"),
           method: _.get(response, "request.method")
         });
+        metric.value("connector.service_api.response_time", new Date() - ts, [
+          `method:${method}`,
+          `url:${url}`,
+          `status:${status}`,
+          `statusGroup:${statusGroup}`,
+          `endpoint:${method} ${url}`,
+        ]);
         try {
           callback(error, response, body);
         } catch (err) {
