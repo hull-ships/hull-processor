@@ -207,7 +207,7 @@ function compute(
     })(
       params,
       (error, response, body) => {
-        const method = _.get(response, "request.method");
+        const method = _.get(params, "method", "GET");
         const status = _.get(response, "statusCode", "");
         const statusGroup = `${(status).toString().substring(0, 1)}xx`;
         logger.debug("ship.service_api.response", {
@@ -217,14 +217,29 @@ function compute(
           uri: _.get(response, "request.uri.href"),
           method
         });
-        if (error === null && metric) {
-          metric.value("connector.service_api.response_time", (new Date() - ts), [
-            `method:${method}`,
-            "url:processsor",
-            `status:${status}`,
-            `statusGroup:${statusGroup}`,
-            `endpoint:${method} processor`,
-          ]);
+        if (metric) {
+          if (error === null) {
+            metric.increment("connector.service_api.call", 1, [
+              `method:${method}`,
+              "url:processsor",
+              `status:${status}`,
+              `statusGroup:${statusGroup}`,
+              `endpoint:${method} processor`,
+            ]);
+            metric.value("connector.service_api.response_time", (new Date() - ts), [
+              `method:${method}`,
+              "url:processsor",
+              `status:${status}`,
+              `statusGroup:${statusGroup}`,
+              `endpoint:${method} processor`,
+            ]);
+          } else {
+            metric.increment("connector.service_api.error", 1, [
+              `method:${method}`,
+              "url:processsor",
+              `endpoint:${method} processor`,
+            ]);
+          }
         }
         try {
           callback(error, response, body);

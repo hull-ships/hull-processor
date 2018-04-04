@@ -1,7 +1,7 @@
 # CHANGELOG
 
 ## 0.2.17
-- add `connector.service_api.response_time` metric for HTTP requests
+- add `connector.service_api.call`, `connector.service_api.response_time` and `connector.service_api.error` metrics for HTTP requests
 
 ## 0.2.16
 - add memory optimization node runtime flags and upgrade hull-connector-tester
