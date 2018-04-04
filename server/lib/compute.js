@@ -198,7 +198,7 @@ function compute(
     const params = _.isString(opts) ? {
       url: opts
     } : opts;
-    logger.debug("ship.service_api.request", {
+    logger.debug("connector.service_api.request", {
       ...params,
       requestId
     });
