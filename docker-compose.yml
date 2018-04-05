@@ -1,10 +1,10 @@
 version: '3'
 services:
-    npm:
+    yarn:
         image: node:8.10
         env_file: .env
         network_mode: host
-        entrypoint: npm
+        entrypoint: yarn
         command: run start:dev
         ports:
             - "$PORT:$PORT"

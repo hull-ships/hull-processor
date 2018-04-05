@@ -23,7 +23,7 @@ describe("request feature allowing to call external API", () => {
     domain: "hull.io"
   };
 
-  beforeEach((done) => {
+  beforeEach(() => {
     minihull = new Minihull();
 
     /**
@@ -31,8 +31,6 @@ describe("request feature allowing to call external API", () => {
      */
     server = bootstrap(100);
     externalApi = new MiniApplication();
-
-    minihull.listen(8001);
 
     externalApi.stubApp("/endpoint_delayed_response").respond((req, res) => {
       setTimeout(() => {
@@ -50,17 +48,19 @@ describe("request feature allowing to call external API", () => {
       }, 20);
     });
 
-    externalApi.listen(8002)
-
-    setTimeout(() => {
-      done();
-    }, 1000);
+    return Promise.all([
+      minihull.listen(8001),
+      externalApi.listen(8002)
+    ]);
   });
 
-  afterEach(() => {
-    minihull.close();
-    server.close();
-    externalApi.close();
+  afterEach((done) => {
+    server.close(() => {
+      Promise.all([
+        minihull.close(),
+        externalApi.close()
+      ]).then(() => done());
+    });
   });
 
   errorHttpCodes.forEach((httpCode) => {
@@ -135,13 +135,20 @@ describe("request feature allowing to call external API", () => {
     );
 
     minihull.on("incoming.request@/api/v1/firehose", (req) => {
-      expect(req.body.batch[0].body).to.eql({ returned_email: "john@hull.io" });
-      expect(jwtDecode(req.body.batch[0].headers["Hull-Access-Token"])["io.hull.asUser"])
-        .to.eql({ id: "51b68d0f11111ef19e00df11", email: "john@hull.io" });
-
-      expect(req.body.batch[1].body).to.eql({ returned_email: "thomas@hull.io" });
-      expect(jwtDecode(req.body.batch[1].headers["Hull-Access-Token"])["io.hull.asUser"])
-        .to.eql({ id: "58b68d0f11111ef19e00df43", email: "thomas@hull.io" });
+      const simplifiedBatch = req.body.batch.map((item) => {
+        return {
+          body: item.body,
+          asUser: jwtDecode(item.headers["Hull-Access-Token"])["io.hull.asUser"]
+        }
+      });
+      expect(simplifiedBatch).to.deep.include({
+        body: { returned_email: "thomas@hull.io" },
+        asUser: { id: "58b68d0f11111ef19e00df43", email: "thomas@hull.io" }
+      });
+      expect(simplifiedBatch).to.deep.include({
+        body: { returned_email: "john@hull.io" },
+        asUser: { id: "51b68d0f11111ef19e00df11", email: "john@hull.io" }
+      });
       done();
     });
   });

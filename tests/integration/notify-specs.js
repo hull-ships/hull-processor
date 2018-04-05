@@ -14,19 +14,16 @@ describe("computing users", () => {
     domain: "hull.io"
   };
 
-  beforeEach((done) => {
+  beforeEach(() => {
     minihull = new Minihull();
     server = bootstrap();
-    minihull.listen(8001);
-
-    setTimeout(() => {
-      done();
-    }, 1000);
+    return minihull.listen(8001);
   });
 
-  afterEach(() => {
-    minihull.close();
-    server.close();
+  afterEach((done) => {
+    server.close(() => {
+      minihull.close().then(done);
+    });
   });
 
   describe("using the /notify endpoint", () => {
