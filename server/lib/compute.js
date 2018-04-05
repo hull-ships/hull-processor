@@ -77,12 +77,8 @@ function leftSegment(changes = {}, name) {
   return _.find(_.get(changes, "segments.entered"), s => s.name === name);
 }
 
-const sandboxes = {};
-
-function getSandbox(ship) {
-  const s = sandboxes[ship.id];
-  if (!s) sandboxes[ship.id] = vm.createContext({});
-  return sandboxes[ship.id];
+function getSandbox() {
+  return vm.createContext({});
 }
 
 function compute(
@@ -277,17 +273,17 @@ function compute(
   function debug(...args) {
     // Only show debug logs in preview mode
     if (options.preview) {
-      logs.push(args);
+      logs.push(_.cloneDeep(args));
     }
   }
 
   function logError(...args) {
-    errors.push(args);
+    errors.push(_.cloneDeep(args));
   }
 
   function info(...args) {
-    logs.push(args);
-    logsForLogger.push(args);
+    logs.push(_.cloneDeep(args));
+    logsForLogger.push(_.cloneDeep(args));
   }
   sandbox.console = {
     log,
