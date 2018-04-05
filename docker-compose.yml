@@ -11,12 +11,3 @@ services:
         working_dir: /app
         volumes:
             - .:/app
-    # TODO make ngrok container return generated ngrok url
-    ngrok:
-        image: node:8.10
-        env_file: .env
-        entrypoint: npm
-        command: run-script ngrok:dev
-        working_dir: /app
-        volumes:
-            - .:/app
