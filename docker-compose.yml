@@ -1,0 +1,13 @@
+version: '3'
+services:
+    yarn:
+        image: node:8.10
+        env_file: .env
+        network_mode: host
+        entrypoint: yarn
+        command: run start:dev
+        ports:
+            - "$PORT:$PORT"
+        working_dir: /app
+        volumes:
+            - .:/app
