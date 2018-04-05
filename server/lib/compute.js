@@ -77,12 +77,8 @@ function leftSegment(changes = {}, name) {
   return _.find(_.get(changes, "segments.entered"), s => s.name === name);
 }
 
-const sandboxes = {};
-
-function getSandbox(ship) {
-  const s = sandboxes[ship.id];
-  if (!s) sandboxes[ship.id] = vm.createContext({});
-  return sandboxes[ship.id];
+function getSandbox() {
+  return vm.createContext({});
 }
 
 function compute(
@@ -99,7 +95,8 @@ function compute(
 ) {
   const {
     preview,
-    logger
+    logger,
+    metric
   } = options;
   const {
     private_settings = {}
@@ -197,7 +194,7 @@ function compute(
     const params = _.isString(opts) ? {
       url: opts
     } : opts;
-    logger.debug("ship.service_api.request", {
+    logger.debug("connector.service_api.request", {
       ...params,
       requestId
     });
@@ -206,13 +203,40 @@ function compute(
     })(
       params,
       (error, response, body) => {
+        const method = _.get(params, "method", "GET");
+        const status = _.get(response, "statusCode", "");
+        const statusGroup = `${(status).toString().substring(0, 1)}xx`;
         logger.debug("ship.service_api.response", {
           requestId,
           time: new Date() - ts,
-          statusCode: _.get(response, "statusCode"),
+          statusCode: status,
           uri: _.get(response, "request.uri.href"),
-          method: _.get(response, "request.method")
+          method
         });
+        if (metric) {
+          if (error === null) {
+            metric.increment("connector.service_api.call", 1, [
+              `method:${method}`,
+              "url:processsor",
+              `status:${status}`,
+              `statusGroup:${statusGroup}`,
+              `endpoint:${method} processor`,
+            ]);
+            metric.value("connector.service_api.response_time", (new Date() - ts), [
+              `method:${method}`,
+              "url:processsor",
+              `status:${status}`,
+              `statusGroup:${statusGroup}`,
+              `endpoint:${method} processor`,
+            ]);
+          } else {
+            metric.increment("connector.service_api.error", 1, [
+              `method:${method}`,
+              "url:processsor",
+              `endpoint:${method} processor`,
+            ]);
+          }
+        }
         try {
           callback(error, response, body);
         } catch (err) {
@@ -249,17 +273,17 @@ function compute(
   function debug(...args) {
     // Only show debug logs in preview mode
     if (options.preview) {
-      logs.push(args);
+      logs.push(_.cloneDeep(args));
     }
   }
 
   function logError(...args) {
-    errors.push(args);
+    errors.push(_.cloneDeep(args));
   }
 
   function info(...args) {
-    logs.push(args);
-    logsForLogger.push(args);
+    logs.push(_.cloneDeep(args));
+    logsForLogger.push(_.cloneDeep(args));
   }
   sandbox.console = {
     log,
