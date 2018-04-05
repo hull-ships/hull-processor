@@ -1,7 +1,10 @@
 # CHANGELOG
 
 ## 0.2.17
+- do not reuse sandbox between users of the same batch
 - add `connector.service_api.call`, `connector.service_api.response_time` and `connector.service_api.error` metrics for HTTP requests
+- deepClone all information passed to logger to prevent mutation
+- add request tests
 
 ## 0.2.16
 - add memory optimization node runtime flags and upgrade hull-connector-tester
