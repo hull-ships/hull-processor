@@ -1504,10 +1504,6 @@ cipher-base@^1.0.0, cipher-base@^1.0.1, cipher-base@^1.0.3:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
-circle-github-bot@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/circle-github-bot/-/circle-github-bot-0.4.0.tgz#d1702cea19277db4333936647828cd433fbcafd9"
-
 circular-json@^0.3.1:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/circular-json/-/circular-json-0.3.3.tgz#815c99ea84f6809529d2f45791bdf82711352d66"
@@ -3271,12 +3267,6 @@ hull-client@^1.2.0:
     urijs "^1.18.7"
     uuid "^3.0.1"
     winston "^2.2.0"
-
-hull-connector-tester@0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/hull-connector-tester/-/hull-connector-tester-0.0.6.tgz#d5c3c2b1c81020f4004fe410cfb2af5cf91e8ab9"
-  dependencies:
-    circle-github-bot "^0.4.0"
 
 hull@0.13.11:
   version "0.13.11"
