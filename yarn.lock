@@ -1368,7 +1368,7 @@ cache-manager-redis@^0.5.0:
     redis-url "^1.2.1"
     sol-redis-pool "^0.3.2"
 
-cache-manager@^2.1.2, cache-manager@^2.2.0:
+cache-manager@2.6.0, cache-manager@^2.2.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/cache-manager/-/cache-manager-2.6.0.tgz#1050d8d9a9452a80a0cf5672f1394d31ef3d4109"
   dependencies:
@@ -1473,6 +1473,10 @@ character-parser@^2.1.1:
 chardet@^0.4.0:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.4.2.tgz#b5473b33dc97c424e5d98dc87d55d4d8a29c8bf2"
+
+charenc@~0.0.1:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/charenc/-/charenc-0.0.2.tgz#c0a1d2f3a7092e03774bfa83f14c0fc5790a8667"
 
 check-error@^1.0.1:
   version "1.0.2"
@@ -1884,6 +1888,10 @@ cross-spawn@^5.0.1, cross-spawn@^5.1.0:
     lru-cache "^4.0.1"
     shebang-command "^1.2.0"
     which "^1.2.9"
+
+crypt@~0.0.1:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/crypt/-/crypt-0.0.2.tgz#88d7ff7ec0dfb86f713dc87bbb42d044d3e6c41b"
 
 cryptiles@2.x.x:
   version "2.0.5"
@@ -3253,12 +3261,12 @@ https-proxy-agent@^0.3.5:
     debug "2"
     extend "3"
 
-hull-client@1.1.5:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/hull-client/-/hull-client-1.1.5.tgz#f01d5179f0297b69a33c70405e437d5b4b95b3bb"
+hull-client@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/hull-client/-/hull-client-1.2.0.tgz#415ce855a060ec686e3e9bb5d581e5eb276dfe23"
   dependencies:
     jwt-simple "^0.5.0"
-    lodash "^4.13.1"
+    lodash "^4.17.5"
     restler "^3.4.0"
     urijs "^1.18.7"
     uuid "^3.0.1"
@@ -3270,9 +3278,9 @@ hull-connector-tester@0.0.6:
   dependencies:
     circle-github-bot "^0.4.0"
 
-hull@0.13.10:
-  version "0.13.10"
-  resolved "https://registry.yarnpkg.com/hull/-/hull-0.13.10.tgz#7c9f55a7e3bca13be55eab5414973162444a1acd"
+hull@0.13.11:
+  version "0.13.11"
+  resolved "https://registry.yarnpkg.com/hull/-/hull-0.13.11.tgz#41aa97c38e5e3a12c071a25c90a707e6d802f127"
   dependencies:
     JSONStream "^1.1.2"
     aws-sdk "^2.81.0"
@@ -3281,7 +3289,7 @@ hull@0.13.10:
     bluebird "^3.4.7"
     body-parser "^1.15.2"
     bull "^3.0.0-rc.3"
-    cache-manager "^2.1.2"
+    cache-manager "2.6.0"
     connect "^3.4.1"
     connect-timeout "^1.8.0"
     csv-stream "^0.1.3"
@@ -3289,16 +3297,16 @@ hull@0.13.10:
     del "^2.2.1"
     dogapi "^2.6.0"
     ejs "^2.5.6"
-    hull-client "1.1.5"
+    hull-client "^1.2.0"
     jsonwebtoken "^7.4.3"
     jwt-simple "^0.5.0"
     kue "^0.11.5"
     kue-ui "^0.1.0"
-    lodash "^4.13.1"
+    lodash "^4.17.5"
     newrelic "^2.4.1"
     passport "^0.3.2"
     promise-streams "^1.0.1"
-    raven "^1.1.2"
+    raven "^2.4.2"
     raw-body "^2.1.7"
     request "^2.72.0"
     sns-validator "^0.3.0"
@@ -3454,7 +3462,7 @@ is-binary-path@^1.0.0:
   dependencies:
     binary-extensions "^1.0.0"
 
-is-buffer@^1.1.5:
+is-buffer@^1.1.5, is-buffer@~1.1.1:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/is-buffer/-/is-buffer-1.1.6.tgz#efaa2ea9daa0d7ab2ea13a97b2b8ad51fefbe8be"
 
@@ -3727,7 +3735,7 @@ json-stable-stringify@^1.0.1:
   dependencies:
     jsonify "~0.0.0"
 
-json-stringify-safe@5.0.1, json-stringify-safe@^5.0.0, json-stringify-safe@~5.0.1:
+json-stringify-safe@^5.0.0, json-stringify-safe@~5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
 
@@ -4008,6 +4016,10 @@ lodash@4, lodash@^4.0.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.4, lodash@
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
+lodash@^4.17.5:
+  version "4.17.5"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.5.tgz#99a92d65c0272debe8c96b6057bc8fbfa3bed511"
+
 log-symbols@^2.1.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/log-symbols/-/log-symbols-2.2.0.tgz#5740e1c5d6f0dfda4ad9323b5332107ef6b4c40a"
@@ -4098,6 +4110,14 @@ md5.js@^1.3.4:
   dependencies:
     hash-base "^3.0.0"
     inherits "^2.0.1"
+
+md5@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/md5/-/md5-2.2.1.tgz#53ab38d5fe3c8891ba465329ea23fac0540126f9"
+  dependencies:
+    charenc "~0.0.1"
+    crypt "~0.0.1"
+    is-buffer "~1.1.1"
 
 media-typer@0.3.0:
   version "0.3.0"
@@ -5336,22 +5356,22 @@ range-parser@~1.0.2, range-parser@~1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.0.3.tgz#6872823535c692e2c2a0103826afd82c2e0ff175"
 
-raven@^1.1.2:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/raven/-/raven-1.2.1.tgz#949c134db028a190b7bbf8f790aae541b7c020bd"
-  dependencies:
-    cookie "0.3.1"
-    json-stringify-safe "5.0.1"
-    lsmod "1.0.0"
-    stack-trace "0.0.9"
-    uuid "3.0.0"
-
 raven@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/raven/-/raven-2.3.0.tgz#96f15346bdaa433b3b6d47130804506155833d69"
   dependencies:
     cookie "0.3.1"
     lsmod "1.0.0"
+    stack-trace "0.0.9"
+    timed-out "4.0.1"
+    uuid "3.0.0"
+
+raven@^2.4.2:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/raven/-/raven-2.4.2.tgz#0129e2adc30788646fd530b67d08a8ce25d4f6dc"
+  dependencies:
+    cookie "0.3.1"
+    md5 "^2.2.1"
     stack-trace "0.0.9"
     timed-out "4.0.1"
     uuid "3.0.0"
