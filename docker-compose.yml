@@ -1,0 +1,22 @@
+version: '3'
+services:
+    npm:
+        image: node:8.10
+        env_file: .env
+        network_mode: host
+        entrypoint: npm
+        command: run start:dev
+        ports:
+            - "$PORT:$PORT"
+        working_dir: /app
+        volumes:
+            - .:/app
+    # TODO make ngrok container return generated ngrok url
+    ngrok:
+        image: node:8.10
+        env_file: .env
+        entrypoint: npm
+        command: run-script ngrok:dev
+        working_dir: /app
+        volumes:
+            - .:/app
