@@ -23,6 +23,7 @@
   },
   "scripts": {
     "ngrok": "ngrok http 8082 --region eu --subdomain hull-processor",
+    "ngrok:dev": "ngrok http 8082 --region eu",
     "build": "npm run clean && npm run build:server && npm run build:client",
     "build:client": "NODE_ENV=production webpack --config ./webpack.config.js --progress --profile --colors",
     "build:server": "./node_modules/.bin/babel server -d lib",
@@ -107,5 +108,8 @@
     "webpack": "^3.10.0",
     "webpack-dev-middleware": "^2.0.4",
     "winston-logstash": "^0.4.0"
+  },
+  "resolutions": {
+    "cache-manager": "2.6.0"
   }
 }
