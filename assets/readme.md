@@ -65,6 +65,7 @@ The `changes` object represents all changes to a user that triggered the executi
 - `changes.is_new` indicates whether the user created is new and has just been created or not.
 - `changes.segments`, which holds all segments the user has entered and left since the last recompute, accessible via `changes.segments.entered` and `changes.segments.left`. Each segment is an object itself composed of the following properties `created_at` , `id`, `name`, `type`and `updated_at`.
 - `changes.user` which is an object that is exposes each changed attribute as property that value is an array. The array has the old value as the first argument and the new one as the second. For example, if the email is set the first time, you can access it via `changes.user.email` and the value will look like this `[null,` `"``test@hull.io``"``]`.
+- **note** The `account` changes aren't tracked so you won't be able to access them here.
 
 The following code shows an example of changes:
 

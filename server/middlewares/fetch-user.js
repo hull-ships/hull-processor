@@ -171,7 +171,7 @@ module.exports = function fetchUser(req, res, next) {
     .then((payload = {}) => {
       const segments = _.map(payload.segments, s =>
         _.pick(s, "id", "name", "type", "updated_at", "created_at"));
-      const randKeys = _.sampleSize(_.keys(payload.user), 3);
+      const randKeys = _.sampleSize(_.omit(_.keys(payload.user), "account"), 3);
       const changes = {
         user: _.reduce(
           randKeys,
