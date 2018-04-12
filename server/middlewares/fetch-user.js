@@ -194,7 +194,7 @@ module.exports = function fetchUser(req, res, next) {
       const grouped_user = client.utils.groupTraits(payload.user);
       const account = client.utils.groupTraits(grouped_user.account);
       const changes = {
-        account: getSample(account),
+        account: getSample(payload.user.account),
         user: getSample(payload.user),
         is_new: false,
         segments: {
