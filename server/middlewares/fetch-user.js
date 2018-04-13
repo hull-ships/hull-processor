@@ -81,15 +81,34 @@ function getEventsForUserId(client, user_id) {
     });
 }
 
-function getUserById(client, userId) {
-  return Promise.all([
-    client.get(`${userId}/user_report`),
-    client.asUser(userId, false).get(`${userId}/segments`),
-    getEventsForUserId(client, userId)
-  ]).then((results = []) => {
-    const [user = {}, segments = [], events = []] = results;
-    return { user, segments, events };
+function getEventsAndSegments(client, user) {
+  const promises = [
+    getEventsForUserId(client, user.id),
+    client
+      .get(`${user.id}/segments`)
+      .catch(e => client.logger.error("fetch.user.segments.error", e.message))
+  ];
+  if (user.account && user.account.id) {
+    promises.push(client
+      .get(`${user.account.id}/segments`)
+      .catch(e =>
+        client.logger.error("fetch.account.segments.error", e.message)));
+  }
+  return Promise.all(promises).then((results = []) => {
+    const [events = [], segments = [], account_segments = []] = results;
+    return {
+      user,
+      segments,
+      events,
+      account_segments
+    };
   });
+}
+
+function getUserById(client, userId) {
+  client
+    .get(`${userId}/user_report`)
+    .then(user => getEventsAndSegments(client, user));
 }
 
 function searchUser(client, query) {
@@ -118,28 +137,34 @@ function searchUser(client, query) {
     params.query = { bool: { should, minimum_should_match: 1 } };
   }
 
-  return new Promise((resolve, reject) => {
-    client.post("search/user_reports", params).then(
-      (res = {}) => {
-        const user = res.data && res.data[0];
-        if (!user) return reject(new Error("User not found"));
-        const { id } = user;
-        return Promise.all([
-          client
-            .asUser(id, false)
-            .get(`${id}/segments`)
-            .catch(e =>
-              client.logger.error("fetch.user.segments.error", e.message)),
-          getEventsForUserId(client, id)
-        ]).then((results) => {
-          const [segments = [], events = []] = results;
-          return resolve({ user, segments, events }, reject);
-        });
-      },
-      e => client.logger.error("fetch.user.report.error", e.message)
-    );
-  });
+  return client
+    .post("search/user_reports", params)
+    .then((res = {}) => {
+      const user = res.data && res.data[0];
+      if (!user) throw new Error("User not found");
+      return getEventsAndSegments(client, user);
+    })
+    .catch(e => client.logger.error("fetch.user.segments.error", e.message));
 }
+
+/*
+ * returns a sample set of 3 keys picked at random in the source object to simulate a changes object
+ * @param  {User|Account payload} source a User or Account, flat format (not grouped)
+ * @return {Object}        A user change or account change dummy object to simulate one that we would receive with actual notifications
+ */
+const getSample = source =>
+  _.reduce(
+    _.sampleSize(_.omit(_.keys(source), "account", "segment_ids"), 3),
+    (m, k) => {
+      m[k] = [null, source[k]];
+      m.THOSE_ARE_FOR_PREVIEW_ONLY = [null, "fake_values"];
+      return m;
+    },
+    {}
+  );
+
+const formatSegment = s =>
+  _.pick(s, "id", "name", "type", "updated_at", "created_at");
 
 module.exports = function fetchUser(req, res, next) {
   const startAt = new Date();
@@ -169,32 +194,30 @@ module.exports = function fetchUser(req, res, next) {
 
   return userPromise
     .then((payload = {}) => {
-      const segments = _.map(payload.segments, s =>
-        _.pick(s, "id", "name", "type", "updated_at", "created_at"));
-      const randKeys = _.sampleSize(_.omit(_.keys(payload.user), "account"), 3);
+      const segments = _.map(payload.segments, formatSegment);
+      const accountSegments = _.map(payload.account_segments, formatSegment);
+      const groupedUser = client.utils.groupTraits(payload.user);
+      const account = client.utils.groupTraits(groupedUser.account);
       const changes = {
-        user: _.reduce(
-          randKeys,
-          (m, k) => {
-            m[k] = [null, payload.user[k]];
-            m.THOSE_ARE_FOR_PREVIEW_ONLY = [null, "fake_values"];
-            return m;
-          },
-          {}
-        ),
+        account: getSample(payload.user.account),
+        user: getSample(payload.user),
         is_new: false,
         segments: {
           entered: [_.first(segments)],
           left: [_.last(segments)]
+        },
+        account_segments: {
+          entered: [_.first(accountSegments)],
+          left: [_.last(accountSegments)]
         }
       };
-      const groupedUser = client.utils.groupTraits(payload.user);
       req.hull.user = {
         changes,
         ...payload,
         segments,
-        user: _.omit(groupedUser, "account"),
-        account: client.utils.groupTraits(groupedUser.account)
+        account_segments: accountSegments,
+        account,
+        user: _.omit(groupedUser, "account")
       };
       return req.hull.user;
     })
