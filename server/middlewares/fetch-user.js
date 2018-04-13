@@ -147,6 +147,11 @@ function searchUser(client, query) {
     .catch(e => client.logger.error("fetch.user.segments.error", e.message));
 }
 
+/*
+ * returns a sample set of 3 keys picked at random in the source object to simulate a changes object
+ * @param  {User|Account payload} source a User or Account, flat format (not grouped)
+ * @return {Object}        A user change or account change dummy object to simulate one that we would receive with actual notifications
+ */
 const getSample = source =>
   _.reduce(
     _.sampleSize(_.omit(_.keys(source), "account", "segment_ids"), 3),
@@ -190,9 +195,9 @@ module.exports = function fetchUser(req, res, next) {
   return userPromise
     .then((payload = {}) => {
       const segments = _.map(payload.segments, formatSegment);
-      const account_segments = _.map(payload.account_segments, formatSegment);
-      const grouped_user = client.utils.groupTraits(payload.user);
-      const account = client.utils.groupTraits(grouped_user.account);
+      const accountSegments = _.map(payload.account_segments, formatSegment);
+      const groupedUser = client.utils.groupTraits(payload.user);
+      const account = client.utils.groupTraits(groupedUser.account);
       const changes = {
         account: getSample(payload.user.account),
         user: getSample(payload.user),
@@ -202,17 +207,17 @@ module.exports = function fetchUser(req, res, next) {
           left: [_.last(segments)]
         },
         account_segments: {
-          entered: [_.first(account_segments)],
-          left: [_.last(account_segments)]
+          entered: [_.first(accountSegments)],
+          left: [_.last(accountSegments)]
         }
       };
       req.hull.user = {
         changes,
         ...payload,
         segments,
-        account_segments,
+        account_segments: accountSegments,
         account,
-        user: _.omit(grouped_user, "account")
+        user: _.omit(groupedUser, "account")
       };
       return req.hull.user;
     })
