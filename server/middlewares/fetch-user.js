@@ -148,7 +148,9 @@ function searchUser(client, query) {
 }
 
 /*
- * returns a sample set of 3 keys picked at random in the source object to simulate a changes object
+ * returns a sample set of 3 keys picked at random in the source object to simulate a changes object.
+ * We are omitting `account` and `segment_ids` from this preview changes object.
+ *
  * @param  {User|Account payload} source a User or Account, flat format (not grouped)
  * @return {Object}        A user change or account change dummy object to simulate one that we would receive with actual notifications
  */
