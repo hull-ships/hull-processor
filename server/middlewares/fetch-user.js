@@ -180,11 +180,15 @@ module.exports = function fetchUser(req, res, next) {
   const body = req.body || {};
   const { userId, userSearch } = body;
 
-  const user = _.get(body, "payload.user");
+  const existingPayload = _.get(body, "payload");
+  // this is a workaround since we are getting account from user later on
+  // and the preview does not have it
+  if (existingPayload) {
+    existingPayload.account = _.get(body, "payload.account");
+  }
+  let userPromise = Promise.resolve(existingPayload);
 
-  let userPromise = Promise.resolve(user);
-
-  if (client && !user) {
+  if (client && !existingPayload) {
     userPromise = userId
       ? getUserById(client, userId)
       : searchUser(client, userSearch);
