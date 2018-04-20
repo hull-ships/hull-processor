@@ -106,7 +106,7 @@ function getEventsAndSegments(client, user) {
 }
 
 function getUserById(client, userId) {
-  client
+  return client
     .get(`${userId}/user_report`)
     .then(user => getEventsAndSegments(client, user));
 }
@@ -140,7 +140,8 @@ function searchUser(client, query) {
   return client
     .post("search/user_reports", params)
     .then((res = {}) => {
-      const user = res.data && res.data[0];
+      const fieldsToOmit = ["_id", "_type", "_index", "_score"];
+      const user = _.omit(res.data && res.data[0], fieldsToOmit);
       if (!user) throw new Error("User not found");
       return getEventsAndSegments(client, user);
     })
