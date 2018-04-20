@@ -1,8 +1,11 @@
 # CHANGELOG
 
-## 0.2.18
+## 0.2.19
 - Exclude `account` object from `user.changes` preview
 - Add actual `changes.account` and `changes.account_segments` and top-level `account_segments` objects`
+
+## 0.2.18
+- update hull version to 0.13.14
 
 ## 0.2.17
 - do not reuse sandbox between users of the same batch
