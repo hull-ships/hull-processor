@@ -45,8 +45,8 @@
   "subscriptions" : [
     {
       "url" : "/smart-notifier",
-      "restrictions": {
-        "channels": [ "user:update" ]
+      "conditions": {
+        "channels": { "only": [ "user:update" ] }
       }
     }
   ]
