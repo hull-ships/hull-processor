@@ -42,5 +42,12 @@
       "value": "5"
     }
   ],
-  "subscriptions" : [{ "url" : "/smart-notifier" }]
+  "subscriptions" : [
+    {
+      "url" : "/smart-notifier",
+      "restrictions": {
+        "channels": [ "user:update" ]
+      }
+    }
+  ]
 }
