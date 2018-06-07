@@ -56,7 +56,7 @@ export default class Results extends Component {
     }
     return (<Col className={className} md={md} sm={sm}>
       <Header title="Results Preview">
-        <Help showModal={codeIsEmpty}/>
+        {/* <Help showModal={codeIsEmpty}/> */}
       </Header>
       <hr/>
       <ActivePane
