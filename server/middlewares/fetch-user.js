@@ -10,6 +10,8 @@ const PROP_TYPE_DETECT_ORDER = [
   "text_value"
 ];
 
+const unflatify_context = require("../lib/utils/unflatify-context");
+
 const isVisible = e => !_.includes(EXCLUDED_EVENTS, e.event);
 
 function getEventsForUserId(client, user_id) {
@@ -61,7 +63,7 @@ function getEventsForUserId(client, user_id) {
               properties,
               event_source: source,
               event_type: type,
-              context
+              context: unflatify_context(context)
             };
           });
         }
