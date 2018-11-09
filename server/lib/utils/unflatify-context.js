@@ -1,6 +1,5 @@
 module.exports = (context = {}) => ({
-  useragent:
-    context.useragent,
+  useragent: context.useragent,
   device: {
     name: context.device_name
   },
