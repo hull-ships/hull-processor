@@ -42,7 +42,6 @@ function getEventsForUserId(client, user_id) {
               source,
               type
             } = e;
-            const { location = {} } = context;
             const properties = _.reduce(
               props,
               (pp, p) =>
@@ -62,15 +61,7 @@ function getEventsForUserId(client, user_id) {
               properties,
               event_source: source,
               event_type: type,
-              context: {
-                location: {
-                  latitude: location.lat,
-                  longitude: location.lon
-                },
-                page: {
-                  url: context.page_url
-                }
-              }
+              context
             };
           });
         }

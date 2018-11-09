@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.2.20
+- Embed the full, real context from User Events when we receive them
+
 ## 0.2.19
 - Exclude `account` object from `user.changes` preview
 - Add actual `changes.account` and `changes.account_segments` and top-level `account_segments` objects`
