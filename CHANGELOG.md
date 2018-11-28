@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.2.21
+- prevent flatmap-stream@0.1.1 from installing
+
 ## 0.2.20
 - Embed the full, real context from User Events when we receive them
 
