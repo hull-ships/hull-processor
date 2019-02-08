@@ -55,7 +55,7 @@ export default class SearchForm extends Component {
         <div className="input-group-addon" style={{ textTransform: "none", background: "none" }}>
           <h4 className="m-0 text-muted">Search</h4>
         </div>
-        <input type="text" placeholder="Name or Email" value={this.state.userSearch} onChange={this.handleEmailChange.bind(this)} className="form-control form-control-sm" />
+        <input type="text" placeholder="Name, Email or ExternalId" value={this.state.userSearch} onChange={this.handleEmailChange.bind(this)} className="form-control form-control-sm" />
         <div style={{ position: "absolute", right: 0, top: -10, zIndex: 2 }}>
           <div style={{ position: "relative" }} ref='container'>
             <Button bsStyle={ loading ? "warning" : "default" } bsSize="sm" onClick={this.handleSubmit.bind(this)} ref='target'>
