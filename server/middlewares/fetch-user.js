@@ -121,7 +121,8 @@ function searchUser(client, query) {
     "email",
     "email.exact",
     "contact_email",
-    "contact_email.exact"
+    "contact_email.exact",
+    "external_id"
   ].map((key) => {
     return { term: { [key]: query } };
   });
