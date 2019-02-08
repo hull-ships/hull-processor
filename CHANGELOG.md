@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.2.22
+- upgrade hull-node
+
 ## 0.2.21
 - prevent flatmap-stream@0.1.1 from installing
 
