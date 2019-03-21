@@ -47,7 +47,9 @@ const CODE = {
   use_lodash_library: "_.map(['foo'], (f) => f);",
   modify_moment_library: "moment = 'foo';",
   use_moment_library: "console.log(moment(1519894734, 'X').format())",
-  invalid_assignment: "moment() = 'foo'"
+  invalid_assignment: "moment() = 'foo'",
+  add_new_trait: "hull.traits({ lead_score: null })",
+  add_new_custom_attribute: "hull.traits({ 'customattribute/attribute': null })"
 };
 
 function shipWithCode(s = {}, code = {}) {
@@ -169,6 +171,23 @@ describe("Compute Ship", () => {
   });
 
   describe("Compute method using hull scoped object", () => {
+
+    it("Should set a trait to null", (done) => {
+      applyCompute(CODE.add_new_trait).then((result) => {
+        expect(result.account).to.be.eql({});
+        expect(result.changes.user.traits.lead_score).to.equal(null);
+        done();
+      });
+    });
+
+    it("Should set an custom attribute to null", (done) => {
+      applyCompute(CODE.add_new_custom_attribute).then((result) => {
+        expect(result.account).to.be.eql({});
+        expect(result.changes.user.customattribute.attribute).to.equal(null);
+        done();
+      });
+    });
+
     it("Should not change content if code does not return", (done) => {
       applyCompute(CODE.empty).then((result) => {
         expect(result.user).to.be.eql(user);
