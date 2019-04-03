@@ -36,12 +36,12 @@ describe("Status Check Handler", () => {
     });
   });
 
-  it("Should return a warning when code is equal to default one", () => {
+  it("Should return a \"ok\" message when code is equal to default one", () => {
     requestFixture.hull.ship.private_settings.code = defaultCode;
     statusCheck(requestFixture, responseSpy);
     sinon.assert.calledWith(responseSpy.json, {
       messages: ["This processor contains default \"hello world\" code. If you need help with writing you script please refer connector documentation."],
-      status: "warning"
+      status: "ok"
     });
   });
 

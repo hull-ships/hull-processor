@@ -18,7 +18,7 @@ module.exports = function statusCheck(req, res) {
     messages.push("This processor doesn't contain code. It is recommended for performance reasons to remove empty processors from your organization.");
   } else if (
     code === defaultCode) {
-    status = "warning";
+    status = "ok";
     messages.push("This processor contains default \"hello world\" code. If you need help with writing you script please refer connector documentation.");
   }
 
