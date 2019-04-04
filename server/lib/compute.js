@@ -6,6 +6,7 @@ const deepDiff = require("deep-diff");
 const deepMerge = require("deepmerge");
 const request = require("request");
 const Promise = require("bluebird");
+const Hull = require("hull");
 
 const { buildUserPayload, buildAccountPayload } = require("./utils/payload-builder");
 const { frozenLodash, frozenMoment, frozenUrijs } = require("./utils/frozen-utils");
@@ -44,6 +45,14 @@ const updateChanges = (payload) => {
 
     if (d.kind === "E" || d.kind === "N") {
       _.set(memo, d.path, d.rhs);
+    }
+
+    if (d.kind === "N") {
+      if (_.isNil(d.rhs)) {
+        Hull.logger.debug("Adding new attribute with null value");
+      } else if (_.isObject(d.rhs) && _.isEmpty(_.omitBy(d.rhs, _.isNil))) {
+        Hull.logger.debug("Adding new object with null value");
+      }
     }
 
     // when we have an array updated we set the whole
