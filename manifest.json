@@ -16,7 +16,7 @@
     }
   ],
   "readme" : "readme.md",
-  "version": "0.2.23",
+  "version": "0.2.24",
   "private_settings": [
     {
       "name" : "sentry_dsn",

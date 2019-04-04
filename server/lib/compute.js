@@ -43,23 +43,15 @@ const updateChanges = (payload) => {
       }
     }
 
-    if (d.kind === "E") {
+    if (d.kind === "E" || d.kind === "N") {
       _.set(memo, d.path, d.rhs);
     }
 
-    if (d.kind === "N" && _.isNil(d.rhs)) {
-      Hull.logger.debug("Unable to add new attribute with null value");
-    }
-
-    if (d.kind === "N" && !_.isNil(d.rhs)) {
-      if (_.isObject(d.rhs)) {
-        if (!_.isEmpty(_.omitBy(d.rhs, _.isNil))) {
-          _.set(memo, d.path, d.rhs);
-        } else {
-          Hull.logger.debug("Unable to add new object with null value");
-        }
-      } else {
-        _.set(memo, d.path, d.rhs);
+    if (d.kind === "N") {
+      if (_.isNil(d.rhs)) {
+        Hull.logger.debug("Adding new attribute with null value");
+      } else if (_.isObject(d.rhs) && _.isEmpty(_.omitBy(d.rhs, _.isNil))) {
+        Hull.logger.debug("Adding new object with null value");
       }
     }
 
