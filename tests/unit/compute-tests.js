@@ -41,15 +41,14 @@ const CODE = {
   array_to_string: "hull.traits({ testing_array: 'abcdef' })",
   string_to_array: "hull.traits({ foo: ['A', 'B'] })",
   nullify_trait: "hull.traits({ foo: null })",
+  nullify_empty_string: "hull.traits({ empty_string: null })",
   console_log: "console.log('hello log')",
   console_debug: "console.debug('hello debug')",
   modify_lodash_library: "_.map = 'foo'",
   use_lodash_library: "_.map(['foo'], (f) => f);",
   modify_moment_library: "moment = 'foo';",
   use_moment_library: "console.log(moment(1519894734, 'X').format())",
-  invalid_assignment: "moment() = 'foo'",
-  add_new_trait: "hull.traits({ lead_score: null })",
-  add_new_custom_attribute: "hull.traits({ 'customattribute/attribute': null })"
+  invalid_assignment: "moment() = 'foo'"
 };
 
 function shipWithCode(s = {}, code = {}) {
@@ -171,22 +170,6 @@ describe("Compute Ship", () => {
   });
 
   describe("Compute method using hull scoped object", () => {
-
-    it("Should set a trait to null", (done) => {
-      applyCompute(CODE.add_new_trait).then((result) => {
-        expect(result.account).to.be.eql({});
-        expect(result.changes.user.traits.lead_score).to.equal(null);
-        done();
-      });
-    });
-
-    it("Should set an custom attribute to null", (done) => {
-      applyCompute(CODE.add_new_custom_attribute).then((result) => {
-        expect(result.account).to.be.eql({});
-        expect(result.changes.user.customattribute.attribute).to.equal(null);
-        done();
-      });
-    });
 
     it("Should not change content if code does not return", (done) => {
       applyCompute(CODE.empty).then((result) => {
@@ -310,6 +293,14 @@ describe("Compute Ship", () => {
       applyCompute(CODE.string_to_array).then((result) => {
         expect(result.account).to.be.eql({});
         expect(result.changes.user.traits.foo).to.deep.equal(["A", "B"]);
+        done();
+      });
+    });
+
+    it("Should change an empty string to null value", (done) => {
+      applyCompute(CODE.nullify_empty_string).then((result) => {
+        expect(result.account).to.be.eql({});
+        expect(result.changes.user.traits.empty_string).to.equal(null);
         done();
       });
     });

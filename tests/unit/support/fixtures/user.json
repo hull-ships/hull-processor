@@ -172,6 +172,7 @@
   "traits": {
     "flat": true,
     "foo": "This is sooo new - take 3 !",
+    "empty_string": "",
     "full_name": "Romain Dardour",
     "hasviewedproductsfrequentlyatsometime": true,
     "is_recent": false,
