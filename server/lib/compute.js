@@ -26,7 +26,7 @@ const updateChanges = (payload) => {
       // if this is an edit, we only apply the changes the value is different
       // independently of the type
       if (_.toString(d.lhs) === _.toString(d.rhs)) {
-        if (d.rhs == null) {
+        if (d.rhs === null) {
           Hull.logger.debug("Setting empty string to null failure.");
         }
         return memo;
