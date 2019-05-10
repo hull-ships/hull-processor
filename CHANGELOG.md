@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.2.23
+- add support for searching by external_id in the Code editor
+
 ## 0.2.22
 - upgrade hull-node
 
