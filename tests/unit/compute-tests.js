@@ -41,6 +41,7 @@ const CODE = {
   array_to_string: "hull.traits({ testing_array: 'abcdef' })",
   string_to_array: "hull.traits({ foo: ['A', 'B'] })",
   nullify_trait: "hull.traits({ foo: null })",
+  nullify_empty_string: "hull.traits({ empty_string: null })",
   console_log: "console.log('hello log')",
   console_debug: "console.debug('hello debug')",
   modify_lodash_library: "_.map = 'foo'",
@@ -169,6 +170,7 @@ describe("Compute Ship", () => {
   });
 
   describe("Compute method using hull scoped object", () => {
+
     it("Should not change content if code does not return", (done) => {
       applyCompute(CODE.empty).then((result) => {
         expect(result.user).to.be.eql(user);
@@ -291,6 +293,14 @@ describe("Compute Ship", () => {
       applyCompute(CODE.string_to_array).then((result) => {
         expect(result.account).to.be.eql({});
         expect(result.changes.user.traits.foo).to.deep.equal(["A", "B"]);
+        done();
+      });
+    });
+
+    it("Should change an empty string to null value", (done) => {
+      applyCompute(CODE.nullify_empty_string).then((result) => {
+        expect(result.account).to.be.eql({});
+        expect(result.changes.user.traits.empty_string).to.equal(null);
         done();
       });
     });

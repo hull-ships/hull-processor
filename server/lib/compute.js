@@ -6,7 +6,6 @@ const deepDiff = require("deep-diff");
 const deepMerge = require("deepmerge");
 const request = require("request");
 const Promise = require("bluebird");
-const Hull = require("hull");
 
 const { buildUserPayload, buildAccountPayload } = require("./utils/payload-builder");
 const { frozenLodash, frozenMoment, frozenUrijs } = require("./utils/frozen-utils");
@@ -24,11 +23,10 @@ const updateChanges = (payload) => {
 
     if (d.kind === "E") {
       // if this is an edit, we only apply the changes the value is different
-      // independently of the type
-      if (_.toString(d.lhs) === _.toString(d.rhs)) {
-        if (d.rhs === null) {
-          Hull.logger.debug("Setting empty string to null failure.");
-        }
+      // independently of the type.
+      // Check if the change is null, otherwise
+      // _.toString("") === _.toString(null) returns true
+      if (d.rhs !== null && _.toString(d.lhs) === _.toString(d.rhs)) {
         return memo;
       }
 
@@ -50,16 +48,10 @@ const updateChanges = (payload) => {
       _.set(memo, d.path, d.rhs);
     }
 
-    if (d.kind === "N" && _.isNil(d.rhs)) {
-      Hull.logger.debug("Unable to add new attribute with null value");
-    }
-
     if (d.kind === "N" && !_.isNil(d.rhs)) {
       if (_.isObject(d.rhs)) {
         if (!_.isEmpty(_.omitBy(d.rhs, _.isNil))) {
           _.set(memo, d.path, d.rhs);
-        } else {
-          Hull.logger.debug("Unable to add new object with null value");
         }
       } else {
         _.set(memo, d.path, d.rhs);

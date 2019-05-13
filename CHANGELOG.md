@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.24
+- updated status for processor to conform with product standard
+- fixed bug where you couldn't set a blank string to null
+
 ## 0.2.23
 - add support for searching by external_id in the Code editor
 
