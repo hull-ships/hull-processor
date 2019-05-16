@@ -427,3 +427,10 @@ span.CodeMirror-selectedtext { background: none; }
 .CodeMirror-foldgutter-folded:after {
   content: "\25B8";
 }
+
+/* See issue #758: Processor Fixed Height */
+
+.ReactCodeMirror {
+  flex: 1;
+}
+
