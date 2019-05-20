@@ -434,3 +434,24 @@ span.CodeMirror-selectedtext { background: none; }
   flex: 1;
 }
 
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+    max-height: 100%;
+}
+
+#app {
+  height: 100%;
+  overflow: hidden;
+}
+
+.pt-1 .container-fluid {
+  height: 100%;
+  padding-bottom: 15px;  
+}
+
+.userPane .CodeMirror,
+.fieldPillContainer {
+  height: calc(100vh - 100px)
+}
