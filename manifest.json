@@ -1,7 +1,7 @@
 {
   "name": "Processor",
   "description": "Recompute custom properties and emit events with Javascript logic whenever a user is updated",
-  "tags": ["incoming", "outgoing", "batch", "oneColumn", "smart-notifier"],
+  "tags": ["incoming", "outgoing", "batch", "oneColumn", "smart-notifier", "kraken-exports"],
   "source": "processor",
   "logo": "logo.png",
   "picture": "picture.png",
@@ -16,7 +16,7 @@
     }
   ],
   "readme" : "readme.md",
-  "version": "0.2.24",
+  "version": "0.2.25",
   "private_settings": [
     {
       "name" : "sentry_dsn",
