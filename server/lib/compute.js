@@ -7,6 +7,7 @@ const deepMerge = require("deepmerge");
 const request = require("request");
 const Promise = require("bluebird");
 const Hull = require("hull");
+const isGroup = require("./utils/is-group-trait");
 
 const { buildUserPayload, buildAccountPayload } = require("./utils/payload-builder");
 const { frozenLodash, frozenMoment, frozenUrijs } = require("./utils/frozen-utils");
@@ -380,6 +381,31 @@ function compute(
         ]);
         tracks = _.slice(tracks, 0, 10);
       }
+
+      // Log flattening out json object
+      _.forEach(userTraits, (userTrait) => {
+        const {
+          properties
+        } = userTrait;
+
+        _.map(properties, (v, k) => {
+          if (isGroup(v)) {
+            logger.info(`Nested object [${JSON.stringify(v)}] found as value in user traits`);
+          }
+        });
+      });
+
+      _.forEach(accountTraits, (accountTrait) => {
+        const {
+          properties
+        } = accountTrait;
+
+        _.map(properties, (v, k) => {
+          if (isGroup(v)) {
+            logger.info(`Nested object [${JSON.stringify(v)}] found as value in account trait`);
+          }
+        });
+      });
 
       const payload = {
         user: _.reduce(userTraits, buildUserPayload, {}),
