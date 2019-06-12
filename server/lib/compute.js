@@ -6,7 +6,6 @@ const deepDiff = require("deep-diff");
 const deepMerge = require("deepmerge");
 const request = require("request");
 const Promise = require("bluebird");
-const Hull = require("hull");
 const isGroup = require("./utils/is-group-trait");
 
 const { buildUserPayload, buildAccountPayload } = require("./utils/payload-builder");
