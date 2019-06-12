@@ -19,10 +19,7 @@ const buildUserPayload = (payload, traitsCall = {}) => {
       };
     } else {
       _.map(properties, (v, k) => {
-        const path = k.replace("/", ".");
-        if (path.indexOf(".") > -1) {
-          _.setWith(payload, path, v, Object);
-        } else if (_.includes(TOP_LEVEL_ATTRIBUTES, k)) {
+        if (_.includes(TOP_LEVEL_ATTRIBUTES, k)) {
           payload[k] = v;
         } else {
           payload.traits = {
