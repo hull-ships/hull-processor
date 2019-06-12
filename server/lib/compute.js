@@ -397,7 +397,7 @@ function compute(
 
           _.map(properties, (v, k) => {
             if (isGroup(v)) {
-              logger.info(`Nested object { ${JSON.stringify(k)}:${JSON.stringify(v)} } found in account trait`);
+              logger.info(`Nested object { ${JSON.stringify(k)}:${JSON.stringify(v)} } found in account traits`);
             }
           });
         });
