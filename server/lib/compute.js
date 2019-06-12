@@ -6,6 +6,7 @@ const deepDiff = require("deep-diff");
 const deepMerge = require("deepmerge");
 const request = require("request");
 const Promise = require("bluebird");
+const isGroup = require("./utils/is-group-trait");
 
 const { buildUserPayload, buildAccountPayload } = require("./utils/payload-builder");
 const { frozenLodash, frozenMoment, frozenUrijs } = require("./utils/frozen-utils");
@@ -371,6 +372,41 @@ function compute(
           "You can't send more than 10 tracking calls in one batch."
         ]);
         tracks = _.slice(tracks, 0, 10);
+      }
+
+
+      // Log flattening out json object
+      try {
+        _.forEach(userTraits, (userTrait) => {
+          const {
+            properties
+          } = userTrait;
+
+          _.map(properties, (v, k) => {
+            if (isGroup(v)) {
+              logger.info(`Nested object { ${JSON.stringify(k)}:${JSON.stringify(v)} } found in user traits`);
+            }
+          });
+        });
+
+        _.forEach(accountTraits, (accountTrait) => {
+          const {
+            properties
+          } = accountTrait;
+
+          _.map(properties, (v, k) => {
+            if (isGroup(v)) {
+              logger.info(`Nested object { ${JSON.stringify(k)}:${JSON.stringify(v)} } found in account traits`);
+            }
+          });
+        });
+      } catch (err) {
+        if (err && err.toString) {
+          const msg = err.toString();
+          logger.info("Unable to parse entity traits", {
+            error: msg
+          });
+        }
       }
 
       const payload = {
