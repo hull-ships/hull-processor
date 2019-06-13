@@ -92,7 +92,7 @@ describe("Compute Ship for accounts", () => {
     it("Should return grouped objects when groups are passed", (done) => {
       applyCompute(CODE.group).then((result) => {
         expect(result.user).to.be.eql(user);
-        expect(result).to.have.nested.property("account.group.line", "test");
+        expect(result).to.have.nested.property("account.group/line", "test");
         done();
       });
     });
