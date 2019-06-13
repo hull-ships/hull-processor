@@ -13,23 +13,25 @@ const buildUserPayload = (payload, traitsCall = {}) => {
       source
     } = context;
     if (source) {
+      payload[source] = {
+        ...payload[source],
+        ...properties
+      };
+    } else {
       _.map(properties, (v, k) => {
-        const key = `${source}/${k}`;
-        _.setWith(properties, key, v, Object);
-        _.unset(properties, k);
+        const path = k.replace("/", ".");
+        if (path.indexOf(".") > -1) {
+          _.setWith(payload, path, v, Object);
+        } else if (_.includes(TOP_LEVEL_ATTRIBUTES, k)) {
+          payload[k] = v;
+        } else {
+          payload.traits = {
+            ...payload.traits,
+            [k]: v
+          };
+        }
       });
     }
-
-    _.map(properties, (v, k) => {
-      if (_.includes(TOP_LEVEL_ATTRIBUTES, k)) {
-        payload[k] = v;
-      } else {
-        payload.traits = {
-          ...payload.traits,
-          [k]: v
-        };
-      }
-    });
   }
   return payload;
 };
