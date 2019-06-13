@@ -13,22 +13,23 @@ const buildUserPayload = (payload, traitsCall = {}) => {
       source
     } = context;
     if (source) {
-      payload[source] = {
-        ...payload[source],
-        ...properties
-      };
-    } else {
       _.map(properties, (v, k) => {
-        if (_.includes(TOP_LEVEL_ATTRIBUTES, k)) {
-          payload[k] = v;
-        } else {
-          payload.traits = {
-            ...payload.traits,
-            [k]: v
-          };
-        }
+        const key = `${source}/${k}`;
+        _.setWith(properties, key, v, Object);
+        _.unset(properties, k);
       });
     }
+
+    _.map(properties, (v, k) => {
+      if (_.includes(TOP_LEVEL_ATTRIBUTES, k)) {
+        payload[k] = v;
+      } else {
+        payload.traits = {
+          ...payload.traits,
+          [k]: v
+        };
+      }
+    });
   }
   return payload;
 };
@@ -43,15 +44,16 @@ const buildAccountPayload = (payload, traitsCall = {}) => {
       source
     } = context;
     if (source) {
-      payload[source] = {
-        ...payload[source],
-        ...properties
-      };
-    } else {
       _.map(properties, (v, k) => {
-        payload[k] = v;
+        const key = `${source}/${k}`;
+        _.setWith(properties, key, v, Object);
+        _.unset(properties, k);
       });
     }
+
+    _.map(properties, (v, k) => {
+      payload[k] = v;
+    });
   }
   return payload;
 };
