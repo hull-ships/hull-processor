@@ -1,6 +1,24 @@
 const _ = require("lodash");
 const compute = require("./compute");
 
+const isGroup = require("./utils/is-group-trait");
+
+function flatten(obj, key, group) {
+  return _.reduce(
+    group,
+    (m, v, k) => {
+      const n = key ? `${key}/${k}` : k;
+      if (isGroup(v) && !n.includes("/")) {
+        flatten(m, n, v);
+      } else {
+        m[n] = v;
+      }
+      return m;
+    },
+    obj
+  );
+}
+
 function getIdent(user) {
   const ident = {
     id: user.id
@@ -27,7 +45,7 @@ function userUpdate({ message = {} }, { ship, hull, metric }) {
       if (_.size(changes.user)) {
         const flat = {
           ...changes.user.traits,
-          ..._.omit(changes.user, "traits")
+          ...flatten({}, "", _.omit(changes.user, "traits"))
         };
 
         if (_.size(flat)) {
@@ -70,7 +88,7 @@ function userUpdate({ message = {} }, { ship, hull, metric }) {
 
       // Update account traits
       if (_.size(changes.account)) {
-        const flat = changes.account;
+        const flat = flatten({}, "", changes.account);
 
         if (_.size(flat)) {
           const asAccount = asUser.account(accountClaims);

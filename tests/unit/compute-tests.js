@@ -97,7 +97,7 @@ describe("Compute Ship", () => {
 
     it("Should return grouped objects when groups are passed", (done) => {
       applyCompute(OLD_CODE.group).then((result) => {
-        expect(result).to.have.nested.property("user.traits.group/line", "test");
+        expect(result).to.have.nested.property("user.group.line", "test");
         done();
       });
     });
@@ -220,7 +220,7 @@ describe("Compute Ship", () => {
     it("Should return grouped objects when groups are passed", (done) => {
       applyCompute(CODE.group).then((result) => {
         expect(result.account).to.be.eql({});
-        expect(result).to.have.nested.property("user.traits.group/line", "test");
+        expect(result).to.have.nested.property("user.group.line", "test");
         done();
       });
     });

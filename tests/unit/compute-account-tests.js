@@ -49,7 +49,7 @@ function applyCompute(c) {
   return compute(payload, shipWithCode(ship, c));
 }
 
-describe("Compute Ship for accounts", () => {
+describe("dsCompute Ship for accounts", () => {
   describe("Compute method with accounts", () => {
     it("Should not change content if code does not change content", (done) => {
       applyCompute(CODE.identity).then((result) => {
