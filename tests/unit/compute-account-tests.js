@@ -49,7 +49,7 @@ function applyCompute(c) {
   return compute(payload, shipWithCode(ship, c));
 }
 
-describe("dsCompute Ship for accounts", () => {
+describe("Compute Ship for accounts", () => {
   describe("Compute method with accounts", () => {
     it("Should not change content if code does not change content", (done) => {
       applyCompute(CODE.identity).then((result) => {
@@ -92,7 +92,7 @@ describe("dsCompute Ship for accounts", () => {
     it("Should return grouped objects when groups are passed", (done) => {
       applyCompute(CODE.group).then((result) => {
         expect(result.user).to.be.eql(user);
-        expect(result).to.have.nested.property("account.group/line", "test");
+        expect(result).to.have.nested.property("account.group.line", "test");
         done();
       });
     });

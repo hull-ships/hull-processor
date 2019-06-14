@@ -46,16 +46,15 @@ const buildAccountPayload = (payload, traitsCall = {}) => {
       source
     } = context;
     if (source) {
+      payload[source] = {
+        ...payload[source],
+        ...properties
+      };
+    } else {
       _.map(properties, (v, k) => {
-        const key = `${source}/${k}`;
-        _.setWith(properties, key, v, Object);
-        _.unset(properties, k);
+        payload[k] = v;
       });
     }
-
-    _.map(properties, (v, k) => {
-      payload[k] = v;
-    });
   }
   return payload;
 };
