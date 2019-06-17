@@ -395,7 +395,7 @@ You can specify the properties of the event by passing them as object in the sec
 Make sure to encapsulate the `track`  call in a conditional `if` statement, otherwise you end up with an infinite loop that counts towards your plan’s quota.
 
 ### Limitations
-The Platform refuses to associate Users in accounts with a domain being a Generic Email Domain - See the list of email domains we refuse here: https://github.com/hull-ships/hull-processor/blob/develop/server/email-domains.js - This helps preventing accounts with thousands of users under domains like `gmail.com` because you'd have written the following code:
+The Platform refuses to associate Users in accounts with a domain being a Generic Email Domain - See the list of email domains we refuse here: https://github.com/hull-ships/hull-processor/blob/develop/server/lib/shared.js  - This helps preventing accounts with thousands of users under domains like `gmail.com` because you'd have written the following code:
 
 ```js
  // Any user with a "gmail.com" account would be linked to this account
