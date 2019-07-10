@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.2.25
+- add kraken-exports tag
+
 ## 0.2.24
 - updated status for processor to conform with product standard
 - fixed bug where you couldn't set a blank string to null
