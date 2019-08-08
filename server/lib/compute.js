@@ -44,7 +44,7 @@ const updateChanges = (payload) => {
       }
     }
 
-    if (d.kind === "E") {
+    if (d.kind === "E" && d.rhs !== undefined) {
       _.set(memo, d.path, d.rhs);
     }
 
