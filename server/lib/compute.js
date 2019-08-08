@@ -374,41 +374,6 @@ function compute(
         tracks = _.slice(tracks, 0, 10);
       }
 
-
-      // Log flattening out json object
-      try {
-        _.forEach(userTraits, (userTrait) => {
-          const {
-            properties
-          } = userTrait;
-
-          _.map(properties, (v, k) => {
-            if (isGroup(v)) {
-              logger.info(`Nested object { ${JSON.stringify(k)}:${JSON.stringify(v)} } found in user traits`);
-            }
-          });
-        });
-
-        _.forEach(accountTraits, (accountTrait) => {
-          const {
-            properties
-          } = accountTrait;
-
-          _.map(properties, (v, k) => {
-            if (isGroup(v)) {
-              logger.info(`Nested object { ${JSON.stringify(k)}:${JSON.stringify(v)} } found in account traits`);
-            }
-          });
-        });
-      } catch (err) {
-        if (err && err.toString) {
-          const msg = err.toString();
-          logger.info("Unable to parse entity traits", {
-            error: msg
-          });
-        }
-      }
-
       const payload = {
         user: _.reduce(userTraits, buildUserPayload, {}),
         account: _.reduce(accountTraits, buildAccountPayload, {})
