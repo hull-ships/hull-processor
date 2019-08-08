@@ -18,6 +18,20 @@ function flatten(obj, key, group) {
   );
 }
 
+const count = (str, ch) => _.countBy(str)[ch] || 0;
+// TODO replace flatten with this function
+function flattenToDepth(obj, key, group, depth) {
+  return _.reduce(group, (m, v, k) => {
+    const n = (key) ? `${key}/${k}` : k;
+    if (isGroup(v) && count(n, "/") !== depth) {
+      flattenToDepth(m, n, v, depth);
+    } else {
+      m[n] = v;
+    }
+    return m;
+  }, obj);
+}
+
 function getIdent(user) {
   const ident = {
     id: user.id
@@ -46,6 +60,23 @@ function userUpdate({ message = {} }, { ship, hull, metric }) {
           ...changes.user.traits,
           ...flatten({}, "", _.omit(changes.user, "traits"))
         };
+
+        // Log flattening out user json object
+        try {
+          const flattenedTraits = flattenToDepth({}, "", _.omit(changes.user, "traits"), 1);
+          _.map(flattenedTraits, (v, k) => {
+            if (isGroup(v)) {
+              asUser.logger.info(`Nested json ${JSON.stringify(k)}:${JSON.stringify(v)} found in user traits`);
+            }
+          });
+        } catch (err) {
+          if (err && err.toString) {
+            const msg = err.toString();
+            asUser.logger.info("Unable to parse user traits", {
+              error: msg
+            });
+          }
+        }
 
         if (_.size(flat)) {
           if (flat.email) {
@@ -88,6 +119,23 @@ function userUpdate({ message = {} }, { ship, hull, metric }) {
       // Update account traits
       if (_.size(changes.account)) {
         const flat = flatten({}, "", changes.account);
+
+        // Log flattening out account json object
+        try {
+          const flattenedTraits = flattenToDepth({}, "", changes.account, 1);
+          _.map(flattenedTraits, (v, k) => {
+            if (isGroup(v)) {
+              asUser.logger.info(`Nested json { ${JSON.stringify(k)}:${JSON.stringify(v)} } found in account traits`);
+            }
+          });
+        } catch (err) {
+          if (err && err.toString) {
+            const msg = err.toString();
+            asUser.logger.info("Unable to parse user account traits", {
+              error: msg
+            });
+          }
+        }
 
         if (_.size(flat)) {
           const asAccount = asUser.account(accountClaims);
