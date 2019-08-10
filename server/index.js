@@ -1,15 +1,11 @@
 const throng = require("throng");
-
-const WORKERS = process.env.WEB_CONCURRENCY || require('os').cpus().length;
+const os = require("os");
 const redisStore = require("cache-manager-redis");
 const Hull = require("hull");
 const { Cache } = require("hull/lib/infra");
 const server = require("./server");
 
-throng({
-  workers: WORKERS,
-  lifetime: Infinity
-}, start);
+const WORKERS = process.env.WEB_CONCURRENCY || os.cpus().length;
 
 function start() {
   if (process.env.LOG_LEVEL) {
@@ -61,3 +57,8 @@ function start() {
 
   Hull.logger.debug("processor.started", { port: options.port });
 }
+
+throng({
+  workers: WORKERS,
+  lifetime: Infinity
+}, start);
