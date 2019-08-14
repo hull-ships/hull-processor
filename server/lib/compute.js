@@ -356,7 +356,9 @@ function compute(
         logger.info("outgoing.user.error", {
           error: msg
         });
-        console.log(JSON.stringify(err, null, 2));
+        if (err.toString) {
+          console.log(`Bad error: ${err.toString()}`);
+        }
       }
       sandbox.captureException(err);
     })
