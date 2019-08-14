@@ -27,7 +27,7 @@
     "build": "npm run clean && npm run build:server && npm run build:client",
     "build:client": "NODE_ENV=production webpack --config ./webpack.config.js --progress --profile --colors",
     "build:server": "./node_modules/.bin/babel server -d lib",
-    "start": "NODE_ENV=production node --optimize_for_size --max_old_space_size=$MEMORY_AVAILABLE -r newrelic ./lib",
+    "start": "NODE_ENV=production node --optimize_for_size --max_old_space_size=$WEB_MEMORY -r newrelic ./lib",
     "start:dev": "NODE_ENV=development LOG_LEVEL=debug babel-watch -L server",
     "test": "npm run test:lint && npm run test:unit && npm run test:integration",
     "test:lint": "./node_modules/.bin/eslint server",
