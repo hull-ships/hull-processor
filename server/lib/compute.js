@@ -356,7 +356,7 @@ function compute(
         logger.info("outgoing.user.error", {
           error: msg
         });
-        console.log(err.stack);
+        console.log(JSON.stringify(err, null, 2));
       }
       sandbox.captureException(err);
     })
