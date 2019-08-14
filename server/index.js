@@ -11,6 +11,10 @@ if (process.env.LOG_LEVEL) {
 
 Hull.logger.transports.console.json = true;
 
+Hull.logger.info(`Memory Available: ${process.env.MEMORY_AVAILABLE}`);
+Hull.logger.info(`Web Memory: ${process.env.WEB_MEMORY}`);
+Hull.logger.info(`Web Concurrency: ${process.env.WEB_CONCURRENCY}`);
+
 if (process.env.LOGSTASH_HOST && process.env.LOGSTASH_HOST) {
   const { Logstash } = require("winston-logstash"); // eslint-disable-line global-require
   Hull.logger.add(Logstash, {
