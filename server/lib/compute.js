@@ -345,8 +345,14 @@ function compute(
     errors.push("You need to return a 'new Promise' and 'resolve' or 'reject' it in your 'request' callback.");
   }
 
+  const envSandboxTimeout = process.env.SANDBOX_PROMISE_TIMEOUT;
   // Forcing all promises to timeout at 5000ms
-  const promises = sandbox.results.map(p => Promise.resolve(p).timeout(5000));
+  let sandboxTimeout = 5000;
+  if (envSandboxTimeout) {
+    sandboxTimeout = parseInt(envSandboxTimeout, 10);
+  }
+
+  const promises = sandbox.results.map(p => Promise.resolve(p).timeout(sandboxTimeout));
 
   return Promise.all(promises)
     .catch((err) => {
@@ -356,7 +362,6 @@ function compute(
         logger.info("outgoing.user.error", {
           error: msg
         });
-        console.log(JSON.stringify(err, null, 2));
       }
       sandbox.captureException(err);
     })
