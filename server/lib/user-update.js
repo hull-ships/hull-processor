@@ -2,7 +2,7 @@ const _ = require("lodash");
 const compute = require("./compute");
 const isGroup = require("./utils/is-group-trait");
 
-function flatten(obj, key, group) {
+/* function flatten(obj, key, group) {
   return _.reduce(
     group,
     (m, v, k) => {
@@ -16,10 +16,9 @@ function flatten(obj, key, group) {
     },
     obj
   );
-}
+} */
 
 const count = (str, ch) => _.countBy(str)[ch] || 0;
-// TODO replace flatten with this function
 function flattenToDepth(obj, key, group, depth) {
   return _.reduce(group, (m, v, k) => {
     const n = (key) ? `${key}/${k}` : k;
@@ -58,25 +57,8 @@ function userUpdate({ message = {} }, { ship, hull, metric }) {
       if (_.size(changes.user)) {
         const flat = {
           ...changes.user.traits,
-          ...flatten({}, "", _.omit(changes.user, "traits"))
+          ...flattenToDepth({}, "", _.omit(changes.user, "traits"), 1)
         };
-
-        // Log flattening out user json object
-        try {
-          const flattenedTraits = flattenToDepth({}, "", _.omit(changes.user, "traits"), 1);
-          _.map(flattenedTraits, (v, k) => {
-            if (isGroup(v)) {
-              asUser.logger.info(`Nested json ${JSON.stringify(k)}:${JSON.stringify(v)} found in user traits`);
-            }
-          });
-        } catch (err) {
-          if (err && err.toString) {
-            const msg = err.toString();
-            asUser.logger.info("Unable to parse user traits", {
-              error: msg
-            });
-          }
-        }
 
         if (_.size(flat)) {
           if (flat.email) {
@@ -118,24 +100,7 @@ function userUpdate({ message = {} }, { ship, hull, metric }) {
 
       // Update account traits
       if (_.size(changes.account)) {
-        const flat = flatten({}, "", changes.account);
-
-        // Log flattening out account json object
-        try {
-          const flattenedTraits = flattenToDepth({}, "", changes.account, 1);
-          _.map(flattenedTraits, (v, k) => {
-            if (isGroup(v)) {
-              asUser.logger.info(`Nested json { ${JSON.stringify(k)}:${JSON.stringify(v)} } found in account traits`);
-            }
-          });
-        } catch (err) {
-          if (err && err.toString) {
-            const msg = err.toString();
-            asUser.logger.info("Unable to parse user account traits", {
-              error: msg
-            });
-          }
-        }
+        const flat = flattenToDepth({}, "", changes.account, 1);
 
         if (_.size(flat)) {
           const asAccount = asUser.account(accountClaims);
