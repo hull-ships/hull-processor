@@ -43,7 +43,15 @@ const TESTS = {
   nested: {
     payload_old: "traits({ value: 'val0', group: { value: 'val1', group: { value: 'val2' } } }, { source: 'group' });",
     payload: "hull.traits({ value: 'val0', group: { value: 'val1', group: { value: 'val2' } } }, { source: 'group' });",
-    result: { "traits_group/value": "val0", "traits_group/group/value": "val1", "traits_group/group/group/value": "val2" }
+    result: {
+      "group/value": "val0",
+      "group/group": {
+        value: "val1",
+        group: {
+          value: "val2"
+        }
+      }
+    }
   },
   withEmail: {
     payload_old: "traits({ name: 'Hello Friend', email: 'hello@friend.com' });",
@@ -193,6 +201,7 @@ describe("Compute Ship", () => {
           id: message.user.id,
           email: message.user.email
         });
+        sinon.assert.calledWith(spy, "traits", TESTS.nested.result);
         sinon.assert.neverCalledWithMatch(spy, "track");
         done();
       });
