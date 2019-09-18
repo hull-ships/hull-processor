@@ -2,7 +2,7 @@ const _ = require("lodash");
 const compute = require("./compute");
 const isGroup = require("./utils/is-group-trait");
 
-function flatten(obj, key, group) {
+/* function flatten(obj, key, group) {
   return _.reduce(
     group,
     (m, v, k) => {
@@ -16,6 +16,19 @@ function flatten(obj, key, group) {
     },
     obj
   );
+} */
+
+const count = (str, ch) => _.countBy(str)[ch] || 0;
+function flattenToDepth(obj, key, group, depth) {
+  return _.reduce(group, (m, v, k) => {
+    const n = (key) ? `${key}/${k}` : k;
+    if (isGroup(v) && count(n, "/") !== depth) {
+      flattenToDepth(m, n, v, depth);
+    } else {
+      m[n] = v;
+    }
+    return m;
+  }, obj);
 }
 
 function getIdent(user) {
@@ -44,7 +57,7 @@ function userUpdate({ message = {} }, { ship, hull, metric }) {
       if (_.size(changes.user)) {
         const flat = {
           ...changes.user.traits,
-          ...flatten({}, "", _.omit(changes.user, "traits"))
+          ...flattenToDepth({}, "", _.omit(changes.user, "traits"), 1)
         };
 
         if (_.size(flat)) {
@@ -87,7 +100,7 @@ function userUpdate({ message = {} }, { ship, hull, metric }) {
 
       // Update account traits
       if (_.size(changes.account)) {
-        const flat = flatten({}, "", changes.account);
+        const flat = flattenToDepth({}, "", changes.account, 1);
 
         if (_.size(flat)) {
           const asAccount = asUser.account(accountClaims);

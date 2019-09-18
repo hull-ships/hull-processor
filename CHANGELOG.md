@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.2.28
+- version bump of hull node
+
+## 0.2.26
+- `undefined` traits are discarded from the changes diff
+
 ## 0.2.25
 - add kraken-exports tag
 
