@@ -1,6 +1,6 @@
 {
   "name": "Processor",
-  "description": "Re0.2.28compute custom properties and emit events with Javascript logic whenever a user is updated",
+  "description": "Recompute custom properties and emit events with Javascript logic whenever a user is updated",
   "tags": ["incoming", "outgoing", "batch", "oneColumn", "smart-notifier", "kraken-exports"],
   "source": "processor",
   "logo": "logo.png",
