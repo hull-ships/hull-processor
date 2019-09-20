@@ -18,7 +18,10 @@ function getEventsForUserId(client, user_id) {
   if (!user_id || !client) return Promise.reject();
   const params = {
     query: {
-      term: { _parent: user_id }
+      has_parent: {
+        parent_type: "user_report",
+        query: { term: { id: user_id } }
+      }
     },
     sort: { created_at: "desc" },
     raw: true,
