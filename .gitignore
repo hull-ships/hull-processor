@@ -70,3 +70,4 @@ package-lock.json
 build
 dist
 /lib
+.idea
