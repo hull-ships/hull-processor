@@ -23,7 +23,7 @@ const handler = flowControl =>
 
         const user_ids = _.map(messages, "user.id");
 
-        hull.logger.info("incoming.user.start", { ids: _.uniq(_.compact(user_ids)) });
+        hull.logger.debug("incoming.user.start", { ids: _.uniq(_.compact(user_ids)) });
 
         return Promise.all(messages.map((message) => {
           const account = hull.utils.groupTraits(message.account || message.user.account);
@@ -39,7 +39,7 @@ const handler = flowControl =>
           const skipped = _.filter(responses, r => _.get(r, "response.status") === "skip");
           const skippedIds = _.map(skipped, "message.user.id");
           if (skippedIds.length > 0) {
-            hull.logger.info("incoming.user.skip", { message: "No Changes", ids: _.uniq(_.compact(skippedIds)) });
+            hull.logger.debug("incoming.user.skip", { message: "No Changes", ids: _.uniq(_.compact(skippedIds)) });
           }
         });
       }
