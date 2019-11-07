@@ -1,7 +1,7 @@
 {
   "name": "hull-processor",
   "description": "Run code to update User Properties and generate Events",
-  "version": "0.2.28",
+  "version": "0.2.29",
   "homepage": "https://github.com/hull-ships/hull-processor",
   "license": "MIT",
   "author": {
@@ -82,12 +82,12 @@
     "deep-diff": "^0.3.4",
     "deep-freeze": "0.0.1",
     "deepmerge": "^2.0.1",
-    "eslint": "^4.15.0",
+    "eslint": "^4.18.2",
     "event-stream": "3.3.4",
     "express": "^4.14.0",
     "hull": "0.13.20",
     "json-stable-stringify": "^1.0.1",
-    "lodash": "^4.13.1",
+    "lodash": "^4.17.13",
     "moment": "^2.20.1",
     "newrelic": "^2.6.0",
     "prop-types": "^15.6.0",

@@ -7,7 +7,7 @@ const isGroup = require("./utils/is-group-trait");
     group,
     (m, v, k) => {
       const n = key ? `${key}/${k}` : k;
-      if (isGroup(v)) {
+      if (isGroup(v) && !n.includes("/")) {
         flatten(m, n, v);
       } else {
         m[n] = v;

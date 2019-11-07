@@ -2936,10 +2936,10 @@ eslint-visitor-keys@^1.0.0:
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#3f3180fb2e291017716acb4c9d6d5b5c34a6a81d"
   integrity sha512-qzm/XxIbxm/FHyH341ZrbnMUpe+5Bocte9xkmFMzPMjRaZMcXww+MpBptFvtU+79L362nqiLhekCxCxDPaUMBQ==
 
-eslint@^4.15.0:
-  version "4.16.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.16.0.tgz#934ada9e98715e1d7bbfd6f6f0519ed2fab35cc1"
-  integrity sha512-YVXV4bDhNoHHcv0qzU4Meof7/P26B4EuaktMi5L1Tnt52Aov85KmYA8c5D+xyZr/BkhvwUqr011jDSD/QTULxg==
+eslint@^4.18.2:
+  version "4.18.2"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.18.2.tgz#0f81267ad1012e7d2051e186a9004cc2267b8d45"
+  integrity sha512-qy4i3wODqKMYfz9LUI8N2qYDkHkoieTbiHpMrYUI/WbjhXJQr7lI4VngixTgaG+yHX+NBCv7nW4hA0ShbvaNKw==
   dependencies:
     ajv "^5.3.0"
     babel-code-frame "^6.22.0"
@@ -2976,7 +2976,7 @@ eslint@^4.15.0:
     semver "^5.3.0"
     strip-ansi "^4.0.0"
     strip-json-comments "~2.0.1"
-    table "^4.0.1"
+    table "4.0.2"
     text-table "~0.2.0"
 
 espree@^3.5.2:
@@ -3840,10 +3840,10 @@ https-proxy-agent@^2.2.1:
     agent-base "^4.1.0"
     debug "^3.1.0"
 
-hull-client@^1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/hull-client/-/hull-client-1.2.2.tgz#9e75db326957513babd4c793482e7d0903cdf490"
-  integrity sha512-KFsBGwL/Q6jH33kRA+9F8cY+xvfkWBru+7oJpHMpQ4C4cBMi79yqQFhukUQyxanoS4pS8m9CGHR3rQKFlJYfdw==
+hull-client@1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/hull-client/-/hull-client-1.2.4.tgz#755365c0cdc1ab199f353cecfb9cd8737a387dee"
+  integrity sha512-AcON3AsV+1Zecy7gjCrjRiWTMschKbHFFnu2PRko6olNvM19UfkvNKs/1WSZTXc0LW3yuW0w9XfCTn5X+kgKRA==
   dependencies:
     jwt-simple "^0.5.0"
     lodash "^4.17.5"
@@ -3852,10 +3852,10 @@ hull-client@^1.2.2:
     uuid "^3.0.1"
     winston "^2.2.0"
 
-hull@0.13.17:
-  version "0.13.17"
-  resolved "https://registry.yarnpkg.com/hull/-/hull-0.13.17.tgz#01efd2af682918ae0717ba3497df31319619f3e9"
-  integrity sha512-nZGI65CanQOEIljUq2MxIi9ToR6LWALjEkqh0D09vhvzNJH2kwumYIRvXg3m0dQnpAGIiZQIupRXewtNMekpXw==
+hull@0.13.20:
+  version "0.13.20"
+  resolved "https://registry.yarnpkg.com/hull/-/hull-0.13.20.tgz#0b602cc809ba519255060430060e424fdd50a5f7"
+  integrity sha512-mfbLE1kkRkD+i6t6tH0SOmn/d8dBYCz72NMIg2lxcgr5sXK5BpEOg0UCn1l0yedAxrf2P2mmBWTe9GsBwf4Hyw==
   dependencies:
     JSONStream "^1.1.2"
     aws-sdk "^2.81.0"
@@ -3873,7 +3873,7 @@ hull@0.13.17:
     del "^2.2.1"
     dogapi "^2.6.0"
     ejs "^2.5.6"
-    hull-client "^1.2.2"
+    hull-client "1.2.4"
     jsonwebtoken "^7.4.3"
     jwt-simple "^0.5.0"
     kue "^0.11.5"
@@ -4727,15 +4727,15 @@ lodash.values@^4.3.0:
   resolved "https://registry.yarnpkg.com/lodash.values/-/lodash.values-4.3.0.tgz#a3a6c2b0ebecc5c2cba1c17e6e620fe81b53d347"
   integrity sha1-o6bCsOvsxcLLocF+bmIP6BtT00c=
 
-lodash@4, lodash@^4.0.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.3.0, lodash@^4.6.1, lodash@latest:
+lodash@4, lodash@^4.0.0, lodash@^4.14.0, lodash@^4.17.13, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.0, lodash@^4.3.0, lodash@^4.6.1:
+  version "4.17.13"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.13.tgz#0bdc3a6adc873d2f4e0c4bac285df91b64fc7b93"
+  integrity sha512-vm3/XWXfWtRua0FkUyEHBZy8kCPjErNBT9fJx8Zvs+U6zjqPbTUOpkaoum3O5uiA8sm+yNMHXfYkTUHFoMxFNA==
+
+lodash@latest:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
   integrity sha1-eCA6TRwyiuHYbcpkYONptX9AVa4=
-
-lodash@^4.17.5:
-  version "4.17.5"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.5.tgz#99a92d65c0272debe8c96b6057bc8fbfa3bed511"
-  integrity sha512-svL3uiZf1RwhH+cWrfZn3A4+U58wbP0tGVTLQPbjplZxZ8ROD9VLuNgsRniTlLe7OlSqR79RUehXgpBW/s0IQw==
 
 log-symbols@^2.1.0:
   version "2.2.0"
@@ -4816,9 +4816,9 @@ lsmod@1.0.0:
   integrity sha1-mgD3bco26yP6BTUK/htYXUKZ5ks=
 
 macaddress@^0.2.8:
-  version "0.2.8"
-  resolved "https://registry.yarnpkg.com/macaddress/-/macaddress-0.2.8.tgz#5904dc537c39ec6dbefeae902327135fa8511f12"
-  integrity sha1-WQTcU3w57G2+/q6QIycTX6hRHxI=
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/macaddress/-/macaddress-0.2.9.tgz#3579b8b9acd5b96b4553abf0f394185a86813cb3"
+  integrity sha512-k4F1JUof6cQXxNFzx3thLby4oJzXTXQueAOOts944Vqizn+Rjc2QNFenT9FJSLU1CH3PmrHRSyZs2E+Cqw+P2w==
 
 make-dir@^1.0.0:
   version "1.1.0"
@@ -7571,7 +7571,7 @@ syntax-error@^1.3.0:
   dependencies:
     acorn "^4.0.3"
 
-table@^4.0.1:
+table@4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/table/-/table-4.0.2.tgz#a33447375391e766ad34d3486e6e2aedc84d2e36"
   integrity sha512-UUkEAPdSGxtRpiV9ozJ5cMTtYiqz7Ni1OGqLXRCynrvzdtR1p+cfOWe2RJLwvUG8hNanaSRjecIqwOjqeatDsA==
@@ -8357,3 +8357,4 @@ yargs@~3.10.0:
     cliui "^2.1.0"
     decamelize "^1.0.0"
     window-size "0.1.0"
+
