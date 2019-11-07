@@ -69,7 +69,7 @@ function userUpdate({ message = {} }, { ship, hull, metric }) {
               .then(
                 () => {
                   response = { status: "success", changes: flat };
-                  asUser.logger.info("incoming.user.success", {
+                  asUser.logger.debug("incoming.user.success", {
                     changes: flat
                   });
                 },
@@ -82,7 +82,7 @@ function userUpdate({ message = {} }, { ship, hull, metric }) {
             asUser.traits(flat).then(
               () => {
                 response = { status: "success", changes: flat };
-                asUser.logger.info("incoming.user.success", {
+                asUser.logger.debug("incoming.user.success", {
                   changes: flat
                 });
               },
@@ -105,7 +105,7 @@ function userUpdate({ message = {} }, { ship, hull, metric }) {
         if (_.size(flat)) {
           const asAccount = asUser.account(accountClaims);
           asAccount.traits(flat);
-          asAccount.logger.info("incoming.account.success", {
+          asAccount.logger.debug("incoming.account.success", {
             changes: flat,
             changedKeys: Object.keys(flat)
           });
@@ -116,7 +116,7 @@ function userUpdate({ message = {} }, { ship, hull, metric }) {
       ) {
         // Link account
         asUser.account(accountClaims).traits({});
-        asUser.logger.info("incoming.account.link", {
+        asUser.logger.debug("incoming.account.link", {
           account: _.pick(account, "id"),
           accountClaims,
           accountClaimsSize: _.size(accountClaims),
@@ -126,7 +126,7 @@ function userUpdate({ message = {} }, { ship, hull, metric }) {
 
       if (events.length > 0) {
         events.map(({ eventName, properties, context }) => {
-          asUser.logger.info("incoming.event.track", {
+          asUser.logger.debug("incoming.event.track", {
             properties,
             eventName
           });
