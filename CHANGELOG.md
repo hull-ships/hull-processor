@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.2.29
+- updated a few libraries with security vulnerabilities
+
 ## 0.2.28
 - version bump of hull node
 
