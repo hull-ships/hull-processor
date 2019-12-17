@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.2.30
+- remove use of hull.js on load
+
 ## 0.2.29
 - updated a few libraries with security vulnerabilities
 
