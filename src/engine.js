@@ -6,12 +6,11 @@ const EVENT = "CHANGE";
 
 export default class Engine extends EventEmitter {
 
-  constructor(config, { ship, currentUser }) {
+  constructor(config, { ship, userSearch }) {
     super();
     this.config = config;
-    const userId = currentUser && currentUser.id;
     this.state = { ship, loading: false };
-    this.compute({ ship, userId });
+    this.compute({ ship, userSearch });
     this.compute = _.debounce(this.compute, 1000);
     this.updateParent = _.debounce(this.updateParent, 1000);
   }
@@ -95,6 +94,10 @@ export default class Engine extends EventEmitter {
             });
           } else {
             const { ship, payload, took, result } = body || {};
+
+            if (params.userSearch) {
+              window.localStorage.setItem(`userSearch-${this.config.ship}`, params.userSearch);
+            }
 
             // Don't kill user code
             if (this && this.state && this.state.ship && this.state.ship.private_settings) {
