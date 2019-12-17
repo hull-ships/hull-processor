@@ -9,22 +9,8 @@ import Engine from "./engine";
 
 (function main() {
   const { ship, organization, secret } = queryParams();
-
-  Hull.init({
-    appId: ship,
-    orgUrl: `https://${organization}`,
-    embed: false
-  });
-
-  Hull.ready((hull, currentUser, app) => {
-    const root = document.getElementById("app");
-    const engine = new Engine({ ship, organization, secret }, { ship: app, currentUser });
-
-    window.addEventListener("message", ({ data: message }) => {
-      if (message && message.event === "ship.update" && message.ship) {
-        engine.updateShip(message.ship);
-      }
-    });
-    ReactDOM.render(<App engine={engine} />, root);
-  });
+  const root = document.getElementById("app");
+  const userSearch = window.localStorage.getItem(`userSearch-${ship}`);
+  const engine = new Engine({ ship, organization, secret }, { ship: {}, userSearch });
+  ReactDOM.render(<App engine={engine} />, root);
 }());

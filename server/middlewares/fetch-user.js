@@ -228,7 +228,7 @@ module.exports = function fetchUser(req, res, next) {
     .then(done, (err) => {
       client.logger.error("fetch.user.error", err.message);
       res.status(404);
-      res.send({ reason: "user_not_found", message: err.message });
+      res.send({ reason: "user_not_found", message: (err && err.message) });
       return res.end();
     });
 };
