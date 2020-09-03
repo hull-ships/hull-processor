@@ -85,7 +85,7 @@
     "eslint": "^4.18.2",
     "event-stream": "3.3.4",
     "express": "^4.14.0",
-    "hull": "0.13.20",
+    "hull": "0.13.22",
     "json-stable-stringify": "^1.0.1",
     "lodash": "^4.17.13",
     "moment": "^2.20.1",
