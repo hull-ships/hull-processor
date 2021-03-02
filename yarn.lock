@@ -4486,9 +4486,9 @@ jwt-decode@^2.2.0:
   integrity sha1-fYa9VmefWM5qhHBKZX3TkruoGnk=
 
 jwt-simple@^0.5.0:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/jwt-simple/-/jwt-simple-0.5.1.tgz#79ea01891b61de6b68e13e67c0b4b5bda937b294"
-  integrity sha1-eeoBiRth3mto4T5nwLS1vak3spQ=
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/jwt-simple/-/jwt-simple-0.5.6.tgz#3357adec55b26547114157be66748995b75b333a"
+  integrity sha512-40aUybvhH9t2h71ncA1/1SbtTNCVZHgsTsTgqPUxGWDmUDrXyDf2wMNQKEbdBjbf4AI+fQhbECNTV6lWxQKUzg==
 
 keycode@^2.1.2:
   version "2.1.9"
