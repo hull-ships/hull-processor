@@ -94,7 +94,7 @@
     "raven": "^2.3.0",
     "react": "^16.2.0",
     "react-bootstrap": "^0.32.0",
-    "react-dom": "^16.2.0",
+    "react-dom": "^16.2.1",
     "request": "^2.74.0",
     "response-time": "^2.3.1",
     "rimraf": "^2.5.2",
