@@ -88,7 +88,7 @@
     "hull": "0.13.20",
     "json-stable-stringify": "^1.0.1",
     "lodash": "^4.17.13",
-    "moment": "^2.20.1",
+    "moment": "^2.29.4",
     "newrelic": "^2.6.0",
     "prop-types": "^15.6.0",
     "raven": "^2.3.0",
